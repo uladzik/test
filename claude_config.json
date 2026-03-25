@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "vinted-boss": {
+      "command": "node",
+      "args": ["/Users/ulad/repos/vinted/vinted-final-boss.mjs"]
+    }
+  }
+}

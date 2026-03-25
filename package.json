@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "puppeteer": "^24.40.0"
+  }
+}
