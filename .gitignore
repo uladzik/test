@@ -1,0 +1,13 @@
+node_modules/
+.DS_Store
+*.log
+.env
+.env.*
+
+# Embedded git repos — tracked as submodules or excluded
+get-shit-done/
+gsd-test/
+test/
+sleek/
+vinted/
+calendar-miniapp/
