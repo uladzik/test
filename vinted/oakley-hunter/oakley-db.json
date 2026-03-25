@@ -1,0 +1,171 @@
+{
+  "meta": {
+    "source": "http://www.o-review.com/",
+    "scraped": "2026-03-20",
+    "description": "Vintage Oakley sunglasses database, 90s-2000s"
+  },
+  "models": [
+    {
+      "id": 93, "name": "Juliet", "years": "1997-2004",
+      "family": "x-metal", "tier": "iconic",
+      "keywords": ["juliet", "x-metal juliet", "oakley juliet"],
+      "notes": "X-Metal, most collectible model"
+    },
+    {
+      "id": 168, "name": "Romeo", "years": "1997-2004",
+      "family": "x-metal", "tier": "iconic",
+      "keywords": ["romeo", "x-metal romeo", "oakley romeo"],
+      "notes": "X-Metal, very rare"
+    },
+    {
+      "id": 118, "name": "Mars", "years": "1998-2004",
+      "family": "x-metal", "tier": "iconic",
+      "keywords": ["mars", "x-metal mars", "oakley mars"],
+      "notes": "X-Metal, extremely rare"
+    },
+    {
+      "id": 144, "name": "Penny", "years": "1999-2004",
+      "family": "x-metal", "tier": "iconic",
+      "keywords": ["penny", "x-metal penny", "oakley penny"],
+      "notes": "X-Metal, polarized version highly sought after"
+    },
+    {
+      "id": 235, "name": "X Metal XX", "years": "1997-2004",
+      "family": "x-metal", "tier": "iconic",
+      "keywords": ["x metal xx", "xmetal xx", "oakley xx"],
+      "notes": "First X-Metal model ever made"
+    },
+    {
+      "id": 239, "name": "XX", "years": "1997-2004",
+      "family": "x-metal", "tier": "iconic",
+      "keywords": ["xx oakley", "oakley xx", "x metal xx"],
+      "notes": "Variant of X Metal XX"
+    },
+    {
+      "id": 183, "name": "Splice", "years": "1998-2005",
+      "family": "x-metal", "tier": "high",
+      "keywords": ["splice", "oakley splice"],
+      "notes": "X-Metal with interchangeable lenses"
+    },
+    {
+      "id": 170, "name": "Scar", "years": "1999-2005",
+      "family": "x-metal", "tier": "high",
+      "keywords": ["scar", "oakley scar"],
+      "notes": "Rare X-Metal"
+    },
+    {
+      "id": 60, "name": "Eye Jacket", "years": "1994-2004",
+      "family": "jackets", "tier": "iconic",
+      "keywords": ["eye jacket", "eyejacket", "oakley eye jacket"],
+      "notes": "Classic 90s sport, OG model"
+    },
+    {
+      "id": 59, "name": "Eye Jacket (New)", "years": "1996-2004",
+      "family": "jackets", "tier": "high",
+      "keywords": ["eye jacket", "eyejacket"],
+      "notes": "Updated version with new logo"
+    },
+    {
+      "id": 193, "name": "Straight Jacket", "years": "1996-2004",
+      "family": "jackets", "tier": "high",
+      "keywords": ["straight jacket", "straightjacket", "oakley straight jacket"],
+      "notes": "Iconic sport"
+    },
+    {
+      "id": 78, "name": "Half Jacket", "years": "1996-2004",
+      "family": "jackets", "tier": "high",
+      "keywords": ["half jacket", "halfjacket", "oakley half jacket"],
+      "notes": ""
+    },
+    {
+      "id": 163, "name": "Racing Jacket (Gen 2)", "years": "1993-2004",
+      "family": "jackets", "tier": "high",
+      "keywords": ["racing jacket", "oakley racing jacket"],
+      "notes": "Classic 90s racing"
+    },
+    {
+      "id": 98, "name": "M Frame Strike", "years": "1993-2004",
+      "family": "m-frame", "tier": "iconic",
+      "keywords": ["m frame", "mframe", "oakley m frame", "m frame strike"],
+      "notes": "OG M Frame, iconic sport model"
+    },
+    {
+      "id": 99, "name": "M Frame (Gen 2)", "years": "1996-2004",
+      "family": "m-frame", "tier": "high",
+      "keywords": ["m frame", "mframe", "oakley m frame"],
+      "notes": ""
+    },
+    {
+      "id": 72, "name": "Frogskins (Gen 1)", "years": "1985-2004",
+      "family": "frogskins", "tier": "iconic",
+      "keywords": ["frogskins", "frog skins", "oakley frogskins"],
+      "notes": "OG Frogskins, most recognizable lifestyle model"
+    },
+    {
+      "id": 37, "name": "Blades", "years": "1985-2004",
+      "family": "iconic", "tier": "iconic",
+      "keywords": ["blades", "oakley blades", "razor blades"],
+      "notes": "Original 80s/90s Oakley"
+    },
+    {
+      "id": 165, "name": "Razor Blade", "years": "1986-2004",
+      "family": "iconic", "tier": "iconic",
+      "keywords": ["razor blade", "razorblade", "oakley razor"],
+      "notes": "Classic early Oakley"
+    },
+    {
+      "id": 63, "name": "Eyeshade", "years": "1984-2004",
+      "family": "iconic", "tier": "high",
+      "keywords": ["eyeshade", "eye shade", "oakley eyeshade"],
+      "notes": "Classic 80s/90s"
+    },
+    {
+      "id": 198, "name": "Sub Zero", "years": "1990-2004",
+      "family": "iconic", "tier": "high",
+      "keywords": ["sub zero", "subzero", "oakley sub zero"],
+      "notes": "90s classic"
+    },
+    {
+      "id": 66, "name": "Fives", "years": "1997-2004",
+      "family": "lifestyle", "tier": "high",
+      "keywords": ["fives", "oakley fives", "oakley 5"],
+      "notes": "Classic lifestyle"
+    },
+    {
+      "id": 187, "name": "Square Wire (Gen 1)", "years": "1996-2004",
+      "family": "wire", "tier": "high",
+      "keywords": ["square wire", "oakley wire", "oakley square wire"],
+      "notes": "Titanium wire frame"
+    },
+    {
+      "id": 199, "name": "T Wire (Gen 1)", "years": "1994-2004",
+      "family": "wire", "tier": "high",
+      "keywords": ["t wire", "twire", "oakley t wire", "oakley wire"],
+      "notes": ""
+    },
+    {
+      "id": 53, "name": "E Wire (Gen 1)", "years": "1994-2004",
+      "family": "wire", "tier": "high",
+      "keywords": ["e wire", "ewire", "oakley e wire", "oakley wire"],
+      "notes": ""
+    },
+    {
+      "id": 117, "name": "Mag Switch", "years": "1997-2004",
+      "family": "iconic", "tier": "high",
+      "keywords": ["mag switch", "magswitch", "oakley mag switch"],
+      "notes": "Magnetic lens change system"
+    },
+    {
+      "id": 120, "name": "Minute (Gen 2)", "years": "1999-2004",
+      "family": "lifestyle", "tier": "medium",
+      "keywords": ["minute", "oakley minute"],
+      "notes": ""
+    },
+    {
+      "id": 204, "name": "Tens", "years": "1998-2004",
+      "family": "lifestyle", "tier": "medium",
+      "keywords": ["tens", "oakley tens"],
+      "notes": "Amber lens lifestyle"
+    }
+  ]
+}
