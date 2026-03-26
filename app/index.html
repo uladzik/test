@@ -9,7 +9,7 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -22,94 +22,166 @@
   </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; overflow-x: hidden; }
 
-    /* Animations */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Noise texture overlay */
+    .noise::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      opacity: 0.025;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 256px;
+      z-index: 9999;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+    .dark .noise::before { opacity: 0.04; }
+
+    /* Aurora animated border */
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
     }
-    @keyframes scaleIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+    @keyframes rotate-gradient {
+      to { --angle: 360deg; }
     }
-    @keyframes growBar {
-      from { width: 0%; }
+    .aurora-border {
+      position: relative;
+      background: transparent;
     }
-    .anim-fade-up {
-      animation: fadeUp 0.5s ease-out both;
+    .aurora-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1.5px;
+      background: conic-gradient(from var(--angle), #3b82f6, #8b5cf6, #ec4899, #f59e0b, #10b981, #3b82f6);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: rotate-gradient 4s linear infinite;
+      opacity: 0.6;
     }
-    .anim-fade-in {
-      animation: fadeIn 0.5s ease-out both;
+    .dark .aurora-border::before { opacity: 0.4; }
+
+    /* SVG ring animation */
+    @keyframes ringDraw {
+      from { stroke-dashoffset: var(--circumference); }
     }
-    .anim-scale-in {
-      animation: scaleIn 0.3s ease-out both;
+    .ring-animated {
+      animation: ringDraw 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
     }
-    .anim-bar {
-      animation: growBar 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+
+    /* 3D tilt */
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out;
     }
+
+    /* General animations */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+    @keyframes pulse-soft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .anim-fade-up { animation: fadeUp 0.6s ease-out both; }
+    .anim-fade-in { animation: fadeIn 0.5s ease-out both; }
+    .anim-scale-in { animation: scaleIn 0.3s ease-out both; }
+    .anim-float { animation: float 3s ease-in-out infinite; }
     .delay-1 { animation-delay: 0.1s; }
     .delay-2 { animation-delay: 0.2s; }
     .delay-3 { animation-delay: 0.3s; }
     .delay-4 { animation-delay: 0.4s; }
     .delay-5 { animation-delay: 0.5s; }
     .delay-6 { animation-delay: 0.6s; }
-    .delay-bar { animation-delay: 0.4s; }
+    .delay-7 { animation-delay: 0.7s; }
 
-    .glass { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-    .focus-glow { box-shadow: 0 0 40px rgba(59, 130, 246, 0.15); }
-    .dark .focus-glow { box-shadow: 0 0 40px rgba(96, 165, 250, 0.1); }
+    .glass { backdrop-filter: blur(24px) saturate(1.2); -webkit-backdrop-filter: blur(24px) saturate(1.2); }
+    .focus-glow { box-shadow: 0 0 60px rgba(59, 130, 246, 0.12), 0 0 20px rgba(59, 130, 246, 0.06); }
+    .dark .focus-glow { box-shadow: 0 0 60px rgba(96, 165, 250, 0.08), 0 0 20px rgba(96, 165, 250, 0.04); }
 
-    .toggle-knob {
-      transition: left 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    .toggle-knob { transition: left 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+    .collapse-section { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s ease; }
+    .collapse-section.open { grid-template-rows: 1fr; }
+    .collapse-inner { overflow: hidden; }
+
+    /* Ambient fullscreen */
+    .ambient-mode {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      cursor: pointer;
+    }
+    @keyframes ambientShift {
+      0%, 100% { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(30deg); }
+    }
+    .ambient-bg {
+      animation: ambientShift 20s ease-in-out infinite;
     }
 
-    .collapse-section {
-      display: grid;
-      grid-template-rows: 0fr;
-      transition: grid-template-rows 0.3s ease;
+    /* Pomodoro ring */
+    @keyframes pomoPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
+      50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
     }
-    .collapse-section.open {
-      grid-template-rows: 1fr;
-    }
-    .collapse-inner {
-      overflow: hidden;
+    .pomo-active { animation: pomoPulse 2s ease-in-out infinite; }
+
+    /* Keyboard hint */
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      padding: 1px 6px;
+      font-size: 10px;
+      font-family: inherit;
+      border-radius: 4px;
+      border: 1px solid;
     }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    const { useState, useEffect, useRef, useCallback } = React;
+    const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
     // ── Icons ──
-    const Icons = {
-      Sun: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
-      Moon: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
+    const I = {
+      Sun: (p) => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||20} height={p.size||20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
+      Moon: (p) => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||20} height={p.size||20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
       Plus: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
       Target: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
       Clock: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
       Zap: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
       Trash: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
+      Expand: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>,
+      Play: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="5 3 19 12 5 21 5 3"/></svg>,
+      Pause: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>,
+      RotateCcw: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>,
+      Check: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="20 6 9 17 4 12"/></svg>,
+      Flame: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>,
+      Keyboard: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M8 12h.001M12 12h.001M16 12h.001M7 16h10"/></svg>,
     };
 
     // ── Time helpers ──
     function getTimeProgress() {
       const now = new Date();
       const year = now.getFullYear();
-
       const startOfYear = new Date(year, 0, 1);
       const endOfYear = new Date(year + 1, 0, 1);
       const yearProgress = ((now - startOfYear) / (endOfYear - startOfYear)) * 100;
-
       const startOfMonth = new Date(year, now.getMonth(), 1);
       const endOfMonth = new Date(year, now.getMonth() + 1, 1);
       const monthProgress = ((now - startOfMonth) / (endOfMonth - startOfMonth)) * 100;
-
       const dayOfWeek = now.getDay();
       const startOfWeek = new Date(now);
       startOfWeek.setDate(now.getDate() - ((dayOfWeek + 6) % 7));
@@ -117,23 +189,35 @@
       const endOfWeek = new Date(startOfWeek);
       endOfWeek.setDate(startOfWeek.getDate() + 7);
       const weekProgress = ((now - startOfWeek) / (endOfWeek - startOfWeek)) * 100;
-
       const startOfDay = new Date(year, now.getMonth(), now.getDate());
       const endOfDay = new Date(year, now.getMonth(), now.getDate() + 1);
       const dayProgress = ((now - startOfDay) / (endOfDay - startOfDay)) * 100;
-
       const workStart = new Date(year, now.getMonth(), now.getDate(), 9, 0, 0);
       const workEnd = new Date(year, now.getMonth(), now.getDate(), 18, 0, 0);
       let workdayProgress = 0;
       if (now < workStart) workdayProgress = 0;
       else if (now > workEnd) workdayProgress = 100;
       else workdayProgress = ((now - workStart) / (workEnd - workStart)) * 100;
-
       const workdayRemaining = now < workEnd && now >= workStart
         ? Math.ceil((workEnd - now) / (1000 * 60))
         : now < workStart ? Math.ceil((workEnd - workStart) / (1000 * 60)) : 0;
-
       return { yearProgress, monthProgress, weekProgress, dayProgress, workdayProgress, workdayRemaining, now };
+    }
+
+    function getGreeting(hour) {
+      if (hour < 6) return "Night owl mode";
+      if (hour < 12) return "Good morning";
+      if (hour < 17) return "Good afternoon";
+      if (hour < 21) return "Good evening";
+      return "Night owl mode";
+    }
+
+    function getTimeColor(hour) {
+      if (hour < 6 || hour >= 21) return { accent: "#8b5cf6", name: "violet" };
+      if (hour < 10) return { accent: "#f59e0b", name: "amber" };
+      if (hour < 14) return { accent: "#3b82f6", name: "blue" };
+      if (hour < 17) return { accent: "#10b981", name: "emerald" };
+      return { accent: "#f97316", name: "orange" };
     }
 
     function getMotivation(type, pct) {
@@ -141,7 +225,7 @@
       const tips = {
         Year: p < 25 ? "Fresh start energy. Set ambitious Q1 targets."
             : p < 50 ? "Almost halfway. Double down on what's working."
-            : p < 75 ? `Year is ${p}% through. Time to review your next quarter goals.`
+            : p < 75 ? `Year is ${p}% through. Review your next quarter goals.`
             : "Final stretch. Focus on finishing strong.",
         Month: p < 30 ? "Beginning of month. Plan your key deliverables."
              : p < 60 ? "Mid-month check: are you on track?"
@@ -159,107 +243,274 @@
       return tips[type] || "";
     }
 
-    const barColors = {
-      Year:  { gradient: "linear-gradient(to right, #3b82f6, #6366f1)", track: "bg-blue-100 dark:bg-blue-500/10" },
-      Month: { gradient: "linear-gradient(to right, #10b981, #14b8a6)", track: "bg-emerald-100 dark:bg-emerald-500/10" },
-      Week:  { gradient: "linear-gradient(to right, #f59e0b, #f97316)", track: "bg-amber-100 dark:bg-amber-500/10" },
-      Day:   { gradient: "linear-gradient(to right, #f43f5e, #ec4899)", track: "bg-rose-100 dark:bg-rose-500/10" },
-    };
+    const ringConfigs = [
+      { label: "Year",  key: "yearProgress",  colors: ["#3b82f6", "#6366f1"], size: 160 },
+      { label: "Month", key: "monthProgress",  colors: ["#10b981", "#14b8a6"], size: 130 },
+      { label: "Week",  key: "weekProgress",   colors: ["#f59e0b", "#f97316"], size: 100 },
+      { label: "Day",   key: "dayProgress",    colors: ["#f43f5e", "#ec4899"], size: 70 },
+    ];
 
-    // ── Components ──
+    // ── Progress Ring ──
+    function ProgressRing({ size, percentage, colors, label, index }) {
+      const strokeWidth = 5;
+      const radius = (size - strokeWidth) / 2;
+      const circumference = 2 * Math.PI * radius;
+      const offset = circumference - (Math.min(percentage, 100) / 100) * circumference;
+      const center = size / 2;
+      const gradientId = `grad-${label}`;
 
-    function ProgressBar({ label, percentage, delay }) {
-      const colors = barColors[label];
       return (
-        <div className={`anim-fade-up group ${delay}`}>
-          <div className="flex items-baseline justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 tracking-wide uppercase">
-              {label}
-            </span>
-            <span className="text-2xl font-semibold tabular-nums text-gray-900 dark:text-white">
-              {percentage.toFixed(1)}
-              <span className="text-sm font-normal text-gray-400 dark:text-gray-500 ml-0.5">%</span>
-            </span>
-          </div>
-          <div className={`h-2 rounded-full overflow-hidden ${colors.track} mb-2`}>
-            <div
-              className="h-full rounded-full anim-bar delay-bar"
+        <div className="absolute" style={{
+          width: size, height: size,
+          top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}>
+          <svg width={size} height={size} className="anim-fade-in" style={{ animationDelay: `${index * 0.15}s` }}>
+            <defs>
+              <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor={colors[0]} />
+                <stop offset="100%" stopColor={colors[1]} />
+              </linearGradient>
+            </defs>
+            <circle
+              cx={center} cy={center} r={radius}
+              fill="none"
+              stroke="currentColor"
+              className="text-gray-100 dark:text-white/[0.06]"
+              strokeWidth={strokeWidth}
+            />
+            <circle
+              cx={center} cy={center} r={radius}
+              fill="none"
+              stroke={`url(#${gradientId})`}
+              strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={offset}
+              className="ring-animated"
               style={{
-                width: `${Math.min(percentage, 100)}%`,
-                background: colors.gradient,
+                '--circumference': circumference,
+                transform: 'rotate(-90deg)',
+                transformOrigin: 'center',
+                animationDelay: `${index * 0.15 + 0.3}s`,
               }}
             />
-          </div>
-          <p className="text-xs text-gray-400 dark:text-gray-500 leading-relaxed h-0 overflow-hidden opacity-0 group-hover:h-auto group-hover:opacity-100 transition-all duration-300">
-            {getMotivation(label, percentage)}
-          </p>
+          </svg>
         </div>
       );
     }
 
-    function FocusMode({ workdayProgress, workdayRemaining, active, onToggle }) {
-      const hours = Math.floor(workdayRemaining / 60);
-      const mins = workdayRemaining % 60;
+    // ── 3D Tilt Card ──
+    function TiltCard({ children, className = "" }) {
+      const ref = useRef(null);
+      const handleMove = useCallback((e) => {
+        const card = ref.current;
+        if (!card) return;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = ((y - centerY) / centerY) * -4;
+        const rotateY = ((x - centerX) / centerX) * 4;
+        card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+      }, []);
+      const handleLeave = useCallback(() => {
+        if (ref.current) ref.current.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale3d(1,1,1)';
+      }, []);
 
       return (
-        <div className={`anim-fade-up delay-5 rounded-2xl p-6 transition-all duration-500 ${
-          active
-            ? "glass bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/50 dark:border-blue-500/20 focus-glow"
-            : "bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06]"
-        }`}>
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2.5">
-              <div className={`p-2 rounded-xl ${active ? "bg-blue-500/10" : "bg-gray-100 dark:bg-white/[0.06]"}`}>
-                <Icons.Zap className={active ? "text-blue-500" : "text-gray-400"} />
-              </div>
-              <div>
-                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Focus Mode</h3>
-                <p className="text-xs text-gray-400 dark:text-gray-500">Workday 9 AM – 6 PM</p>
-              </div>
-            </div>
-            <button
-              onClick={onToggle}
-              className={`relative w-12 h-7 rounded-full transition-colors duration-300 ${
-                active ? "bg-blue-500" : "bg-gray-200 dark:bg-white/10"
-              }`}
-            >
-              <div
-                className="toggle-knob absolute top-1 w-5 h-5 rounded-full bg-white shadow-sm"
-                style={{ left: active ? "calc(100% - 24px)" : "4px" }}
-              />
-            </button>
-          </div>
+        <div ref={ref} className={`tilt-card ${className}`} onMouseMove={handleMove} onMouseLeave={handleLeave}>
+          {children}
+        </div>
+      );
+    }
 
-          <div className={`collapse-section ${active ? "open" : ""}`}>
-            <div className="collapse-inner">
-              <div className="h-1.5 rounded-full overflow-hidden bg-blue-100 dark:bg-blue-900/30 mb-3">
-                <div
-                  className="h-full rounded-full transition-all duration-1000 ease-out"
-                  style={{
-                    width: `${workdayProgress}%`,
-                    background: "linear-gradient(to right, #3b82f6, #60a5fa)",
-                  }}
-                />
-              </div>
-              <div className="flex items-center justify-between pb-1">
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  {workdayProgress >= 100
-                    ? "Workday complete. You've earned your rest."
-                    : workdayProgress <= 0
-                    ? "Workday hasn't started yet."
-                    : `${hours}h ${mins}m remaining`
-                  }
-                </span>
-                <span className="text-xs font-medium text-blue-500">
-                  {workdayProgress.toFixed(0)}%
-                </span>
-              </div>
+    // ── Pomodoro Timer ──
+    function PomodoroTimer() {
+      const WORK = 25 * 60;
+      const BREAK = 5 * 60;
+      const [seconds, setSeconds] = useState(WORK);
+      const [running, setRunning] = useState(false);
+      const [isBreak, setIsBreak] = useState(false);
+      const [sessions, setSessions] = useState(() => {
+        try { return parseInt(localStorage.getItem("momentum_pomo_sessions")) || 0; } catch { return 0; }
+      });
+
+      useEffect(() => {
+        if (!running) return;
+        const id = setInterval(() => {
+          setSeconds(s => {
+            if (s <= 1) {
+              setRunning(false);
+              if (!isBreak) {
+                const next = sessions + 1;
+                setSessions(next);
+                localStorage.setItem("momentum_pomo_sessions", next);
+                setIsBreak(true);
+                return BREAK;
+              } else {
+                setIsBreak(false);
+                return WORK;
+              }
+            }
+            return s - 1;
+          });
+        }, 1000);
+        return () => clearInterval(id);
+      }, [running, isBreak, sessions]);
+
+      const reset = () => { setRunning(false); setIsBreak(false); setSeconds(WORK); };
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      const total = isBreak ? BREAK : WORK;
+      const pct = ((total - seconds) / total) * 100;
+      const radius = 36;
+      const circ = 2 * Math.PI * radius;
+      const dashOffset = circ - (pct / 100) * circ;
+
+      return (
+        <div className="flex items-center gap-5">
+          <div className="relative">
+            <svg width="88" height="88">
+              <circle cx="44" cy="44" r={radius} fill="none" stroke="currentColor" className="text-gray-100 dark:text-white/[0.06]" strokeWidth="4" />
+              <circle cx="44" cy="44" r={radius} fill="none"
+                stroke={isBreak ? "#10b981" : "#ef4444"}
+                strokeWidth="4" strokeLinecap="round"
+                strokeDasharray={circ} strokeDashoffset={dashOffset}
+                style={{ transform: 'rotate(-90deg)', transformOrigin: 'center', transition: 'stroke-dashoffset 1s linear' }}
+              />
+            </svg>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="text-lg font-bold tabular-nums text-gray-900 dark:text-white">
+                {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
+              </span>
+              <span className="text-[9px] uppercase tracking-wider text-gray-400">
+                {isBreak ? "Break" : "Focus"}
+              </span>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-1.5">
+              <button onClick={() => setRunning(!running)}
+                className={`p-2 rounded-lg transition-all ${running ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" : "bg-gray-100 dark:bg-white/[0.06] text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10"}`}>
+                {running ? <I.Pause /> : <I.Play />}
+              </button>
+              <button onClick={reset}
+                className="p-2 rounded-lg bg-gray-100 dark:bg-white/[0.06] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-all">
+                <I.RotateCcw />
+              </button>
+            </div>
+            <div className="flex items-center gap-1 text-xs text-gray-400">
+              <I.Flame className="text-orange-400" />
+              <span className="tabular-nums">{sessions} sessions</span>
             </div>
           </div>
         </div>
       );
     }
 
+    // ── Habit Tracker ──
+    function HabitTracker() {
+      const [habits, setHabits] = useState(() => {
+        try { return JSON.parse(localStorage.getItem("momentum_habits")) || [
+          { id: 1, name: "Exercise", streak: 0, checkedToday: false },
+          { id: 2, name: "Read", streak: 0, checkedToday: false },
+          { id: 3, name: "Meditate", streak: 0, checkedToday: false },
+        ]; } catch { return []; }
+      });
+      const [adding, setAdding] = useState(false);
+      const [newName, setNewName] = useState("");
+      const inputRef = useRef(null);
+
+      // Reset checks at midnight
+      useEffect(() => {
+        const lastDate = localStorage.getItem("momentum_habits_date");
+        const today = new Date().toDateString();
+        if (lastDate !== today) {
+          setHabits(prev => prev.map(h => ({
+            ...h,
+            streak: h.checkedToday ? h.streak : 0,
+            checkedToday: false,
+          })));
+          localStorage.setItem("momentum_habits_date", today);
+        }
+      }, []);
+
+      useEffect(() => {
+        localStorage.setItem("momentum_habits", JSON.stringify(habits));
+      }, [habits]);
+
+      useEffect(() => { if (adding) inputRef.current?.focus(); }, [adding]);
+
+      const toggleHabit = (id) => {
+        setHabits(prev => prev.map(h => h.id === id ? {
+          ...h,
+          checkedToday: !h.checkedToday,
+          streak: !h.checkedToday ? h.streak + 1 : Math.max(0, h.streak - 1),
+        } : h));
+      };
+
+      const addHabit = (e) => {
+        e.preventDefault();
+        if (newName.trim()) {
+          setHabits(prev => [...prev, { id: Date.now(), name: newName.trim(), streak: 0, checkedToday: false }]);
+          setNewName("");
+          setAdding(false);
+        }
+      };
+
+      const deleteHabit = (id) => setHabits(prev => prev.filter(h => h.id !== id));
+
+      return (
+        <div className="space-y-2">
+          {habits.map(h => (
+            <div key={h.id} className="flex items-center justify-between py-2 group">
+              <div className="flex items-center gap-3">
+                <button onClick={() => toggleHabit(h.id)}
+                  className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
+                    h.checkedToday
+                      ? "bg-emerald-500 border-emerald-500 text-white"
+                      : "border-gray-300 dark:border-gray-600 hover:border-emerald-400"
+                  }`}>
+                  {h.checkedToday && <I.Check />}
+                </button>
+                <span className={`text-sm ${h.checkedToday ? "text-gray-400 line-through" : "text-gray-700 dark:text-gray-300"}`}>
+                  {h.name}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                {h.streak > 0 && (
+                  <span className="flex items-center gap-1 text-xs text-orange-500 font-medium">
+                    <I.Flame /> {h.streak}
+                  </span>
+                )}
+                <button onClick={() => deleteHabit(h.id)}
+                  className="p-1 rounded opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition-all">
+                  <I.Trash />
+                </button>
+              </div>
+            </div>
+          ))}
+          {adding ? (
+            <form onSubmit={addHabit} className="flex gap-2 pt-1">
+              <input ref={inputRef} type="text" value={newName} onChange={e => setNewName(e.target.value)}
+                placeholder="Habit name"
+                className="flex-1 px-3 py-1.5 text-sm rounded-lg bg-gray-50 dark:bg-white/[0.06] border border-gray-200 dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition" />
+              <button type="submit" className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900">Add</button>
+              <button type="button" onClick={() => setAdding(false)} className="px-2 py-1.5 text-sm text-gray-400 hover:text-gray-600">Cancel</button>
+            </form>
+          ) : (
+            <button onClick={() => setAdding(true)}
+              className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition pt-1">
+              <I.Plus /> Add habit
+            </button>
+          )}
+        </div>
+      );
+    }
+
+    // ── Milestone Card ──
     function MilestoneCard({ milestone, onDelete }) {
       const now = new Date();
       const target = new Date(milestone.date + "T00:00:00");
@@ -270,99 +521,146 @@
       const hours = Math.floor((absDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
 
       return (
-        <div className="anim-scale-in flex items-center justify-between p-4 rounded-xl bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06] group">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isPast ? "bg-gray-300 dark:bg-gray-600" : "bg-emerald-500"}`} />
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{milestone.name}</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500">
-                {target.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-              </p>
+        <TiltCard>
+          <div className="anim-scale-in flex items-center justify-between p-4 rounded-xl bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06] group">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isPast ? "bg-gray-300 dark:bg-gray-600" : "bg-emerald-500"}`} />
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{milestone.name}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">
+                  {target.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <div className="text-right">
+                <p className={`text-lg font-semibold tabular-nums ${isPast ? "text-gray-400" : "text-gray-900 dark:text-white"}`}>
+                  {isPast ? "-" : ""}{days}<span className="text-xs font-normal text-gray-400 ml-0.5">d</span>
+                  {" "}{hours}<span className="text-xs font-normal text-gray-400 ml-0.5">h</span>
+                </p>
+                <p className="text-[10px] text-gray-400 uppercase tracking-wider">{isPast ? "ago" : "remaining"}</p>
+              </div>
+              <button onClick={() => onDelete(milestone.id)}
+                className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-300 hover:text-red-500 transition-all">
+                <I.Trash />
+              </button>
             </div>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <div className="text-right">
-              <p className={`text-lg font-semibold tabular-nums ${isPast ? "text-gray-400" : "text-gray-900 dark:text-white"}`}>
-                {isPast ? "-" : ""}{days}
-                <span className="text-xs font-normal text-gray-400 ml-0.5">d</span>
-                {" "}{hours}
-                <span className="text-xs font-normal text-gray-400 ml-0.5">h</span>
-              </p>
-              <p className="text-[10px] text-gray-400 uppercase tracking-wider">
-                {isPast ? "ago" : "remaining"}
-              </p>
-            </div>
-            <button
-              onClick={() => onDelete(milestone.id)}
-              className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-300 hover:text-red-500 transition-all"
-            >
-              <Icons.Trash />
-            </button>
-          </div>
-        </div>
+        </TiltCard>
       );
     }
 
+    // ── Add Milestone Form ──
     function AddMilestoneForm({ onAdd, onCancel }) {
       const [name, setName] = useState("");
       const [date, setDate] = useState("");
       const inputRef = useRef(null);
-
       useEffect(() => { inputRef.current?.focus(); }, []);
-
       const handleSubmit = (e) => {
         e.preventDefault();
-        if (name.trim() && date) {
-          onAdd({ id: Date.now(), name: name.trim(), date });
-          setName("");
-          setDate("");
-        }
+        if (name.trim() && date) { onAdd({ id: Date.now(), name: name.trim(), date }); }
       };
-
       return (
-        <form
-          onSubmit={handleSubmit}
-          className="anim-scale-in space-y-3 p-4 rounded-xl bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06]"
-        >
-          <input
-            ref={inputRef}
-            type="text"
-            placeholder="Milestone name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-3 py-2.5 text-sm rounded-lg bg-gray-50 dark:bg-white/[0.06] border border-gray-200 dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/50 transition"
-          />
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="w-full px-3 py-2.5 text-sm rounded-lg bg-gray-50 dark:bg-white/[0.06] border border-gray-200 dark:border-white/[0.08] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/50 transition"
-          />
+        <form onSubmit={handleSubmit}
+          className="anim-scale-in space-y-3 p-4 rounded-xl bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06]">
+          <input ref={inputRef} type="text" placeholder="Milestone name" value={name} onChange={(e) => setName(e.target.value)}
+            className="w-full px-3 py-2.5 text-sm rounded-lg bg-gray-50 dark:bg-white/[0.06] border border-gray-200 dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition" />
+          <input type="date" value={date} onChange={(e) => setDate(e.target.value)}
+            className="w-full px-3 py-2.5 text-sm rounded-lg bg-gray-50 dark:bg-white/[0.06] border border-gray-200 dark:border-white/[0.08] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition" />
           <div className="flex gap-2">
-            <button
-              type="submit"
-              className="flex-1 px-3 py-2.5 text-sm font-medium rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition"
-            >
-              Add Milestone
-            </button>
-            <button
-              type="button"
-              onClick={onCancel}
-              className="px-3 py-2.5 text-sm rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/[0.06] transition"
-            >
-              Cancel
-            </button>
+            <button type="submit" className="flex-1 px-3 py-2.5 text-sm font-medium rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition">Add</button>
+            <button type="button" onClick={onCancel} className="px-3 py-2.5 text-sm rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/[0.06] transition">Cancel</button>
           </div>
         </form>
       );
     }
 
-    // ── App ──
+    // ── Ambient Mode ──
+    function AmbientMode({ time, onExit, dark }) {
+      const hour = time.now.getHours();
+      const timeColor = getTimeColor(hour);
+      const timeStr = time.now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+      const dateStr = time.now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+
+      return (
+        <div className="ambient-mode anim-fade-in" onClick={onExit}>
+          <div className={`absolute inset-0 ambient-bg transition-colors duration-1000 ${dark ? "bg-[#050508]" : "bg-gray-50"}`}>
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] rounded-full blur-[120px] opacity-20"
+                style={{ background: timeColor.accent }} />
+              <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] rounded-full blur-[100px] opacity-15"
+                style={{ background: timeColor.accent, filter: 'hue-rotate(60deg)' }} />
+            </div>
+          </div>
+          <div className="relative z-10 text-center">
+            <div className="relative w-52 h-52 mx-auto mb-8">
+              {ringConfigs.map((ring, i) => (
+                <ProgressRing key={ring.label} size={ring.size} percentage={time[ring.key]} colors={ring.colors} label={ring.label} index={i} />
+              ))}
+            </div>
+            <p className="text-7xl md:text-8xl font-extralight tracking-tight tabular-nums text-gray-900 dark:text-white mb-2 anim-fade-up delay-2">{timeStr}</p>
+            <p className="text-lg font-light text-gray-400 dark:text-gray-500 anim-fade-up delay-3">{dateStr}</p>
+            <p className="text-sm text-gray-300 dark:text-gray-700 mt-8 anim-fade-in delay-5">Click anywhere to exit</p>
+          </div>
+        </div>
+      );
+    }
+
+    // ── Focus Mode Section ──
+    function FocusSection({ workdayProgress, workdayRemaining, active, onToggle }) {
+      const hours = Math.floor(workdayRemaining / 60);
+      const mins = workdayRemaining % 60;
+      return (
+        <TiltCard className={`rounded-2xl p-6 transition-all duration-500 ${
+          active
+            ? "glass bg-blue-50/60 dark:bg-blue-950/30 border border-blue-200/50 dark:border-blue-500/20 focus-glow"
+            : "bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06]"
+        }`}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2.5">
+              <div className={`p-2 rounded-xl ${active ? "bg-blue-500/10" : "bg-gray-100 dark:bg-white/[0.06]"}`}>
+                <I.Zap className={active ? "text-blue-500" : "text-gray-400"} />
+              </div>
+              <div>
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Focus Mode</h3>
+                <p className="text-xs text-gray-400 dark:text-gray-500">Workday 9 AM – 6 PM</p>
+              </div>
+            </div>
+            <button onClick={onToggle}
+              className={`relative w-12 h-7 rounded-full transition-colors duration-300 ${active ? "bg-blue-500" : "bg-gray-200 dark:bg-white/10"}`}>
+              <div className="toggle-knob absolute top-1 w-5 h-5 rounded-full bg-white shadow-sm"
+                style={{ left: active ? "calc(100% - 24px)" : "4px" }} />
+            </button>
+          </div>
+          <div className={`collapse-section ${active ? "open" : ""}`}>
+            <div className="collapse-inner">
+              <div className="h-1.5 rounded-full overflow-hidden bg-blue-100 dark:bg-blue-900/30 mb-3">
+                <div className="h-full rounded-full transition-all duration-1000 ease-out"
+                  style={{ width: `${workdayProgress}%`, background: "linear-gradient(to right, #3b82f6, #60a5fa)" }} />
+              </div>
+              <div className="flex items-center justify-between pb-1">
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {workdayProgress >= 100 ? "Workday complete." : workdayProgress <= 0 ? "Workday hasn't started." : `${hours}h ${mins}m remaining`}
+                </span>
+                <span className="text-xs font-medium text-blue-500">{workdayProgress.toFixed(0)}%</span>
+              </div>
+              <div className="border-t border-gray-100 dark:border-white/[0.06] mt-4 pt-4">
+                <PomodoroTimer />
+              </div>
+            </div>
+          </div>
+        </TiltCard>
+      );
+    }
+
+    // ── Main App ──
     function App() {
       const [dark, setDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
       const [time, setTime] = useState(getTimeProgress);
       const [focusMode, setFocusMode] = useState(false);
       const [showForm, setShowForm] = useState(false);
+      const [ambient, setAmbient] = useState(false);
+      const [showKeys, setShowKeys] = useState(false);
       const [milestones, setMilestones] = useState(() => {
         try {
           const saved = JSON.parse(localStorage.getItem("momentum_milestones"));
@@ -379,77 +677,123 @@
         return () => clearInterval(id);
       }, []);
 
-      useEffect(() => {
-        document.documentElement.classList.toggle("dark", dark);
-      }, [dark]);
+      useEffect(() => { document.documentElement.classList.toggle("dark", dark); }, [dark]);
+      useEffect(() => { localStorage.setItem("momentum_milestones", JSON.stringify(milestones)); }, [milestones]);
 
+      // Keyboard shortcuts
       useEffect(() => {
-        localStorage.setItem("momentum_milestones", JSON.stringify(milestones));
-      }, [milestones]);
+        const handler = (e) => {
+          if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+          if (e.key === "d" || e.key === "D") setDark(p => !p);
+          if (e.key === "f" || e.key === "F") setFocusMode(p => !p);
+          if (e.key === "a" || e.key === "A") setAmbient(p => !p);
+          if (e.key === "?" || e.key === "/") setShowKeys(p => !p);
+          if (e.key === "Escape") { setAmbient(false); setShowKeys(false); }
+        };
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+      }, []);
 
       const addMilestone = useCallback((m) => {
         setMilestones(prev => [...prev, m].sort((a, b) => new Date(a.date) - new Date(b.date)));
         setShowForm(false);
       }, []);
-
       const deleteMilestone = useCallback((id) => {
         setMilestones(prev => prev.filter(m => m.id !== id));
       }, []);
 
-      const dateStr = time.now.toLocaleDateString("en-US", {
-        weekday: "long", month: "long", day: "numeric"
-      });
+      const hour = time.now.getHours();
+      const greeting = getGreeting(hour);
+      const timeColor = getTimeColor(hour);
+      const dateStr = time.now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+      const timeStr = time.now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
 
-      const timeStr = time.now.toLocaleTimeString("en-US", {
-        hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false
-      });
+      if (ambient) {
+        return <AmbientMode time={time} onExit={() => setAmbient(false)} dark={dark} />;
+      }
 
       return (
-        <div className="min-h-screen bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-500">
-          {/* Ambient gradients */}
+        <div className="noise min-h-screen bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-500">
+          {/* Ambient gradients - time aware */}
           <div className="fixed inset-0 pointer-events-none overflow-hidden">
-            <div className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] rounded-full bg-gradient-to-br from-blue-500/[0.04] to-purple-500/[0.04] dark:from-blue-500/[0.02] dark:to-purple-500/[0.02] blur-3xl" />
-            <div className="absolute -bottom-1/2 -left-1/4 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-emerald-500/[0.04] to-teal-500/[0.04] dark:from-emerald-500/[0.02] dark:to-teal-500/[0.02] blur-3xl" />
+            <div className="absolute -top-1/2 -right-1/4 w-[800px] h-[800px] rounded-full blur-[150px] opacity-[0.04] transition-colors duration-[3000ms]"
+              style={{ background: timeColor.accent }} />
+            <div className="absolute -bottom-1/3 -left-1/4 w-[600px] h-[600px] rounded-full blur-[120px] opacity-[0.03] transition-colors duration-[3000ms]"
+              style={{ background: timeColor.accent, filter: 'hue-rotate(90deg)' }} />
           </div>
 
           <div className="relative max-w-xl mx-auto px-5 py-12 md:py-20">
             {/* Header */}
-            <header className="anim-fade-up flex items-start justify-between mb-12">
+            <header className="anim-fade-up flex items-start justify-between mb-10">
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-1">
-                  Momentum
-                </h1>
+                <p className="text-sm font-medium mb-1 transition-colors duration-1000" style={{ color: timeColor.accent }}>{greeting}</p>
+                <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white mb-1">Momentum</h1>
                 <p className="text-sm text-gray-400 dark:text-gray-500">{dateStr}</p>
                 <p className="text-xs text-gray-300 dark:text-gray-600 tabular-nums mt-0.5">{timeStr}</p>
               </div>
-              <button
-                onClick={() => setDark(!dark)}
-                className="p-2.5 rounded-xl bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06] hover:bg-gray-100 dark:hover:bg-white/[0.08] text-gray-600 dark:text-gray-400 transition-all"
-                aria-label="Toggle theme"
-              >
-                {dark ? <Icons.Sun /> : <Icons.Moon />}
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={() => setAmbient(true)}
+                  className="p-2.5 rounded-xl bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06] hover:bg-gray-100 dark:hover:bg-white/[0.08] text-gray-600 dark:text-gray-400 transition-all"
+                  title="Ambient mode (A)">
+                  <I.Expand />
+                </button>
+                <button onClick={() => setDark(!dark)}
+                  className="p-2.5 rounded-xl bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06] hover:bg-gray-100 dark:hover:bg-white/[0.08] text-gray-600 dark:text-gray-400 transition-all"
+                  title="Toggle theme (D)">
+                  {dark ? <I.Sun /> : <I.Moon />}
+                </button>
+              </div>
             </header>
 
-            {/* Time Progress */}
-            <section className="mb-10">
-              <div className="flex items-center gap-2 mb-6 anim-fade-up delay-1">
-                <Icons.Clock className="text-gray-400" />
-                <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
-                  Time Progress
-                </h2>
+            {/* Progress Rings + Labels */}
+            <section className="mb-12 anim-fade-up delay-1">
+              <div className="flex items-center gap-2 mb-6">
+                <I.Clock className="text-gray-400" />
+                <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Time Progress</h2>
               </div>
-              <div className="space-y-6">
-                <ProgressBar label="Year" percentage={time.yearProgress} delay="delay-1" />
-                <ProgressBar label="Month" percentage={time.monthProgress} delay="delay-2" />
-                <ProgressBar label="Week" percentage={time.weekProgress} delay="delay-3" />
-                <ProgressBar label="Day" percentage={time.dayProgress} delay="delay-4" />
-              </div>
+              <TiltCard className="aurora-border rounded-2xl p-8 bg-white/60 dark:bg-white/[0.03]">
+                <div className="flex flex-col sm:flex-row items-center gap-8">
+                  {/* Rings */}
+                  <div className="relative w-44 h-44 flex-shrink-0 mx-auto sm:mx-0">
+                    {ringConfigs.map((ring, i) => (
+                      <ProgressRing key={ring.label} size={ring.size} percentage={time[ring.key]} colors={ring.colors} label={ring.label} index={i} />
+                    ))}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <span className="text-2xl font-bold tabular-nums text-gray-900 dark:text-white">
+                          {time.dayProgress.toFixed(0)}
+                        </span>
+                        <span className="text-xs text-gray-400">%</span>
+                        <p className="text-[9px] uppercase tracking-wider text-gray-400 mt-0.5">today</p>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Labels */}
+                  <div className="flex-1 space-y-3 w-full">
+                    {ringConfigs.map((ring, i) => (
+                      <div key={ring.label} className="group anim-fade-up" style={{ animationDelay: `${0.3 + i * 0.1}s` }}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-2.5 h-2.5 rounded-full" style={{ background: ring.colors[0] }} />
+                            <span className="text-sm text-gray-600 dark:text-gray-400">{ring.label}</span>
+                          </div>
+                          <span className="text-sm font-semibold tabular-nums text-gray-900 dark:text-white">
+                            {time[ring.key].toFixed(1)}%
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-400 dark:text-gray-600 mt-0.5 pl-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 leading-relaxed">
+                          {getMotivation(ring.label, time[ring.key])}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </TiltCard>
             </section>
 
-            {/* Focus Mode */}
-            <section className="mb-10">
-              <FocusMode
+            {/* Focus Mode + Pomodoro */}
+            <section className="mb-10 anim-fade-up delay-3">
+              <FocusSection
                 workdayProgress={time.workdayProgress}
                 workdayRemaining={time.workdayRemaining}
                 active={focusMode}
@@ -457,44 +801,48 @@
               />
             </section>
 
+            {/* Habits */}
+            <section className="mb-10 anim-fade-up delay-4">
+              <TiltCard className="rounded-2xl p-6 bg-white/60 dark:bg-white/[0.04] border border-gray-200/60 dark:border-white/[0.06]">
+                <div className="flex items-center gap-2 mb-4">
+                  <I.Flame className="text-orange-400" />
+                  <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Daily Habits</h2>
+                </div>
+                <HabitTracker />
+              </TiltCard>
+            </section>
+
             {/* Milestones */}
-            <section className="anim-fade-up delay-6">
+            <section className="anim-fade-up delay-5">
               <div className="flex items-center justify-between mb-5">
                 <div className="flex items-center gap-2">
-                  <Icons.Target className="text-gray-400" />
-                  <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">
-                    Milestones
-                  </h2>
+                  <I.Target className="text-gray-400" />
+                  <h2 className="text-xs font-semibold uppercase tracking-widest text-gray-400 dark:text-gray-500">Milestones</h2>
                 </div>
                 {!showForm && (
-                  <button
-                    onClick={() => setShowForm(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-all"
-                  >
-                    <Icons.Plus /> Add
+                  <button onClick={() => setShowForm(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-all">
+                    <I.Plus /> Add
                   </button>
                 )}
               </div>
               <div className="space-y-2">
-                {showForm && (
-                  <AddMilestoneForm onAdd={addMilestone} onCancel={() => setShowForm(false)} />
-                )}
-                {milestones.map((m) => (
-                  <MilestoneCard key={m.id} milestone={m} onDelete={deleteMilestone} />
-                ))}
+                {showForm && <AddMilestoneForm onAdd={addMilestone} onCancel={() => setShowForm(false)} />}
+                {milestones.map(m => <MilestoneCard key={m.id} milestone={m} onDelete={deleteMilestone} />)}
                 {milestones.length === 0 && !showForm && (
-                  <p className="text-center py-8 text-sm text-gray-300 dark:text-gray-600">
-                    No milestones yet. Add one to start tracking.
-                  </p>
+                  <p className="text-center py-8 text-sm text-gray-300 dark:text-gray-600">No milestones yet.</p>
                 )}
               </div>
             </section>
 
-            {/* Footer */}
-            <footer className="anim-fade-in mt-16 text-center" style={{ animationDelay: "1s" }}>
-              <p className="text-[11px] text-gray-300 dark:text-gray-700 tracking-wide">
-                Make every moment count.
-              </p>
+            {/* Footer with keyboard hints */}
+            <footer className="anim-fade-in mt-16 text-center space-y-3" style={{ animationDelay: "1s" }}>
+              <div className="flex items-center justify-center gap-4 text-[10px] text-gray-300 dark:text-gray-700">
+                <span><span className="kbd border-gray-300 dark:border-gray-700">D</span> theme</span>
+                <span><span className="kbd border-gray-300 dark:border-gray-700">F</span> focus</span>
+                <span><span className="kbd border-gray-300 dark:border-gray-700">A</span> ambient</span>
+              </div>
+              <p className="text-[11px] text-gray-300 dark:text-gray-700 tracking-wide">Make every moment count.</p>
             </footer>
           </div>
         </div>
