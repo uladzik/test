@@ -23,14 +23,14 @@
     /* Grad text */
     .grad-text{-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent}
 
-    /* Cards */
+    /* Glass cards */
     .card{position:relative;overflow:hidden;border-radius:20px;transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s,border-color .3s}
     .card:hover{transform:translateY(-2px)}
-    .light .card{background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.06);box-shadow:0 1px 3px rgba(0,0,0,.04)}
-    .light .card:hover{box-shadow:0 12px 40px -12px rgba(0,0,0,.1)}
-    .dark .card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
-    .dark .card:hover{box-shadow:0 12px 40px -12px rgba(0,0,0,.5);border-color:rgba(255,255,255,.1)}
-    .card::after{content:'';position:absolute;inset:0;opacity:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.02) 50%,transparent 60%);transition:opacity .3s;pointer-events:none}
+    .light .card{background:rgba(255,255,255,.55);backdrop-filter:blur(20px) saturate(1.8);-webkit-backdrop-filter:blur(20px) saturate(1.8);border:1px solid rgba(255,255,255,.5);box-shadow:0 1px 3px rgba(0,0,0,.04),inset 0 1px 0 rgba(255,255,255,.6)}
+    .light .card:hover{box-shadow:0 12px 40px -12px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.6);border-color:rgba(255,255,255,.7)}
+    .dark .card{background:rgba(255,255,255,.03);backdrop-filter:blur(20px) saturate(1.5);-webkit-backdrop-filter:blur(20px) saturate(1.5);border:1px solid rgba(255,255,255,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+    .dark .card:hover{box-shadow:0 12px 40px -12px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.05);border-color:rgba(255,255,255,.1)}
+    .card::after{content:'';position:absolute;inset:0;opacity:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.03) 50%,transparent 60%);transition:opacity .3s;pointer-events:none}
     .card:hover::after{opacity:1}
 
     /* Ring */
@@ -45,10 +45,12 @@
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     @keyframes scaleIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
     @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+    @keyframes checkBounce{0%{transform:scale(0)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
     .fu{animation:fadeUp .6s cubic-bezier(.16,1,.3,1) both}
     .fi{animation:fadeIn .5s ease both}
     .si{animation:scaleIn .4s cubic-bezier(.16,1,.3,1) both}
     .sli{animation:slideIn .5s cubic-bezier(.16,1,.3,1) both}
+    .check-bounce{animation:checkBounce .3s cubic-bezier(.34,1.56,.64,1) both}
 
     /* Shimmer celebration */
     @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
@@ -98,7 +100,7 @@
     ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:3px}.light ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.08)}
 
     /* Bento */
-    .bento{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .bento{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     @media(max-width:560px){.bento{grid-template-columns:1fr}}
     .span2{grid-column:1/-1}
 
@@ -113,6 +115,10 @@
     .cmdk-item{padding:10px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .1s}
     .cmdk-item:hover,.cmdk-item.active{background:rgba(255,255,255,.06)}
     .light .cmdk-item:hover,.light .cmdk-item.active{background:rgba(0,0,0,.04)}
+
+    /* Quote fade */
+    @keyframes quoteFade{0%{opacity:0;transform:translateY(6px)}15%{opacity:1;transform:translateY(0)}85%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-6px)}}
+    .quote-fade{animation:quoteFade 8s ease both}
   </style>
 </head>
 <body>
@@ -137,9 +143,26 @@ var IconTrash=svg([['polyline',{points:'3 6 5 6 21 6',strokeWidth:2}],['path',{d
 var IconTarget=svg([['circle',{cx:12,cy:12,r:10}],['circle',{cx:12,cy:12,r:6}],['circle',{cx:12,cy:12,r:2}]]);
 var IconSearch=svg([['circle',{cx:11,cy:11,r:8}],['line',{x1:21,y1:21,x2:16.65,y2:16.65,strokeWidth:2}]],16);
 var IconCommand=svg([['path',{d:'M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z'}]],14);
+var IconUser=svg([['path',{d:'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'}],['circle',{cx:12,cy:7,r:4}]],14);
 
 // ── Sound ──
 function playChime(){try{var ctx=new(window.AudioContext||window.webkitAudioContext)();[523.25,659.25,783.99].forEach(function(f,i){var o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.12,ctx.currentTime+i*.12);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+i*.12+.5);o.start(ctx.currentTime+i*.12);o.stop(ctx.currentTime+i*.12+.5)})}catch(e){}}
+
+// ── Quotes ──
+var QUOTES=[
+  "The way to get started is to quit talking and begin doing.",
+  "Time is what we want most, but what we use worst.",
+  "You don\u2019t need more time. You need more focus.",
+  "Small daily improvements are the key to staggering long-term results.",
+  "The secret of getting ahead is getting started.",
+  "What you do today can improve all your tomorrows.",
+  "Focus on being productive instead of busy.",
+  "An hour of planning saves 10 hours of doing.",
+  "Done is better than perfect.",
+  "Your future self is watching you right now through memories.",
+  "Discipline is choosing between what you want now and what you want most.",
+  "The only way to do great work is to love what you do."
+];
 
 // ── Time ──
 function getTP(){
@@ -155,10 +178,10 @@ function getTP(){
   return{yP:yP,mP:mP,wP:wP,dP:dP,wdP:wdP,wdR:wdR,now:n};
 }
 
-function greet(hr){
-  if(hr<5)return"Late night";if(hr<12)return"Good morning";if(hr<17)return"Good afternoon";if(hr<21)return"Good evening";return"Night mode";
+function greet(hr,name){
+  var g=hr<5?"Late night":hr<12?"Good morning":hr<17?"Good afternoon":hr<21?"Good evening":"Night mode";
+  return name?g+", "+name:g;
 }
-// Adaptive emphasis: different subtitle based on time of day
 function getEmphasis(hr,tp){
   if(hr<5)return"Rest well. Tomorrow is a new canvas.";
   if(hr<9)return"Plan your day. "+Math.round(100-tp.dP)+"% of today is ahead.";
@@ -180,7 +203,7 @@ function accent(hr){
 
 function motiv(t,p){
   var v=Math.round(p),m={
-    Year:[[25,"Plant seeds now. December-you will thank you."],[50,"Halfway. Cut what fails, double what works."],[75,v+"% — audit your year. What stays?"],[101,"Final sprint. No regrets."]],
+    Year:[[25,"Plant seeds now. December-you will thank you."],[50,"Halfway. Cut what fails, double what works."],[75,v+"% \u2014 audit your year. What stays?"],[101,"Final sprint. No regrets."]],
     Month:[[30,"New month. Pick one thing to ship."],[60,"Mid-check: spending or investing time?"],[85,"Ship or shelve."],[101,"Own the outcome."]],
     Week:[[30,"Guard your deep work blocks."],[60,"Momentum beats motivation."],[80,"One session changes the week."],[101,"Capture what you learned."]],
     Day:[[25,"Morning gold. Hardest task first."],[50,"One more deep block."],[75,"Ship one thing."],[101,"Rest is productive too."]]
@@ -194,6 +217,22 @@ var RINGS=[
   {l:"Week",k:"wP",c:["#fbbf24","#fcd34d"],s:84},
   {l:"Day",k:"dP",c:["#fb7185","#fda4af"],s:50}
 ];
+
+// ── Sparkline ──
+function Sparkline(props){
+  var data=props.data,color=props.color,w=props.w||80,ht=props.h||24;
+  if(!data||data.length<2)return null;
+  var mn=Math.min.apply(null,data),mx=Math.max.apply(null,data),range=mx-mn||1;
+  var pts=data.map(function(v,i){return(i/(data.length-1))*w+","+(ht-2-((v-mn)/range)*(ht-4))}).join(" ");
+  var gid="sp-"+props.id;
+  return h('svg',{width:w,height:ht,className:"flex-shrink-0",style:{opacity:.7}},
+    h('defs',null,
+      h('linearGradient',{id:gid,x1:"0",y1:"0",x2:"0",y2:"1"},
+        h('stop',{offset:"0%",stopColor:color,stopOpacity:.3}),
+        h('stop',{offset:"100%",stopColor:color,stopOpacity:0}))),
+    h('polyline',{points:pts,fill:"none",stroke:color,strokeWidth:1.5,strokeLinecap:"round",strokeLinejoin:"round"}),
+    h('polygon',{points:w+","+ht+" 0,"+ht+" "+pts,fill:"url(#"+gid+")"}));
+}
 
 // ── AnimNum ──
 function AnimNum(props){
@@ -217,7 +256,6 @@ function Ring(props){
   var m=useState(false),mounted=m[0],setM=m[1];
   useEffect(function(){var t=setTimeout(function(){setM(true)},80+idx*120);return function(){clearTimeout(t)}},[]);
   return h('div',{className:"absolute",style:{width:size,height:size,top:'50%',left:'50%',transform:'translate(-50%,-50%)'}},
-    // Breathe glow for active ring
     isActive?h('div',{className:"breathe absolute rounded-full",style:{width:size+8,height:size+8,top:'50%',left:'50%',border:'1.5px solid '+colors[0],opacity:.3}}):null,
     h('svg',{width:size,height:size},
       h('defs',null,h('linearGradient',{id:gid,x1:"0%",y1:"0%",x2:"100%",y2:"100%"},
@@ -233,16 +271,13 @@ function CmdK(props){
   var query=props.query,setQuery=props.setQuery,onClose=props.onClose,actions=props.actions;
   var activeState=useState(0),active=activeState[0],setActive=activeState[1];
   var inputRef=useRef(null);
-
   var filtered=useMemo(function(){
     if(!query)return actions;
     var q=query.toLowerCase();
     return actions.filter(function(a){return a.label.toLowerCase().indexOf(q)!==-1||a.keywords.toLowerCase().indexOf(q)!==-1});
   },[query,actions]);
-
   useEffect(function(){setActive(0)},[query]);
   useEffect(function(){if(inputRef.current)inputRef.current.focus()},[]);
-
   useEffect(function(){
     function handler(e){
       if(e.key==="Escape"){onClose();return}
@@ -253,16 +288,13 @@ function CmdK(props){
     window.addEventListener("keydown",handler);
     return function(){window.removeEventListener("keydown",handler)};
   },[filtered,active,onClose]);
-
   return h('div',{className:"cmdk-overlay",onClick:function(e){if(e.target===e.currentTarget)onClose()}},
     h('div',{className:"cmdk-panel"},
-      // Search input
       h('div',{className:"flex items-center gap-3 px-4 py-3 border-b border-black/[0.06] dark:border-white/[0.06]"},
         h(IconSearch,{className:"text-gray-400 flex-shrink-0"}),
         h('input',{ref:inputRef,type:"text",value:query,onChange:function(e){setQuery(e.target.value)},placeholder:"Type a command...",
           className:"flex-1 bg-transparent text-sm text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none font-medium"}),
         h('span',{className:"kbd border-gray-300 dark:border-gray-700 text-gray-400"},"esc")),
-      // Results
       h('div',{className:"py-2 max-h-[280px] overflow-y-auto"},
         filtered.length===0
           ? h('p',{className:"px-4 py-6 text-center text-sm text-gray-400"},"No results")
@@ -323,49 +355,49 @@ function Habits(){
   var last7=useMemo(function(){var d=[];for(var i=6;i>=0;i--){var x=new Date();x.setDate(x.getDate()-i);d.push({k:x.toISOString().slice(0,10),l:x.toLocaleDateString("en",{weekday:"narrow"})})}return d},[today]);
   useEffect(function(){localStorage.setItem("mh",JSON.stringify(habits))},[habits]);
   useEffect(function(){if(adding&&iref.current)iref.current.focus()},[adding]);
-  // Celebration: detect streaks hitting milestones
   var celebrateState=useState(null),celebrate=celebrateState[0],setCelebrate=celebrateState[1];
+  // Track recently toggled for bounce animation
+  var bouncedState=useState(null),bounced=bouncedState[0],setBounced=bouncedState[1];
   function tog(id,dk){
     setH(function(p){return p.map(function(x){
       if(x.id!==id)return x;
       var hh={};Object.keys(x.h).forEach(function(k){hh[k]=x.h[k]});hh[dk]=!hh[dk];
-      // Check if toggling on created a milestone streak
       if(hh[dk]){
+        setBounced(id+"-"+dk);
+        setTimeout(function(){setBounced(null)},350);
         var st=0,dd=new Date();
         while(hh[dd.toISOString().slice(0,10)]){st++;dd.setDate(dd.getDate()-1)}
         if(st===7||st===14||st===30||st===100)setCelebrate({name:x.name,streak:st});
       }
       return{id:x.id,name:x.name,h:hh}})});
   }
-  // Clear celebration after 3s
   useEffect(function(){if(!celebrate)return;var t=setTimeout(function(){setCelebrate(null)},3000);return function(){clearTimeout(t)}},[celebrate]);
   function streak(hab){var s=0,d=new Date();while(hab.h[d.toISOString().slice(0,10)]){s++;d.setDate(d.getDate()-1)}return s}
+  function weekCount(hab){var c=0;last7.forEach(function(d){if(hab.h[d.k])c++});return c}
   function addH(e){e.preventDefault();if(nn.trim()){setH(function(p){return p.concat([{id:Date.now(),name:nn.trim(),h:{}}])});setNN("");setA(false)}}
   function delH(id){setH(function(p){return p.filter(function(x){return x.id!==id})})}
 
   return h('div',{className:"space-y-0.5"},
-    // Celebration banner
     celebrate?h('div',{className:"si mb-3 px-3 py-2 rounded-lg text-center text-xs font-semibold shimmer",
       style:{background:"linear-gradient(90deg,transparent,rgba(251,191,36,.15),transparent,rgba(251,191,36,.15),transparent)",color:"#fbbf24"}},
-      celebrate.name+" — "+celebrate.streak+" day streak!"):null,
-    // Day headers
+      celebrate.name+" \u2014 "+celebrate.streak+" day streak!"):null,
     h('div',{className:"flex items-center mb-2"},h('div',{className:"flex-1"}),
       h('div',{className:"flex gap-[3px] mr-6"},last7.map(function(d){return h('div',{key:d.k,className:"w-[22px] text-center text-[8px] font-mono font-medium text-gray-400 dark:text-gray-600 uppercase"},d.l)}))),
-    // Rows
     habits.map(function(hab){
-      var st=streak(hab),ct=hab.h[today];
+      var st=streak(hab),ct=hab.h[today],wc=weekCount(hab);
       var isStreakMilestone=st===7||st===14||st===30||st===100;
       return h('div',{key:hab.id,className:"flex items-center py-1 group"},
         h('div',{className:"flex-1 min-w-0 flex items-center gap-1.5"},
           h('span',{className:"text-[13px] truncate "+(ct?"text-gray-400 dark:text-gray-600 line-through":"text-gray-700 dark:text-gray-300")},hab.name),
-          st>=2?h('span',{className:"flex items-center gap-0.5 text-[9px] font-bold flex-shrink-0 "+(isStreakMilestone?"text-yellow-400 shimmer":"text-orange-400"),
+          st>=2?h('span',{className:"flex items-center gap-0.5 text-[9px] font-bold flex-shrink-0 "+(isStreakMilestone?"text-yellow-400":"text-orange-400"),
             style:isStreakMilestone?{background:"linear-gradient(90deg,#fbbf24,#f59e0b,#fbbf24)",backgroundSize:"200% 100%",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:"shimmer 2s ease-in-out infinite"}:{}},
-            h(IconFlame),st):null),
+            h(IconFlame),st):null,
+          h('span',{className:"text-[9px] font-mono text-gray-400 dark:text-gray-600 ml-1 flex-shrink-0"},wc+"/7")),
         h('div',{className:"flex gap-[3px]"},last7.map(function(d){
-          var done=hab.h[d.k],isT=d.k===today;
+          var done=hab.h[d.k],isT=d.k===today,isBounced=bounced===(hab.id+"-"+d.k);
           return h('button',{key:d.k,onClick:function(){tog(hab.id,d.k)},
             className:"hcell w-[22px] h-[22px] rounded-[5px] flex items-center justify-center text-white transition "+(done?"bg-emerald-500/90":isT?"bg-black/[0.04] dark:bg-white/[0.06] ring-1 ring-gray-300/40 dark:ring-gray-600/40":"bg-black/[0.02] dark:bg-white/[0.03]")},
-            done?h(IconCheck):null)})),
+            done?h('span',{className:isBounced?"check-bounce":""},h(IconCheck)):null)})),
         h('button',{onClick:function(){delH(hab.id)},className:"ml-1.5 p-0.5 rounded opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 transition"},h(IconTrash)));
     }),
     adding
@@ -457,6 +489,56 @@ function HourSweep(props){
   return h('div',{className:"hour-sweep",style:{background:"linear-gradient(90deg,transparent,"+props.color+",transparent)"}});
 }
 
+// ── Name Edit ──
+function NameEdit(props){
+  var ns=useState(""),val=ns[0],setVal=ns[1];
+  var ref=useRef(null);
+  useEffect(function(){setVal(props.name||"");if(ref.current)ref.current.focus()},[]);
+  function sub(e){e.preventDefault();props.onSave(val.trim());props.onClose()}
+  return h('form',{onSubmit:sub,className:"si flex items-center gap-2"},
+    h('input',{ref:ref,type:"text",value:val,onChange:function(e){setVal(e.target.value)},placeholder:"Your name",
+      className:"px-2.5 py-1 text-xs rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-white/20 transition w-32"}),
+    h('button',{type:"submit",className:"px-2 py-1 text-[10px] font-semibold rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900"},"Save"),
+    h('button',{type:"button",onClick:props.onClose,className:"px-1 text-[10px] text-gray-400"},"Cancel"));
+}
+
+// ── Rotating Quote ──
+function RotatingQuote(){
+  var qState=useState(0),qi=qState[0],setQi=qState[1];
+  var keyState=useState(0),key=keyState[0],setKey=keyState[1];
+  useEffect(function(){
+    var id=setInterval(function(){
+      setQi(function(i){return(i+1)%QUOTES.length});
+      setKey(function(k){return k+1});
+    },8000);
+    return function(){clearInterval(id)};
+  },[]);
+  return h('p',{key:key,className:"quote-fade text-[10px] text-gray-300 dark:text-gray-700 italic max-w-sm mx-auto leading-relaxed"},
+    "\u201C"+QUOTES[qi]+"\u201D");
+}
+
+// ── Weekly Summary ──
+function WeeklySummary(props){
+  var habits=props.habits,sessions=props.sessions;
+  var today=new Date();
+  var last7=useMemo(function(){var d=[];for(var i=6;i>=0;i--){var x=new Date();x.setDate(x.getDate()-i);d.push(x.toISOString().slice(0,10))}return d},[]);
+  var totalChecks=0,possibleChecks=habits.length*7;
+  habits.forEach(function(hab){last7.forEach(function(dk){if(hab.h[dk])totalChecks++})});
+  var pct=possibleChecks>0?Math.round(totalChecks/possibleChecks*100):0;
+  // Sparkline data: daily habit completions over last 7 days
+  var sparkData=last7.map(function(dk){var c=0;habits.forEach(function(hab){if(hab.h[dk])c++});return c});
+  return h('div',{className:"flex items-center justify-between"},
+    h('div',null,
+      h('div',{className:"flex items-baseline gap-1.5"},
+        h('span',{className:"text-2xl font-mono font-bold tabular-nums text-gray-900 dark:text-white"},pct+"%"),
+        h('span',{className:"text-[10px] text-gray-400 dark:text-gray-600"},"habit completion")),
+      h('div',{className:"flex items-center gap-3 mt-1.5"},
+        h('span',{className:"text-[10px] text-gray-400 dark:text-gray-600 font-mono"},totalChecks+"/"+possibleChecks+" checks"),
+        h('span',{className:"text-[10px] text-gray-400 dark:text-gray-600"},"\u00B7"),
+        h('span',{className:"text-[10px] text-gray-400 dark:text-gray-600 font-mono"},sessions+" pomodoros"))),
+    h(Sparkline,{data:sparkData,color:"#34d399",w:80,h:28,id:"weekly"}));
+}
+
 // ── App ──
 function App(){
   var ds=useState(function(){return window.matchMedia("(prefers-color-scheme:dark)").matches}),dark=ds[0],setDark=ds[1];
@@ -466,19 +548,40 @@ function App(){
   var ab=useState(false),amb=ab[0],setAmb=ab[1];
   var ck=useState(false),cmdkOpen=ck[0],setCmdkOpen=ck[1];
   var cq=useState(""),cmdkQuery=cq[0],setCmdkQuery=cq[1];
+  var nameState=useState(function(){try{return localStorage.getItem("m_name")||""}catch(e){return""}}),userName=nameState[0],setUserName=nameState[1];
+  var editNameState=useState(false),editingName=editNameState[0],setEditingName=editNameState[1];
   var ms=useState(function(){
     try{var s=JSON.parse(localStorage.getItem("mm2"));if(s&&s.length)return s}catch(e){}
     return[{id:1,name:"Q2 Review",date:"2026-06-30",td:95},{id:2,name:"Product Launch",date:"2026-09-15",td:172}];
   }),milestones=ms[0],setMs=ms[1];
+  // Habits ref for weekly summary
+  var habitsState=useState(function(){try{var s=JSON.parse(localStorage.getItem("mh"));return s&&s.length?s:null}catch(e){return null}}),habitsData=habitsState[0],setHabitsData=habitsState[1];
+  // Listen for habit changes via storage
+  useEffect(function(){
+    var id=setInterval(function(){try{var s=JSON.parse(localStorage.getItem("mh"));if(s)setHabitsData(s)}catch(e){}},2000);
+    return function(){clearInterval(id)};
+  },[]);
+
+  // Sparkline history for rings (simulate from current values + slight variation)
+  var sparkHistory=useMemo(function(){
+    var d={};RINGS.forEach(function(r){
+      var v=time[r.k],arr=[];
+      for(var i=6;i>=0;i--){arr.push(Math.max(0,Math.min(100,v-i*v/7*(0.8+Math.random()*0.4))))}
+      arr[6]=v;d[r.k]=arr;
+    });return d;
+  },[Math.floor(time.yP)]);
 
   useEffect(function(){var id=setInterval(function(){setTime(getTP())},1000);return function(){clearInterval(id)}},[]);
   useEffect(function(){document.documentElement.classList.toggle("dark",dark);document.documentElement.classList.toggle("light",!dark)},[dark]);
   useEffect(function(){localStorage.setItem("mm2",JSON.stringify(milestones))},[milestones]);
 
+  // Save name
+  function saveName(n){setUserName(n);localStorage.setItem("m_name",n)}
+
   // Keyboard shortcuts
   useEffect(function(){
     function fn(e){
-      if(cmdkOpen)return; // CmdK handles its own keys
+      if(cmdkOpen)return;
       if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA")return;
       if((e.metaKey||e.ctrlKey)&&e.key==="k"){e.preventDefault();setCmdkOpen(true);setCmdkQuery("");return}
       if(e.key==="d"||e.key==="D")setDark(function(v){return!v});
@@ -489,7 +592,6 @@ function App(){
     window.addEventListener("keydown",fn);return function(){window.removeEventListener("keydown",fn)};
   },[cmdkOpen]);
 
-  // Cmd+K actions
   var cmdActions=useMemo(function(){
     return[
       {id:"theme",label:dark?"Switch to light mode":"Switch to dark mode",keywords:"theme dark light toggle",icon:dark?IconSun:IconMoon,shortcut:"D",action:function(){setDark(function(v){return!v})}},
@@ -497,29 +599,26 @@ function App(){
       {id:"ambient",label:"Enter ambient mode",keywords:"ambient fullscreen zen screensaver",icon:IconExpand,shortcut:"A",action:function(){setAmb(true)}},
       {id:"milestone",label:"Add milestone",keywords:"milestone countdown deadline event",icon:IconTarget,action:function(){setShowForm(true)}},
       {id:"pomo-start",label:"Start pomodoro",keywords:"pomodoro timer start focus work",icon:IconPlay,action:function(){setFocus(true)}},
+      {id:"name",label:"Set your name",keywords:"name personalize greeting user profile",icon:IconUser,action:function(){setEditingName(true)}},
     ];
   },[dark,focus]);
 
   var addM=useCallback(function(m){setMs(function(p){return p.concat([m]).sort(function(a,b){return new Date(a.date)-new Date(b.date)})});setShowForm(false)},[]);
   var delM=useCallback(function(id){setMs(function(p){return p.filter(function(x){return x.id!==id})})},[]);
 
-  var hr=time.now.getHours(),ac=accent(hr),gr=greet(hr);
+  var hr=time.now.getHours(),ac=accent(hr),gr=greet(hr,userName);
   var emphasis=getEmphasis(hr,time);
   var dateStr=time.now.toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"});
   var timeStr=time.now.toLocaleTimeString("en",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
   var fH=Math.floor(time.wdR/60),fM=time.wdR%60;
-
-  // Determine which ring period is "active" (smallest incomplete)
   var activeRing="Day";
+  var pomoSessions=0;try{pomoSessions=parseInt(localStorage.getItem("mp"))||0}catch(e){}
 
   if(amb)return h(Ambient,{t:time,onX:function(){setAmb(false)},dark:dark});
 
   return h('div',{className:"noise min-h-screen bg-[#fafafa] dark:bg-[#080809] text-gray-900 dark:text-white transition-colors duration-700"},
-    // Hour sweep
     h(HourSweep,{color:ac.c}),
-    // Cmd+K
     cmdkOpen?h(CmdK,{query:cmdkQuery,setQuery:setCmdkQuery,onClose:function(){setCmdkOpen(false)},actions:cmdActions}):null,
-    // BG blobs
     h('div',{className:"fixed inset-0 pointer-events-none overflow-hidden"},
       h('div',{className:"morph absolute -top-32 -right-32 w-[600px] h-[600px]",style:{background:ac.c,opacity:dark?.03:.05,filter:"blur(150px)",transition:"all 5s"}}),
       h('div',{className:"morph absolute -bottom-48 -left-32 w-[500px] h-[500px]",style:{background:ac.c,opacity:dark?.02:.04,filter:"blur(130px) hue-rotate(60deg)",animationDelay:"-4s",transition:"all 5s"}})),
@@ -528,10 +627,12 @@ function App(){
       // Header
       h('header',{className:"fu flex items-end justify-between mb-8"},
         h('div',null,
-          h('p',{className:"text-xs font-semibold uppercase tracking-[0.2em] mb-1 transition-colors duration-[3s]",style:{color:ac.c}},gr),
-          h('h1',{className:"text-2xl font-black tracking-tight text-gray-900 dark:text-white"},"Momentum"),
+          h('div',{className:"flex items-center gap-2"},
+            h('p',{className:"text-xs font-semibold uppercase tracking-[0.2em] transition-colors duration-[3s]",style:{color:ac.c}},gr),
+            !userName?h('button',{onClick:function(){setEditingName(true)},className:"text-[9px] text-gray-400 hover:text-gray-300 transition"},"\u270E"):null),
+          editingName?h(NameEdit,{name:userName,onSave:saveName,onClose:function(){setEditingName(false)}}):null,
+          h('h1',{className:"text-2xl font-black tracking-tight text-gray-900 dark:text-white mt-0.5"},"Momentum"),
           h('p',{className:"text-xs text-gray-400 dark:text-gray-600 font-mono mt-1 tabular-nums"},dateStr+" \u00B7 "+timeStr),
-          // Adaptive emphasis
           h('p',{className:"text-[11px] text-gray-400 dark:text-gray-600 mt-1.5 font-medium",style:{fontVariationSettings:"'wght' 420"}},emphasis)),
         h('div',{className:"flex gap-1"},
           h('button',{onClick:function(){setCmdkOpen(true);setCmdkQuery("")},title:"\u2318K",
@@ -558,7 +659,9 @@ function App(){
                     h('div',{className:"flex items-center gap-2"},
                       h('div',{className:"w-1.5 h-1.5 rounded-full transition-transform duration-200 group-hover:scale-[2]",style:{background:r.c[0]}}),
                       h('span',{className:"text-xs text-gray-500 dark:text-gray-400",style:{fontVariationSettings:"'wght' 450"}},r.l)),
-                    h(AnimNum,{value:time[r.k],dec:1,sfx:"%",className:"text-sm font-mono tabular-nums text-gray-900 dark:text-white",style:{fontVariationSettings:"'wght' 580"}})),
+                    h('div',{className:"flex items-center gap-2"},
+                      h(Sparkline,{data:sparkHistory[r.k],color:r.c[0],w:48,h:16,id:r.l}),
+                      h(AnimNum,{value:time[r.k],dec:1,sfx:"%",className:"text-sm font-mono tabular-nums text-gray-900 dark:text-white",style:{fontVariationSettings:"'wght' 580"}}))),
                   h('div',{className:"overflow-hidden max-h-0 group-hover:max-h-10 transition-all duration-300"},
                     h('p',{className:"text-[10px] text-gray-400 dark:text-gray-600 mt-1 pl-[14px] leading-relaxed"},motiv(r.l,time[r.k]))));})))),
 
@@ -577,6 +680,14 @@ function App(){
             h('span',{className:"grad-text font-mono font-black tabular-nums leading-none",style:{fontSize:"3.2rem",background:"linear-gradient(135deg,#818cf8,#a78bfa)"}},h(AnimNum,{value:time.yP,dec:1})),
             h('span',{className:"text-lg text-gray-300 dark:text-gray-700 font-light"},"%")),
           h('p',{className:"text-[10px] text-gray-400 dark:text-gray-600"},"Day "+Math.ceil(time.yP/100*365)+" of 365")),
+
+        // Weekly Summary
+        habitsData?h('div',{className:"span2 fu card p-5",style:{animationDelay:"0.28s"}},
+          h('div',{className:"flex items-center gap-2 mb-3"},
+            h('svg',{xmlns:'http://www.w3.org/2000/svg',width:12,height:12,viewBox:'0 0 24 24',fill:'none',stroke:'currentColor',strokeWidth:1.5,strokeLinecap:'round',strokeLinejoin:'round',className:"text-blue-400"},
+              h('path',{d:'M12 20V10'}),h('path',{d:'M18 20V4'}),h('path',{d:'M6 20v-4'})),
+            h('span',{className:"text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-600"},"This Week")),
+          h(WeeklySummary,{habits:habitsData,sessions:pomoSessions})):null,
 
         // Focus + pomo
         h('div',{className:"span2 fu card p-5 transition-all duration-500 "+(focus?"focus-glow":""),style:{animationDelay:"0.32s"}},
@@ -606,12 +717,14 @@ function App(){
             milestones.map(function(m){return h(MCard,{key:m.id,m:m,onDel:delM})}),
             milestones.length===0&&!showForm?h('p',{className:"text-center py-6 text-xs text-gray-400 dark:text-gray-700"},"No milestones"):null))),
 
-      // Footer
-      h('footer',{className:"fi mt-12 flex items-center justify-center gap-4 text-[9px] text-gray-300 dark:text-gray-800",style:{animationDelay:"1s"}},
-        h('span',null,h('span',{className:"kbd border-gray-200 dark:border-gray-800"},"\u2318K")," commands"),
-        h('span',null,h('span',{className:"kbd border-gray-200 dark:border-gray-800"},"D")," theme"),
-        h('span',null,h('span',{className:"kbd border-gray-200 dark:border-gray-800"},"F")," focus"),
-        h('span',null,h('span',{className:"kbd border-gray-200 dark:border-gray-800"},"A")," ambient"))));
+      // Footer with rotating quotes
+      h('footer',{className:"fi mt-10 text-center space-y-4",style:{animationDelay:"1s"}},
+        h(RotatingQuote),
+        h('div',{className:"flex items-center justify-center gap-4 text-[9px] text-gray-300 dark:text-gray-800"},
+          h('span',null,h('span',{className:"kbd border-gray-200 dark:border-gray-800"},"\u2318K")," commands"),
+          h('span',null,h('span',{className:"kbd border-gray-200 dark:border-gray-800"},"D")," theme"),
+          h('span',null,h('span',{className:"kbd border-gray-200 dark:border-gray-800"},"F")," focus"),
+          h('span',null,h('span',{className:"kbd border-gray-200 dark:border-gray-800"},"A")," ambient")))));
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(h(App));
