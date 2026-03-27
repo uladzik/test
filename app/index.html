@@ -132,6 +132,38 @@
 
     /* Sparkline */
     .spark{opacity:.6;transition:opacity .3s}.spark:hover{opacity:1}
+
+    /* Metric card number hover */
+    .glass .gt{transition:filter .3s}
+    .glass:hover .gt{filter:brightness(1.15)}
+
+    /* Hero day card */
+    .hero-card{position:relative;overflow:hidden;border-radius:28px;transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s;perspective:800px}
+    .dark .hero-card{background:linear-gradient(145deg,rgba(255,255,255,.03) 0%,rgba(255,255,255,.01) 100%);border:1px solid rgba(255,255,255,.07);backdrop-filter:blur(40px)}
+    .light .hero-card{background:linear-gradient(145deg,rgba(255,255,255,.6) 0%,rgba(255,255,255,.35) 100%);border:1px solid rgba(255,255,255,.7);backdrop-filter:blur(40px)}
+    .hero-card:hover{transform:translateY(-4px)}
+    .dark .hero-card:hover{box-shadow:0 30px 80px -20px rgba(0,0,0,.6);border-color:rgba(255,255,255,.12)}
+    .light .hero-card:hover{box-shadow:0 30px 80px -20px rgba(0,0,0,.12)}
+
+    /* Arc sweep animation */
+    @keyframes arcSweep{from{stroke-dashoffset:var(--arc-total)}to{stroke-dashoffset:var(--arc-offset)}}
+    .arc-sweep{animation:arcSweep 2s cubic-bezier(.16,1,.3,1) both}
+
+    /* Subtle inner glow pulse on hero */
+    @keyframes heroGlow{0%,100%{opacity:.03}50%{opacity:.06}}
+    .hero-glow{animation:heroGlow 6s ease-in-out infinite}
+
+    /* Stat row */
+    .stat-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    @media(max-width:640px){.stat-row{grid-template-columns:1fr}}
+
+    /* Mini card variant */
+    .mini-card{border-radius:20px;overflow:hidden;transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s}
+    .dark .mini-card{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.04);backdrop-filter:blur(30px)}
+    .light .mini-card{background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.5);backdrop-filter:blur(30px)}
+    .mini-card:hover{transform:translateY(-2px)}
+    .dark .mini-card:hover{border-color:rgba(255,255,255,.08);box-shadow:0 12px 40px -10px rgba(0,0,0,.4)}
+    .light .mini-card:hover{box-shadow:0 12px 40px -10px rgba(0,0,0,.08)}
   </style>
 </head>
 <body>
@@ -549,44 +581,74 @@ function App(){
         h('p',{className:"text-[11px] text-gray-400 dark:text-gray-600 mt-1 font-medium"},emphasis)),
 
       // ── BENTO ──
-      h('div',{className:"bento"},
+      h('div',{className:"space-y-3"},
 
-        // Rings card
-        h('div',{className:"span2 fu aurora glass p-6",style:{animationDelay:"0.08s"}},
-          h('div',{className:"flex flex-col sm:flex-row items-center gap-6"},
-            h('div',{className:"relative w-44 h-44 flex-shrink-0"},
-              RINGS.map(function(r,i){return h(Ring,{key:r.l,size:r.s,pct:time[r.k],colors:r.c,label:r.l,idx:i,isActive:r.l==="Day"})}),
-              h('div',{className:"absolute inset-0 flex flex-col items-center justify-center"},
-                h(AN,{value:time.dP,dec:0,className:"text-2xl font-mono font-bold text-gray-900 dark:text-white tabular-nums"}),
-                h('span',{className:"text-[7px] uppercase tracking-[0.25em] text-gray-400 font-bold mt-0.5"},"today"))),
-            h('div',{className:"flex-1 w-full space-y-3.5"},
-              RINGS.map(function(r,i){
-                return h('div',{key:r.l,className:"group sli",style:{animationDelay:(0.3+i*.07)+"s"}},
-                  h('div',{className:"flex items-center justify-between"},
-                    h('div',{className:"flex items-center gap-2"},
-                      h('div',{className:"w-1.5 h-1.5 rounded-full transition-all duration-300 group-hover:scale-[2.5] group-hover:shadow-lg",style:{background:r.c[0],boxShadow:"0 0 0 0 "+r.c[0]}}),
-                      h('span',{className:"text-xs text-gray-500 dark:text-gray-400 font-medium"},r.l)),
-                    h('div',{className:"flex items-center gap-2.5"},
-                      h(Spark,{data:sparkD[r.k],color:r.c[0],w:52,h:18,id:r.l}),
-                      h(AN,{value:time[r.k],dec:1,sfx:"%",className:"text-sm font-mono tabular-nums font-semibold text-gray-900 dark:text-white"}))),
-                  h('div',{className:"overflow-hidden max-h-0 group-hover:max-h-12 transition-all duration-300"},
-                    h('p',{className:"text-[10px] text-gray-400 dark:text-gray-600 mt-1 pl-[14px] leading-relaxed"},tip(r.l,time[r.k]))));})))),
+        // ═══ HERO DAY CARD ═══
+        (function(){
+          var dVal=time.dP,left=100-dVal,hrsLeft=Math.ceil((24-hr-time.now.getMinutes()/60));
+          var arcR=90,arcSw=5,arcCi=Math.PI*arcR,arcOff=arcCi-(Math.min(dVal,100)/100)*arcCi;
+          var dayCol=RINGS[3].c;
+          return h('div',{key:"hero",className:"fu hero-card p-8 sm:p-10 group",style:{animationDelay:"0.08s"}},
+            // Background glow
+            h('div',{className:"hero-glow absolute inset-0 pointer-events-none",style:{background:"radial-gradient(circle at 30% 50%,"+dayCol[0]+"10,transparent 60%)"}}),
+            h('div',{className:"relative flex flex-col sm:flex-row items-center gap-8"},
+              // Arc gauge — signature element
+              h('div',{className:"relative flex-shrink-0",style:{width:190,height:100}},
+                h('svg',{width:190,height:100,viewBox:"0 0 190 100",className:"overflow-visible"},
+                  h('defs',null,
+                    h('linearGradient',{id:"heroArc",x1:"0%",y1:"0%",x2:"100%",y2:"0%"},
+                      h('stop',{offset:"0%",stopColor:dayCol[0]}),h('stop',{offset:"100%",stopColor:dayCol[1]}))),
+                  // Track
+                  h('path',{d:"M 5 95 A 90 90 0 0 1 185 95",fill:"none",stroke:"currentColor",className:"text-black/[0.04] dark:text-white/[0.04]",strokeWidth:arcSw,strokeLinecap:"round"}),
+                  // Fill
+                  h('path',{d:"M 5 95 A 90 90 0 0 1 185 95",fill:"none",stroke:"url(#heroArc)",strokeWidth:arcSw,strokeLinecap:"round",
+                    strokeDasharray:arcCi,strokeDashoffset:arcOff,className:"arc-sweep",
+                    style:{"--arc-total":arcCi,"--arc-offset":arcOff}}),
+                  // Glow copy
+                  h('path',{d:"M 5 95 A 90 90 0 0 1 185 95",fill:"none",stroke:"url(#heroArc)",strokeWidth:arcSw+6,strokeLinecap:"round",
+                    strokeDasharray:arcCi,strokeDashoffset:arcOff,opacity:.15,style:{filter:"blur(6px)","--arc-total":arcCi,"--arc-offset":arcOff}})),
+                // Center number inside arc
+                h('div',{className:"absolute",style:{top:"35%",left:"50%",transform:"translate(-50%,-20%)"}},
+                  h('span',{className:"gt font-mono font-black tabular-nums leading-none",style:{fontSize:"3.8rem",background:"linear-gradient(135deg,"+dayCol[0]+","+dayCol[1]+")"}},
+                    h(AN,{value:left,dec:0})),
+                  h('span',{className:"text-xl text-gray-300 dark:text-gray-700 font-light ml-1"},"%"))),
+              // Right side info
+              h('div',{className:"flex-1 text-center sm:text-left"},
+                h('p',{className:"text-[9px] font-bold uppercase tracking-[0.3em] mb-2",style:{color:dayCol[0]}},"Day Remaining"),
+                h('p',{className:"text-sm text-gray-400 dark:text-gray-500 font-medium mb-4"},tip("Day",dVal)),
+                h('div',{className:"flex items-center gap-4 justify-center sm:justify-start"},
+                  h('div',null,
+                    h('p',{className:"text-2xl font-mono font-bold tabular-nums text-gray-900 dark:text-white"},hrsLeft+"h"),
+                    h('p',{className:"text-[9px] text-gray-400 dark:text-gray-600 uppercase tracking-wider"},"left")),
+                  h('div',{className:"w-px h-8 bg-black/[0.05] dark:bg-white/[0.05]"}),
+                  h('div',null,
+                    h('p',{className:"text-2xl font-mono font-bold tabular-nums text-gray-900 dark:text-white"},h(AN,{value:dVal,dec:0,sfx:"%"})),
+                    h('p',{className:"text-[9px] text-gray-400 dark:text-gray-600 uppercase tracking-wider"},"elapsed"))))));
+        })(),
 
-        // Day left
-        h('div',{className:"fu glass p-5 flex flex-col justify-between",style:{animationDelay:"0.16s",minHeight:170}},
-          h('p',{className:"text-[9px] font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-600"},"Day left"),
-          h('div',null,
-            h('span',{className:"gt font-mono font-black tabular-nums leading-none",style:{fontSize:"3.5rem",background:ac.g}},h(AN,{value:100-time.dP,dec:0})),
-            h('span',{className:"text-xl text-gray-300 dark:text-gray-700 font-light ml-1"},"%")),
-          h('p',{className:"text-[10px] text-gray-400 dark:text-gray-600"},tip("Day",time.dP))),
+        // ═══ YEAR / MONTH / WEEK — stat row ═══
+        h('div',{className:"stat-row fu",style:{animationDelay:"0.18s"}},
+          [RINGS[0],RINGS[1],RINGS[2]].map(function(r,i){
+            var val=time[r.k];
+            var sub=r.l==="Year"?"Day "+Math.ceil(val/100*365)+"/365"
+              :r.l==="Month"?"Day "+time.now.getDate()
+              :"Day "+(time.now.getDay()||7)+"/7";
+            return h('div',{key:r.l,className:"mini-card p-4 group"},
+              h('div',{className:"flex items-center gap-1.5 mb-3"},
+                h('div',{className:"w-1.5 h-1.5 rounded-full",style:{background:r.c[0],boxShadow:"0 0 6px "+r.c[0]+"50"}}),
+                h('span',{className:"text-[8px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-600"},r.l),
+                h('div',{className:"ml-auto"},h(Spark,{data:sparkD[r.k],color:r.c[0],w:40,h:14,id:r.l}))),
+              h('div',{className:"flex items-baseline gap-0.5"},
+                h('span',{className:"gt font-mono font-bold tabular-nums leading-none",style:{fontSize:"1.8rem",background:"linear-gradient(135deg,"+r.c[0]+","+r.c[1]+")"}},
+                  h(AN,{value:val,dec:1})),
+                h('span',{className:"text-sm text-gray-400 dark:text-gray-700 font-light"},"%")),
+              h('div',{className:"h-[2px] rounded-full bg-black/[0.03] dark:bg-white/[0.03] mt-2.5 overflow-hidden"},
+                h('div',{className:"h-full rounded-full transition-all duration-1000",style:{width:Math.min(val,100)+"%",background:"linear-gradient(90deg,"+r.c[0]+","+r.c[1]+")",boxShadow:"0 0 8px "+r.c[0]+"30"}})),
+              h('p',{className:"text-[9px] font-mono tabular-nums text-gray-400 dark:text-gray-700 mt-2"},sub));
+          })),
 
-        // Year
-        h('div',{className:"fu glass p-5 flex flex-col justify-between",style:{animationDelay:"0.24s",minHeight:170}},
-          h('p',{className:"text-[9px] font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-600"},"Year "+time.now.getFullYear()),
-          h('div',{className:"flex items-baseline gap-1"},
-            h('span',{className:"gt font-mono font-black tabular-nums leading-none",style:{fontSize:"3.5rem",background:"linear-gradient(135deg,#818cf8,#c4b5fd)"}},h(AN,{value:time.yP,dec:1})),
-            h('span',{className:"text-xl text-gray-300 dark:text-gray-700 font-light"},"%")),
-          h('p',{className:"text-[10px] text-gray-400 dark:text-gray-600 font-mono"},"Day "+Math.ceil(time.yP/100*365)+" of 365")),
+        // ═══ REST OF BENTO ═══
+        h('div',{className:"bento"},
 
         // Quick Note
         h('div',{className:"span2 fu glass p-5",style:{animationDelay:"0.28s"}},
@@ -623,6 +685,7 @@ function App(){
             showForm?h(AddM,{onAdd:addM,onX:function(){sSF(false)}}):null,
             mils.map(function(m){return h(MCard,{key:m.id,m:m,onDel:delM})}),
             mils.length===0&&!showForm?h('p',{className:"text-center py-8 text-xs text-gray-400 dark:text-gray-700"},"No milestones yet"):null))),
+        )),// close inner bento, close space-y-3
 
       // Footer
       h('footer',{className:"fi mt-10 text-center space-y-5",style:{animationDelay:"1s"}},
