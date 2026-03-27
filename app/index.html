@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,963 +9,1209 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script>
     tailwind.config = {
       darkMode: 'class',
-      theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] } } }
-    }
+      theme: { extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          mono: ['JetBrains Mono', 'monospace']
+        },
+      }}
+    };
   </script>
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
-
-    /* ── Noise ── */
-    .noise::after {
-      content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.018;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    }
-    .dark .noise::after { opacity: 0.03; }
-
-    /* ── Animated mesh gradient bg ── */
-    @keyframes meshShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .mesh-bg {
-      background-size: 400% 400%;
-      animation: meshShift 20s ease infinite;
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
 
-    /* ── Aurora border ── */
-    @keyframes auroraRotate { to { --aurora-angle: 360deg; } }
-    @property --aurora-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
-    .aurora-border { position: relative; }
-    .aurora-border::before {
-      content: ''; position: absolute; inset: -1.5px; border-radius: inherit; padding: 1.5px;
-      background: conic-gradient(from var(--aurora-angle), #3b82f680, #8b5cf680, #ec489980, #f59e0b80, #10b98180, #3b82f680);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude;
-      animation: auroraRotate 6s linear infinite;
+    /* Morph blob */
+    @keyframes morph {
+      0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+      25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+      50% { border-radius: 50% 60% 30% 60% / 30% 60% 70% 40%; }
+      75% { border-radius: 60% 40% 60% 30% / 40% 50% 60% 50%; }
     }
-    /* Firefox fallback */
-    @supports not (background: conic-gradient(red, blue)) {
-      .aurora-border::before { background: linear-gradient(135deg, #3b82f640, #8b5cf640, #ec489940); animation: none; }
+    .morph-blob { animation: morph 12s ease-in-out infinite; }
+
+    /* Gradient text */
+    .grad-text {
+      -webkit-background-clip: text !important;
+      background-clip: text !important;
+      -webkit-text-fill-color: transparent;
     }
 
-    /* ── Ring draw ── */
-    .ring-draw { transition: stroke-dashoffset 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-
-    /* ── Tilt ── */
-    .tilt-card { transform-style: preserve-3d; transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; }
-    .tilt-card:hover { box-shadow: 0 20px 60px -15px rgba(0,0,0,0.08); }
-    .dark .tilt-card:hover { box-shadow: 0 20px 60px -15px rgba(0,0,0,0.3); }
-
-    /* ── Animations ── */
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes scaleIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
-    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-    @keyframes breathe { 0%,100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.05); } }
-    @keyframes countUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-    .anim-fade-up { animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both; }
-    .anim-fade-in { animation: fadeIn 0.5s ease-out both; }
-    .anim-scale-in { animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both; }
-    .anim-count { animation: countUp 0.4s ease-out both; }
-
-    .d0 { animation-delay: 0s; } .d1 { animation-delay: 0.08s; } .d2 { animation-delay: 0.16s; }
-    .d3 { animation-delay: 0.24s; } .d4 { animation-delay: 0.32s; } .d5 { animation-delay: 0.4s; }
-    .d6 { animation-delay: 0.48s; } .d7 { animation-delay: 0.56s; } .d8 { animation-delay: 0.64s; }
-
-    /* ── Glass ── */
-    .glass { backdrop-filter: blur(24px) saturate(1.3); -webkit-backdrop-filter: blur(24px) saturate(1.3); }
-    .glass-card {
-      background: rgba(255,255,255,0.55);
-      border: 1px solid rgba(255,255,255,0.4);
-      backdrop-filter: blur(20px) saturate(1.2);
+    /* Cards */
+    .card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), box-shadow 0.3s ease, border-color 0.3s ease;
     }
-    .dark .glass-card {
+    .card:hover { transform: translateY(-2px); }
+    .light .card {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(0,0,0,0.06);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .light .card:hover { box-shadow: 0 12px 40px -12px rgba(0,0,0,0.1); }
+    .dark .card {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.06);
     }
+    .dark .card:hover {
+      box-shadow: 0 12px 40px -12px rgba(0,0,0,0.5);
+      border-color: rgba(255,255,255,0.1);
+    }
 
-    /* ── Toggle ── */
-    .toggle-knob { transition: left 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+    /* Card shimmer */
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.02) 50%, transparent 60%);
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .card:hover::after { opacity: 1; }
 
-    /* ── Collapse ── */
-    .collapse-section { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-    .collapse-section.open { grid-template-rows: 1fr; }
+    /* Ring animation */
+    .ring-draw { transition: stroke-dashoffset 1.8s cubic-bezier(0.16,1,0.3,1); }
+
+    /* Animations */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes scaleIn { from { opacity:0; transform:scale(0.97); } to { opacity:1; transform:scale(1); } }
+    @keyframes slideIn { from { opacity:0; transform:translateX(-8px); } to { opacity:1; transform:translateX(0); } }
+    .fu { animation: fadeUp 0.6s cubic-bezier(0.16,1,0.3,1) both; }
+    .fi { animation: fadeIn 0.5s ease both; }
+    .si { animation: scaleIn 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+    .sli { animation: slideIn 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+
+    /* Toggle */
+    .toggle-k { transition: left 0.25s cubic-bezier(0.68,-0.55,0.27,1.55); }
+
+    /* Collapse */
+    .collapse-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s cubic-bezier(0.16,1,0.3,1); }
+    .collapse-wrap.open { grid-template-rows: 1fr; }
     .collapse-inner { overflow: hidden; }
 
-    /* ── Focus glow ── */
-    .focus-glow { box-shadow: 0 0 80px -20px rgba(59,130,246,0.15), 0 0 30px -10px rgba(59,130,246,0.08); }
-    .dark .focus-glow { box-shadow: 0 0 80px -20px rgba(96,165,250,0.1), 0 0 30px -10px rgba(96,165,250,0.05); }
+    /* Pomo pulse */
+    @keyframes pomoPulse { 0%,100% { box-shadow:0 0 0 0 rgba(239,68,68,0.12); } 50% { box-shadow:0 0 0 12px rgba(239,68,68,0); } }
+    .pomo-pulse { animation: pomoPulse 2s ease-in-out infinite; border-radius: 50%; }
 
-    /* ── Heatmap cell ── */
-    .heat-cell { transition: all 0.2s ease; }
-    .heat-cell:hover { transform: scale(1.4); z-index: 10; }
+    /* Heat cell */
+    .hcell { transition: all 0.15s ease; }
+    .hcell:hover { transform: scale(1.3); z-index: 10; }
 
-    /* ── Kbd ── */
-    .kbd {
-      display: inline-flex; align-items: center; padding: 2px 6px; font-size: 10px; font-weight: 500;
-      border-radius: 5px; border: 1px solid; line-height: 1.4;
+    /* Focus glow */
+    .focus-glow {
+      box-shadow: 0 0 60px -15px rgba(59,130,246,0.12), 0 0 20px -8px rgba(59,130,246,0.06);
+    }
+    .dark .focus-glow {
+      box-shadow: 0 0 60px -15px rgba(96,165,250,0.08), 0 0 20px -8px rgba(96,165,250,0.04);
     }
 
-    /* ── Ambient ── */
-    .ambient-mode { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-    @keyframes ambientFloat1 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(80px,-60px) scale(1.1); } 66% { transform: translate(-40px,40px) scale(0.95); } }
-    @keyframes ambientFloat2 { 0%,100% { transform: translate(0,0) scale(1); } 33% { transform: translate(-60px,50px) scale(1.05); } 66% { transform: translate(50px,-30px) scale(0.9); } }
-    @keyframes ambientFloat3 { 0%,100% { transform: translate(0,0) scale(0.95); } 50% { transform: translate(30px,60px) scale(1.1); } }
-    .amb-orb-1 { animation: ambientFloat1 15s ease-in-out infinite; }
-    .amb-orb-2 { animation: ambientFloat2 18s ease-in-out infinite; }
-    .amb-orb-3 { animation: ambientFloat3 12s ease-in-out infinite; }
+    /* Ambient */
+    @keyframes orbFloat1 { 0%,100% { transform:translate(0,0) scale(1); } 33% { transform:translate(100px,-80px) scale(1.15); } 66% { transform:translate(-50px,60px) scale(0.9); } }
+    @keyframes orbFloat2 { 0%,100% { transform:translate(0,0) scale(1); } 50% { transform:translate(-80px,70px) scale(1.1); } }
+    @keyframes orbFloat3 { 0%,100% { transform:translate(0,0); } 33% { transform:translate(60px,80px); } 66% { transform:translate(-30px,-40px); } }
+    .orb1 { animation: orbFloat1 18s ease-in-out infinite; }
+    .orb2 { animation: orbFloat2 14s ease-in-out infinite; }
+    .orb3 { animation: orbFloat3 20s ease-in-out infinite; }
 
-    /* ── Particles ── */
-    @keyframes particleRise {
-      0% { transform: translateY(0) scale(1); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+    @keyframes particleUp { 0% { transform:translateY(0) scale(1); opacity:0; } 10% { opacity:0.8; } 90% { opacity:0.6; } 100% { transform:translateY(-100vh) scale(0); opacity:0; } }
+    .particle { position:absolute; border-radius:50%; pointer-events:none; animation:particleUp linear infinite; }
+
+    /* Aurora border */
+    @keyframes auRot { from { --au-angle: 0deg; } to { --au-angle: 360deg; } }
+    .aurora { position: relative; }
+    .aurora::before {
+      content: '';
+      position: absolute;
+      inset: -1.5px;
+      border-radius: inherit;
+      padding: 1.5px;
+      background: conic-gradient(from 0deg, #3b82f640, #8b5cf640, #ec489940, #10b98140, #3b82f640);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: auRot 8s linear infinite;
     }
-    .particle {
-      position: absolute; border-radius: 50%; pointer-events: none;
-      animation: particleRise linear infinite;
+    @supports (background: conic-gradient(from 0deg, red, blue)) {
+      @property --au-angle {
+        syntax: '<angle>';
+        initial-value: 0deg;
+        inherits: false;
+      }
+      .aurora::before {
+        background: conic-gradient(from var(--au-angle), #3b82f640, #8b5cf640, #ec489940, #10b98140, #3b82f640);
+      }
+      @keyframes auRot { to { --au-angle: 360deg; } }
     }
 
-    /* ── Pomo pulse ── */
-    @keyframes pomoPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.15); } 50% { box-shadow: 0 0 0 14px rgba(239,68,68,0); } }
-    .pomo-active { animation: pomoPulse 2s ease-in-out infinite; }
+    /* Noise */
+    .noise::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.02;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    .dark .noise::after { opacity: 0.03; }
 
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 6px; }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 3px; }
-    .dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.06); border-radius: 3px; }
+    .light ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); }
 
-    /* ── Responsive ── */
-    @media (max-width: 480px) {
-      .ring-container { transform: scale(0.85); }
+    /* Bento */
+    .bento { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 560px) { .bento { grid-template-columns: 1fr; } }
+    .bento .span-2 { grid-column: 1 / -1; }
+
+    /* Kbd */
+    .kbd {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 5px;
+      font-size: 9px;
+      font-weight: 600;
+      border-radius: 4px;
+      border: 1px solid;
+      font-family: 'JetBrains Mono', monospace;
     }
   </style>
 </head>
 <body>
 <div id="root"></div>
+
 <script type="text/babel">
-const { useState, useEffect, useRef, useCallback, useMemo } = React;
+  const { useState, useEffect, useRef, useCallback, useMemo } = React;
 
-// ═══════════════════════════════════════
-// ICONS
-// ═══════════════════════════════════════
-const I = {
-  Sun: (p) => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||20} height={p.size||20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
-  Moon: (p) => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||20} height={p.size||20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
-  Plus: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-  Target: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
-  Clock: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  Zap: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
-  Trash: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>,
-  Expand: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>,
-  Play: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="5 3 19 12 5 21 5 3"/></svg>,
-  Pause: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>,
-  RotateCcw: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>,
-  Check: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" {...p}><polyline points="20 6 9 17 4 12"/></svg>,
-  Flame: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...p}><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>,
-  Volume: (p) => <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...p}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>,
-};
-
-// ═══════════════════════════════════════
-// SOUND - Web Audio API notification
-// ═══════════════════════════════════════
-function playNotificationSound() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
-    notes.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.15);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.15 + 0.5);
-      osc.start(ctx.currentTime + i * 0.15);
-      osc.stop(ctx.currentTime + i * 0.15 + 0.5);
-    });
-  } catch(e) {}
-}
-
-// ═══════════════════════════════════════
-// TIME HELPERS
-// ═══════════════════════════════════════
-function getTimeProgress() {
-  const now = new Date();
-  const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
-  const startOfYear = new Date(y,0,1), endOfYear = new Date(y+1,0,1);
-  const yearProgress = ((now-startOfYear)/(endOfYear-startOfYear))*100;
-  const startOfMonth = new Date(y,m,1), endOfMonth = new Date(y,m+1,1);
-  const monthProgress = ((now-startOfMonth)/(endOfMonth-startOfMonth))*100;
-  const dow = now.getDay();
-  const startOfWeek = new Date(now); startOfWeek.setDate(d-((dow+6)%7)); startOfWeek.setHours(0,0,0,0);
-  const endOfWeek = new Date(startOfWeek); endOfWeek.setDate(startOfWeek.getDate()+7);
-  const weekProgress = ((now-startOfWeek)/(endOfWeek-startOfWeek))*100;
-  const startOfDay = new Date(y,m,d), endOfDay = new Date(y,m,d+1);
-  const dayProgress = ((now-startOfDay)/(endOfDay-startOfDay))*100;
-  const ws = new Date(y,m,d,9,0,0), we = new Date(y,m,d,18,0,0);
-  let workdayProgress = now<ws?0:now>we?100:((now-ws)/(we-ws))*100;
-  const workdayRemaining = now<we&&now>=ws?Math.ceil((we-now)/60000):now<ws?540:0;
-  return { yearProgress, monthProgress, weekProgress, dayProgress, workdayProgress, workdayRemaining, now };
-}
-
-function getGreeting(h) {
-  if(h<5) return "Burning midnight oil";
-  if(h<12) return "Good morning";
-  if(h<17) return "Good afternoon";
-  if(h<21) return "Good evening";
-  return "Night mode";
-}
-
-function getTimeTheme(h) {
-  if(h<5)  return { accent:"#8b5cf6", grad:"from-violet-500/5 to-indigo-500/5", ring:"#8b5cf6" };
-  if(h<8)  return { accent:"#f59e0b", grad:"from-amber-500/5 to-orange-500/5", ring:"#f59e0b" };
-  if(h<12) return { accent:"#3b82f6", grad:"from-blue-500/5 to-cyan-500/5", ring:"#3b82f6" };
-  if(h<15) return { accent:"#10b981", grad:"from-emerald-500/5 to-teal-500/5", ring:"#10b981" };
-  if(h<18) return { accent:"#f97316", grad:"from-orange-500/5 to-amber-500/5", ring:"#f97316" };
-  if(h<21) return { accent:"#ec4899", grad:"from-pink-500/5 to-rose-500/5", ring:"#ec4899" };
-  return { accent:"#8b5cf6", grad:"from-violet-500/5 to-indigo-500/5", ring:"#8b5cf6" };
-}
-
-function getMotivation(type, pct) {
-  const p = Math.round(pct);
-  const m = {
-    Year:[
-      [25,"The year is fresh. Plant seeds now for Q3 harvest."],
-      [50,"Halftime. What will you be proud of in December?"],
-      [75,`${p}% gone. Audit your year — cut what doesn't serve you.`],
-      [101,"Final lap. Make it count. No regrets."]
-    ],
-    Month:[
-      [30,"New month energy. Pick one thing to ship."],
-      [60,"Midpoint. Are you spending time or investing it?"],
-      [85,"Time is compressing. Prioritize ruthlessly."],
-      [101,"Month end. Celebrate wins, learn from misses."]
-    ],
-    Week:[
-      [30,"Monday mindset. Protect your deep work hours."],
-      [60,"Midweek. The real work happens when motivation fades."],
-      [80,"Thursday push. One focused session changes the week."],
-      [101,"Wrap it up. Capture learnings while they're fresh."]
-    ],
-    Day:[
-      [25,"Morning gold. Your brain's sharpest — use it wisely."],
-      [50,"Midday check. One more deep session before the slump."],
-      [75,"Afternoon run. Ship one thing before you close the laptop."],
-      [101,"Day's fading. Rest well — tomorrow's a new canvas."]
-    ]
-  };
-  return (m[type]||[]).find(([t]) => p < t)?.[1] || "";
-}
-
-const RINGS = [
-  { label:"Year",  key:"yearProgress",  colors:["#3b82f6","#818cf8"], size:168 },
-  { label:"Month", key:"monthProgress",  colors:["#10b981","#2dd4bf"], size:134 },
-  { label:"Week",  key:"weekProgress",   colors:["#f59e0b","#fb923c"], size:100 },
-  { label:"Day",   key:"dayProgress",    colors:["#f43f5e","#f472b6"], size:66 },
-];
-
-// ═══════════════════════════════════════
-// ANIMATED NUMBER
-// ═══════════════════════════════════════
-function AnimatedNumber({ value, decimals = 1, suffix = "", className = "" }) {
-  const [display, setDisplay] = useState(0);
-  const prevRef = useRef(0);
-  const rafRef = useRef(null);
-
-  useEffect(() => {
-    const start = prevRef.current;
-    const end = value;
-    const duration = 800;
-    const startTime = performance.now();
-    const step = (t) => {
-      const elapsed = t - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-      setDisplay(start + (end - start) * eased);
-      if (progress < 1) rafRef.current = requestAnimationFrame(step);
-    };
-    rafRef.current = requestAnimationFrame(step);
-    prevRef.current = end;
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [value]);
-
-  return <span className={className}>{display.toFixed(decimals)}{suffix}</span>;
-}
-
-// ═══════════════════════════════════════
-// PROGRESS RING
-// ═══════════════════════════════════════
-function ProgressRing({ size, percentage, colors, label, index }) {
-  const sw = 4.5;
-  const r = (size - sw) / 2;
-  const circ = 2 * Math.PI * r;
-  const offset = circ - (Math.min(percentage, 100) / 100) * circ;
-  const c = size / 2;
-  const id = `g-${label}`;
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setMounted(true), 100 + index * 150); return () => clearTimeout(t); }, []);
-
-  return (
-    <div className="absolute" style={{ width:size, height:size, top:'50%', left:'50%', transform:'translate(-50%,-50%)' }}>
-      <svg width={size} height={size}>
-        <defs>
-          <linearGradient id={id} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor={colors[0]} />
-            <stop offset="100%" stopColor={colors[1]} />
-          </linearGradient>
-        </defs>
-        <circle cx={c} cy={c} r={r} fill="none" stroke="currentColor"
-          className="text-gray-100 dark:text-white/[0.05]" strokeWidth={sw} />
-        <circle cx={c} cy={c} r={r} fill="none" stroke={`url(#${id})`}
-          strokeWidth={sw} strokeLinecap="round"
-          strokeDasharray={circ}
-          strokeDashoffset={mounted ? offset : circ}
-          className="ring-draw"
-          style={{ transform:'rotate(-90deg)', transformOrigin:'center' }} />
+  // ───────────── ICONS ─────────────
+  function IconSun(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <circle cx="12" cy="12" r="5"/>
+        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
       </svg>
-    </div>
-  );
-}
+    );
+  }
 
-// ═══════════════════════════════════════
-// TILT CARD
-// ═══════════════════════════════════════
-function TiltCard({ children, className = "", style = {} }) {
-  const ref = useRef(null);
-  const handleMove = useCallback((e) => {
-    const el = ref.current; if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = (e.clientX - r.left) / r.width - 0.5;
-    const y = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `perspective(800px) rotateX(${y*-5}deg) rotateY(${x*5}deg) scale3d(1.008,1.008,1.008)`;
-  }, []);
-  const handleLeave = useCallback(() => {
-    if (ref.current) ref.current.style.transform = '';
-  }, []);
-  return <div ref={ref} className={`tilt-card ${className}`} style={style} onMouseMove={handleMove} onMouseLeave={handleLeave}>{children}</div>;
-}
+  function IconMoon(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={18} height={18} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    );
+  }
 
-// ═══════════════════════════════════════
-// POMODORO
-// ═══════════════════════════════════════
-function PomodoroTimer() {
-  const WORK=25*60, BREAK=5*60;
-  const [seconds,setSeconds] = useState(WORK);
-  const [running,setRunning] = useState(false);
-  const [isBreak,setIsBreak] = useState(false);
-  const [sessions,setSessions] = useState(() => {
-    try { return parseInt(localStorage.getItem("m_pomo"))||0; } catch{return 0;}
-  });
+  function IconPlus(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+    );
+  }
 
-  useEffect(() => {
-    if(!running) return;
-    const id = setInterval(() => {
-      setSeconds(s => {
-        if(s<=1) {
-          setRunning(false);
-          playNotificationSound();
-          if(!isBreak) {
-            const n = sessions+1;
-            setSessions(n);
-            localStorage.setItem("m_pomo",n);
-            setIsBreak(true);
-            return BREAK;
-          } else { setIsBreak(false); return WORK; }
-        }
-        return s-1;
+  function IconZap(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={15} height={15} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
+    );
+  }
+
+  function IconPlay(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={13} height={13} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <polygon points="5 3 19 12 5 21 5 3"/>
+      </svg>
+    );
+  }
+
+  function IconPause(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={13} height={13} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <rect x="6" y="4" width="4" height="16"/>
+        <rect x="14" y="4" width="4" height="16"/>
+      </svg>
+    );
+  }
+
+  function IconReset(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <polyline points="1 4 1 10 7 10"/>
+        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+      </svg>
+    );
+  }
+
+  function IconCheck(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={11} height={11} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    );
+  }
+
+  function IconFlame(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+      </svg>
+    );
+  }
+
+  function IconExpand(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={15} height={15} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <polyline points="15 3 21 3 21 9"/>
+        <polyline points="9 21 3 21 3 15"/>
+        <line x1="21" y1="3" x2="14" y2="10"/>
+        <line x1="3" y1="21" x2="10" y2="14"/>
+      </svg>
+    );
+  }
+
+  function IconTrash(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={12} height={12} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <polyline points="3 6 5 6 21 6"/>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+      </svg>
+    );
+  }
+
+  function IconTarget(props) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width={14} height={14} viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+        className={props.className}>
+        <circle cx="12" cy="12" r="10"/>
+        <circle cx="12" cy="12" r="6"/>
+        <circle cx="12" cy="12" r="2"/>
+      </svg>
+    );
+  }
+
+  // ───────────── SOUND ─────────────
+  function playChime() {
+    try {
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var notes = [523.25, 659.25, 783.99];
+      notes.forEach(function(freq, i) {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.12);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.5);
+        osc.start(ctx.currentTime + i * 0.12);
+        osc.stop(ctx.currentTime + i * 0.12 + 0.5);
       });
-    }, 1000);
-    return () => clearInterval(id);
-  }, [running, isBreak, sessions]);
+    } catch(e) { /* silent fail */ }
+  }
 
-  const reset = () => { setRunning(false); setIsBreak(false); setSeconds(WORK); };
-  const mins = Math.floor(seconds/60), secs = seconds%60;
-  const total = isBreak?BREAK:WORK, pct = ((total-seconds)/total)*100;
-  const r = 34, circ = 2*Math.PI*r, dashOff = circ-(pct/100)*circ;
-  const color = isBreak?"#10b981":"#ef4444";
+  // ───────────── TIME HELPERS ─────────────
+  function getTimeProgress() {
+    var now = new Date();
+    var y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
 
-  return (
-    <div className="flex items-center gap-4">
-      <div className={`relative ${running && !isBreak ? "pomo-active" : ""}`} style={{ borderRadius: '50%' }}>
-        <svg width="80" height="80">
-          <circle cx="40" cy="40" r={r} fill="none" stroke="currentColor" className="text-gray-100 dark:text-white/[0.06]" strokeWidth="3.5" />
-          <circle cx="40" cy="40" r={r} fill="none" stroke={color} strokeWidth="3.5" strokeLinecap="round"
-            strokeDasharray={circ} strokeDashoffset={dashOff}
-            style={{ transform:'rotate(-90deg)', transformOrigin:'center', transition:'stroke-dashoffset 1s linear' }} />
+    var startYear = new Date(y, 0, 1), endYear = new Date(y+1, 0, 1);
+    var yearPct = ((now - startYear) / (endYear - startYear)) * 100;
+
+    var startMonth = new Date(y, m, 1), endMonth = new Date(y, m+1, 1);
+    var monthPct = ((now - startMonth) / (endMonth - startMonth)) * 100;
+
+    var dow = now.getDay();
+    var startWeek = new Date(now);
+    startWeek.setDate(d - ((dow + 6) % 7));
+    startWeek.setHours(0, 0, 0, 0);
+    var endWeek = new Date(startWeek);
+    endWeek.setDate(startWeek.getDate() + 7);
+    var weekPct = ((now - startWeek) / (endWeek - startWeek)) * 100;
+
+    var startDay = new Date(y, m, d), endDay = new Date(y, m, d+1);
+    var dayPct = ((now - startDay) / (endDay - startDay)) * 100;
+
+    var workStart = new Date(y, m, d, 9, 0, 0);
+    var workEnd = new Date(y, m, d, 18, 0, 0);
+    var workPct = 0;
+    if (now < workStart) workPct = 0;
+    else if (now > workEnd) workPct = 100;
+    else workPct = ((now - workStart) / (workEnd - workStart)) * 100;
+
+    var workRemain = 0;
+    if (now < workEnd && now >= workStart) workRemain = Math.ceil((workEnd - now) / 60000);
+    else if (now < workStart) workRemain = 540;
+
+    return {
+      yearPct: yearPct,
+      monthPct: monthPct,
+      weekPct: weekPct,
+      dayPct: dayPct,
+      workPct: workPct,
+      workRemain: workRemain,
+      now: now
+    };
+  }
+
+  function getGreeting(h) {
+    if (h < 5) return "Late night";
+    if (h < 12) return "Good morning";
+    if (h < 17) return "Good afternoon";
+    if (h < 21) return "Good evening";
+    return "Night mode";
+  }
+
+  function getAccent(h) {
+    if (h < 5 || h >= 21) return { color: "#a78bfa", gradient: "linear-gradient(135deg, #a78bfa, #818cf8)" };
+    if (h < 10) return { color: "#fbbf24", gradient: "linear-gradient(135deg, #fbbf24, #f59e0b)" };
+    if (h < 14) return { color: "#60a5fa", gradient: "linear-gradient(135deg, #60a5fa, #3b82f6)" };
+    if (h < 18) return { color: "#34d399", gradient: "linear-gradient(135deg, #34d399, #10b981)" };
+    return { color: "#fb923c", gradient: "linear-gradient(135deg, #fb923c, #f97316)" };
+  }
+
+  function getMotivation(type, pct) {
+    var p = Math.round(pct);
+    var map = {
+      Year: [
+        [25, "Plant seeds now. Your December self will thank you."],
+        [50, "Halfway. Cut what's not working, double what is."],
+        [75, p + "% gone. Audit your year — what stays, what goes?"],
+        [101, "Final sprint. Leave nothing on the table."]
+      ],
+      Month: [
+        [30, "New month. Pick one thing to ship."],
+        [60, "Halfway — spending time or investing it?"],
+        [85, "Month closing. Ship or shelve."],
+        [101, "Month done. Own the outcome."]
+      ],
+      Week: [
+        [30, "Fresh week. Guard your deep work blocks."],
+        [60, "Midweek. Momentum beats motivation."],
+        [80, "Thursday energy. One session changes the week."],
+        [101, "Week's end. Capture what you learned."]
+      ],
+      Day: [
+        [25, "Morning gold. Hardest task first."],
+        [50, "Midday. One more deep block before the slump."],
+        [75, "Ship one thing before you close the laptop."],
+        [101, "Day's done. Rest is productive too."]
+      ]
+    };
+    var entries = map[type] || [];
+    for (var i = 0; i < entries.length; i++) {
+      if (p < entries[i][0]) return entries[i][1];
+    }
+    return "";
+  }
+
+  var RINGS = [
+    { label: "Year",  key: "yearPct",  colors: ["#818cf8", "#a78bfa"], size: 152 },
+    { label: "Month", key: "monthPct", colors: ["#34d399", "#6ee7b7"], size: 118 },
+    { label: "Week",  key: "weekPct",  colors: ["#fbbf24", "#fcd34d"], size: 84 },
+    { label: "Day",   key: "dayPct",   colors: ["#fb7185", "#fda4af"], size: 50 },
+  ];
+
+  // ───────────── ANIMATED NUMBER ─────────────
+  function AnimNum(props) {
+    var value = props.value;
+    var decimals = props.decimals !== undefined ? props.decimals : 1;
+    var suffix = props.suffix || "";
+    var className = props.className || "";
+
+    var displayRef = useRef(0);
+    var rafRef = useRef(null);
+    var prevRef = useRef(0);
+    var forceUpdate = useState(0)[1];
+
+    useEffect(function() {
+      var start = prevRef.current;
+      var end = value;
+      var startTime = performance.now();
+
+      function step(t) {
+        var elapsed = t - startTime;
+        var progress = Math.min(elapsed / 900, 1);
+        var eased = 1 - Math.pow(1 - progress, 4);
+        displayRef.current = start + (end - start) * eased;
+        forceUpdate(function(n) { return n + 1; });
+        if (progress < 1) {
+          rafRef.current = requestAnimationFrame(step);
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(step);
+      prevRef.current = end;
+
+      return function() {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      };
+    }, [value]);
+
+    return React.createElement("span", { className: className },
+      displayRef.current.toFixed(decimals) + suffix
+    );
+  }
+
+  // ───────────── PROGRESS RING ─────────────
+  function ProgressRing(props) {
+    var size = props.size;
+    var pct = props.pct;
+    var colors = props.colors;
+    var label = props.label;
+    var index = props.index;
+
+    var sw = 3.5;
+    var r = (size - sw) / 2;
+    var circ = 2 * Math.PI * r;
+    var offset = circ - (Math.min(pct, 100) / 100) * circ;
+    var center = size / 2;
+    var gradId = "ring-grad-" + label;
+
+    var mounted = useState(false);
+    var isMounted = mounted[0];
+    var setMounted = mounted[1];
+
+    useEffect(function() {
+      var timer = setTimeout(function() { setMounted(true); }, 80 + index * 120);
+      return function() { clearTimeout(timer); };
+    }, []);
+
+    return (
+      <div className="absolute" style={{ width: size, height: size, top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+        <svg width={size} height={size}>
+          <defs>
+            <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={colors[0]} />
+              <stop offset="100%" stopColor={colors[1]} />
+            </linearGradient>
+          </defs>
+          <circle cx={center} cy={center} r={r} fill="none" stroke="currentColor"
+            className="text-black/[0.04] dark:text-white/[0.04]" strokeWidth={sw} />
+          <circle cx={center} cy={center} r={r} fill="none" stroke={"url(#" + gradId + ")"}
+            strokeWidth={sw} strokeLinecap="round"
+            strokeDasharray={circ}
+            strokeDashoffset={isMounted ? offset : circ}
+            className="ring-draw"
+            style={{ transform: 'rotate(-90deg)', transformOrigin: 'center' }} />
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-base font-bold tabular-nums text-gray-900 dark:text-white">
-            {String(mins).padStart(2,'0')}:{String(secs).padStart(2,'0')}
-          </span>
-          <span className="text-[8px] uppercase tracking-widest mt-0.5" style={{ color }}>{isBreak?"Break":"Focus"}</span>
+      </div>
+    );
+  }
+
+  // ───────────── POMODORO ─────────────
+  function Pomodoro() {
+    var WORK = 25 * 60, BREAK_TIME = 5 * 60;
+
+    var secState = useState(WORK);
+    var seconds = secState[0], setSeconds = secState[1];
+
+    var runState = useState(false);
+    var running = runState[0], setRunning = runState[1];
+
+    var brkState = useState(false);
+    var isBreak = brkState[0], setIsBreak = brkState[1];
+
+    var sessState = useState(function() {
+      try { return parseInt(localStorage.getItem("momentum_pomo_count")) || 0; }
+      catch(e) { return 0; }
+    });
+    var sessions = sessState[0], setSessions = sessState[1];
+
+    useEffect(function() {
+      if (!running) return;
+      var id = setInterval(function() {
+        setSeconds(function(s) {
+          if (s <= 1) {
+            setRunning(false);
+            playChime();
+            if (!isBreak) {
+              var next = sessions + 1;
+              setSessions(next);
+              localStorage.setItem("momentum_pomo_count", String(next));
+              setIsBreak(true);
+              return BREAK_TIME;
+            } else {
+              setIsBreak(false);
+              return WORK;
+            }
+          }
+          return s - 1;
+        });
+      }, 1000);
+      return function() { clearInterval(id); };
+    }, [running, isBreak, sessions]);
+
+    var reset = function() { setRunning(false); setIsBreak(false); setSeconds(WORK); };
+    var mins = Math.floor(seconds / 60);
+    var secs = seconds % 60;
+    var total = isBreak ? BREAK_TIME : WORK;
+    var pct = ((total - seconds) / total) * 100;
+    var radius = 30, circ = 2 * Math.PI * radius;
+    var dashOffset = circ - (pct / 100) * circ;
+    var ringColor = isBreak ? "#34d399" : "#f87171";
+
+    return (
+      <div className="flex items-center gap-4">
+        <div className={"relative " + (running && !isBreak ? "pomo-pulse" : "")}>
+          <svg width="68" height="68">
+            <circle cx="34" cy="34" r={radius} fill="none" stroke="currentColor"
+              className="text-black/[0.04] dark:text-white/[0.04]" strokeWidth="3" />
+            <circle cx="34" cy="34" r={radius} fill="none" stroke={ringColor}
+              strokeWidth="3" strokeLinecap="round"
+              strokeDasharray={circ} strokeDashoffset={dashOffset}
+              style={{ transform: 'rotate(-90deg)', transformOrigin: 'center', transition: 'stroke-dashoffset 1s linear' }} />
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-sm font-mono font-bold tabular-nums text-gray-900 dark:text-white">
+              {String(mins).padStart(2, '0')}:{String(secs).padStart(2, '0')}
+            </span>
+            <span className="text-[7px] uppercase tracking-[0.15em] font-semibold mt-0.5" style={{ color: ringColor }}>
+              {isBreak ? "break" : "focus"}
+            </span>
+          </div>
+        </div>
+        <div className="space-y-1.5">
+          <div className="flex gap-1">
+            <button onClick={function() { setRunning(!running); }}
+              className={"p-1.5 rounded-lg transition " + (running
+                ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900"
+                : "bg-black/[0.04] dark:bg-white/[0.04] text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-black/[0.08] dark:hover:bg-white/[0.08]")}>
+              {running ? <IconPause /> : <IconPlay />}
+            </button>
+            <button onClick={reset}
+              className="p-1.5 rounded-lg bg-black/[0.04] dark:bg-white/[0.04] text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-black/[0.08] dark:hover:bg-white/[0.08] transition">
+              <IconReset />
+            </button>
+          </div>
+          <div className="flex items-center gap-1 text-[10px] text-gray-500">
+            <IconFlame className="text-orange-400" />
+            <span className="font-mono font-semibold">{sessions}</span>
+          </div>
         </div>
       </div>
-      <div className="space-y-2">
-        <div className="flex gap-1.5">
-          <button onClick={() => setRunning(!running)}
-            className={`p-2 rounded-lg transition-all ${running?"bg-gray-900 dark:bg-white text-white dark:text-gray-900":"bg-gray-100 dark:bg-white/[0.06] text-gray-500 hover:bg-gray-200 dark:hover:bg-white/10"}`}>
-            {running ? <I.Pause /> : <I.Play />}
-          </button>
-          <button onClick={reset}
-            className="p-2 rounded-lg bg-gray-100 dark:bg-white/[0.06] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10 transition-all">
-            <I.RotateCcw />
-          </button>
-        </div>
-        <div className="flex items-center gap-1 text-[11px] text-gray-400">
-          <I.Flame className="text-orange-400" />
-          <span className="tabular-nums font-medium">{sessions}</span>
-          <span>sessions today</span>
-        </div>
-      </div>
-    </div>
-  );
-}
+    );
+  }
 
-// ═══════════════════════════════════════
-// HABIT TRACKER WITH 7-DAY HEATMAP
-// ═══════════════════════════════════════
-function HabitTracker() {
-  const [habits, setHabits] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("m_habits")) || [
-      { id:1, name:"Exercise", history:{} },
-      { id:2, name:"Read 30min", history:{} },
-      { id:3, name:"No social media", history:{} },
-    ]; } catch { return []; }
-  });
-  const [adding, setAdding] = useState(false);
-  const [newName, setNewName] = useState("");
-  const inputRef = useRef(null);
+  // ───────────── HABITS ─────────────
+  function HabitTracker() {
+    var DEFAULT_HABITS = [
+      { id: 1, name: "Exercise", history: {} },
+      { id: 2, name: "Read", history: {} },
+      { id: 3, name: "No doomscroll", history: {} },
+    ];
 
-  useEffect(() => { localStorage.setItem("m_habits", JSON.stringify(habits)); }, [habits]);
-  useEffect(() => { if (adding) inputRef.current?.focus(); }, [adding]);
+    var habState = useState(function() {
+      try {
+        var saved = JSON.parse(localStorage.getItem("momentum_habits"));
+        if (saved && saved.length > 0) return saved;
+      } catch(e) {}
+      return DEFAULT_HABITS;
+    });
+    var habits = habState[0], setHabits = habState[1];
 
-  const today = new Date().toISOString().slice(0,10);
-  const last7 = useMemo(() => {
-    const days = [];
-    for (let i=6; i>=0; i--) {
-      const d = new Date(); d.setDate(d.getDate()-i);
-      days.push({ key: d.toISOString().slice(0,10), label: d.toLocaleDateString("en-US",{weekday:"narrow"}) });
+    var addState = useState(false);
+    var adding = addState[0], setAdding = addState[1];
+
+    var nameState = useState("");
+    var newName = nameState[0], setNewName = nameState[1];
+
+    var inputRef = useRef(null);
+
+    var today = new Date().toISOString().slice(0, 10);
+
+    var last7 = useMemo(function() {
+      var days = [];
+      for (var i = 6; i >= 0; i--) {
+        var d = new Date();
+        d.setDate(d.getDate() - i);
+        days.push({
+          key: d.toISOString().slice(0, 10),
+          label: d.toLocaleDateString("en", { weekday: "narrow" })
+        });
+      }
+      return days;
+    }, [today]);
+
+    useEffect(function() {
+      localStorage.setItem("momentum_habits", JSON.stringify(habits));
+    }, [habits]);
+
+    useEffect(function() {
+      if (adding && inputRef.current) inputRef.current.focus();
+    }, [adding]);
+
+    function toggleHabit(id, dateKey) {
+      setHabits(function(prev) {
+        return prev.map(function(h) {
+          if (h.id !== id) return h;
+          var hist = Object.assign({}, h.history);
+          hist[dateKey] = !hist[dateKey];
+          return Object.assign({}, h, { history: hist });
+        });
+      });
     }
-    return days;
-  }, [today]);
 
-  const toggleHabit = (id, dateKey) => {
-    setHabits(prev => prev.map(h => {
-      if (h.id !== id) return h;
-      const hist = { ...h.history };
-      hist[dateKey] = !hist[dateKey];
-      return { ...h, history: hist };
-    }));
-  };
-
-  const getStreak = (habit) => {
-    let streak = 0;
-    const d = new Date();
-    while (true) {
-      const key = d.toISOString().slice(0,10);
-      if (habit.history[key]) { streak++; d.setDate(d.getDate()-1); }
-      else break;
+    function getStreak(habit) {
+      var streak = 0;
+      var d = new Date();
+      while (habit.history[d.toISOString().slice(0, 10)]) {
+        streak++;
+        d.setDate(d.getDate() - 1);
+      }
+      return streak;
     }
-    return streak;
-  };
 
-  const addHabit = (e) => {
-    e.preventDefault();
-    if (newName.trim()) {
-      setHabits(prev => [...prev, { id: Date.now(), name: newName.trim(), history: {} }]);
-      setNewName(""); setAdding(false);
+    function addHabit(e) {
+      e.preventDefault();
+      if (newName.trim()) {
+        setHabits(function(prev) {
+          return prev.concat([{ id: Date.now(), name: newName.trim(), history: {} }]);
+        });
+        setNewName("");
+        setAdding(false);
+      }
     }
-  };
 
-  return (
-    <div className="space-y-1">
-      {/* Header row with day labels */}
-      <div className="flex items-center mb-2">
-        <div className="flex-1" />
-        <div className="flex gap-1 mr-8">
-          {last7.map(d => (
-            <div key={d.key} className="w-6 text-center text-[9px] font-medium text-gray-300 dark:text-gray-600 uppercase">{d.label}</div>
-          ))}
+    function deleteHabit(id) {
+      setHabits(function(prev) { return prev.filter(function(h) { return h.id !== id; }); });
+    }
+
+    return (
+      <div className="space-y-0.5">
+        {/* Day labels */}
+        <div className="flex items-center mb-2">
+          <div className="flex-1"></div>
+          <div className="flex gap-[3px] mr-6">
+            {last7.map(function(d) {
+              return <div key={d.key} className="w-[22px] text-center text-[8px] font-mono font-medium text-gray-400 dark:text-gray-600 uppercase">{d.label}</div>;
+            })}
+          </div>
         </div>
-      </div>
 
-      {habits.map(h => {
-        const streak = getStreak(h);
-        const checkedToday = h.history[today];
-        return (
-          <div key={h.id} className="flex items-center py-1.5 group">
-            <div className="flex-1 min-w-0 flex items-center gap-2">
-              <span className={`text-sm truncate ${checkedToday ? "text-gray-400 dark:text-gray-500" : "text-gray-700 dark:text-gray-300"}`}>{h.name}</span>
-              {streak >= 2 && (
-                <span className="flex items-center gap-0.5 text-[10px] font-semibold text-orange-500 flex-shrink-0">
-                  <I.Flame />{streak}
+        {/* Habit rows */}
+        {habits.map(function(h) {
+          var streak = getStreak(h);
+          var checkedToday = h.history[today];
+          return (
+            <div key={h.id} className="flex items-center py-1 group">
+              <div className="flex-1 min-w-0 flex items-center gap-1.5">
+                <span className={"text-[13px] truncate " + (checkedToday ? "text-gray-400 dark:text-gray-600 line-through" : "text-gray-700 dark:text-gray-300")}>
+                  {h.name}
                 </span>
-              )}
+                {streak >= 2 && (
+                  <span className="flex items-center gap-0.5 text-[9px] font-bold text-orange-400 flex-shrink-0">
+                    <IconFlame />{streak}
+                  </span>
+                )}
+              </div>
+              <div className="flex gap-[3px]">
+                {last7.map(function(d) {
+                  var done = h.history[d.key];
+                  var isToday = d.key === today;
+                  return (
+                    <button key={d.key} onClick={function() { toggleHabit(h.id, d.key); }}
+                      className={"hcell w-[22px] h-[22px] rounded-[5px] flex items-center justify-center text-white transition " +
+                        (done ? "bg-emerald-500/90"
+                          : isToday ? "bg-black/[0.04] dark:bg-white/[0.06] ring-1 ring-gray-300/40 dark:ring-gray-600/40"
+                          : "bg-black/[0.02] dark:bg-white/[0.03]")}>
+                      {done && <IconCheck />}
+                    </button>
+                  );
+                })}
+              </div>
+              <button onClick={function() { deleteHabit(h.id); }}
+                className="ml-1.5 p-0.5 rounded opacity-0 group-hover:opacity-100 text-gray-500 hover:text-red-400 transition">
+                <IconTrash />
+              </button>
             </div>
-            <div className="flex gap-1 items-center">
-              {last7.map(d => {
-                const done = h.history[d.key];
-                const isToday = d.key === today;
-                return (
-                  <button key={d.key} onClick={() => toggleHabit(h.id, d.key)}
-                    className={`heat-cell w-6 h-6 rounded-md flex items-center justify-center transition-all ${
-                      done
-                        ? "bg-emerald-500 text-white"
-                        : isToday
-                        ? "bg-gray-100 dark:bg-white/[0.08] border-2 border-dashed border-gray-300 dark:border-gray-600"
-                        : "bg-gray-50 dark:bg-white/[0.03]"
-                    }`}>
-                    {done && <I.Check />}
-                  </button>
-                );
-              })}
-            </div>
-            <button onClick={() => setHabits(prev => prev.filter(x => x.id !== h.id))}
-              className="ml-2 p-1 rounded opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-500 transition-all">
-              <I.Trash />
-            </button>
+          );
+        })}
+
+        {/* Add habit */}
+        {adding ? (
+          <form onSubmit={addHabit} className="flex gap-1.5 pt-2">
+            <input ref={inputRef} type="text" value={newName} onChange={function(e) { setNewName(e.target.value); }}
+              placeholder="New habit"
+              className="flex-1 px-2.5 py-1.5 text-xs rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-white/20 transition" />
+            <button type="submit" className="px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900">Add</button>
+            <button type="button" onClick={function() { setAdding(false); }} className="px-1.5 text-xs text-gray-400 hover:text-gray-300">Cancel</button>
+          </form>
+        ) : (
+          <button onClick={function() { setAdding(true); }}
+            className="flex items-center gap-1 text-[10px] text-gray-500 hover:text-gray-300 transition pt-1.5">
+            <IconPlus /> Add habit
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  // ───────────── MILESTONE CARD ─────────────
+  function MilestoneCard(props) {
+    var m = props.milestone;
+    var onDelete = props.onDelete;
+    var now = new Date();
+    var target = new Date(m.date + "T00:00:00");
+    var diff = target - now;
+    var isPast = diff < 0;
+    var abs = Math.abs(diff);
+    var days = Math.floor(abs / 86400000);
+    var hours = Math.floor((abs % 86400000) / 3600000);
+    var totalDays = m.totalDays || days;
+    var progress = isPast ? 100 : Math.max(0, Math.min(100, ((totalDays - days) / totalDays) * 100));
+
+    return (
+      <div className="si card p-3.5 group">
+        <div className="flex items-center justify-between">
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] font-medium text-gray-900 dark:text-white truncate">{m.name}</p>
+            <p className="text-[10px] text-gray-400 dark:text-gray-600 font-mono mt-0.5">
+              {target.toLocaleDateString("en", { month: "short", day: "numeric" })}
+            </p>
           </div>
-        );
-      })}
-
-      {adding ? (
-        <form onSubmit={addHabit} className="flex gap-2 pt-2">
-          <input ref={inputRef} type="text" value={newName} onChange={e => setNewName(e.target.value)}
-            placeholder="New habit" className="flex-1 px-3 py-1.5 text-sm rounded-lg bg-gray-50 dark:bg-white/[0.06] border border-gray-200 dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 transition" />
-          <button type="submit" className="px-3 py-1.5 text-sm font-medium rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900">Add</button>
-          <button type="button" onClick={() => setAdding(false)} className="px-2 text-sm text-gray-400">Cancel</button>
-        </form>
-      ) : (
-        <button onClick={() => setAdding(true)} className="flex items-center gap-1.5 text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition pt-2">
-          <I.Plus /> Add habit
-        </button>
-      )}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-// MILESTONE CARD
-// ═══════════════════════════════════════
-function MilestoneCard({ milestone, onDelete }) {
-  const now = new Date();
-  const target = new Date(milestone.date+"T00:00:00");
-  const diffMs = target-now;
-  const isPast = diffMs<0;
-  const abs = Math.abs(diffMs);
-  const days = Math.floor(abs/864e5);
-  const hours = Math.floor((abs%864e5)/36e5);
-  const totalDays = milestone.totalDays || days;
-  const progressPct = isPast ? 100 : Math.max(0, Math.min(100, ((totalDays - days) / totalDays) * 100));
-
-  return (
-    <TiltCard>
-      <div className="anim-scale-in p-4 rounded-xl glass-card group">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${isPast?"bg-gray-300 dark:bg-gray-600":"bg-emerald-500"}`} />
-            <div className="min-w-0">
-              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{milestone.name}</p>
-              <p className="text-[11px] text-gray-400 dark:text-gray-500">
-                {target.toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2.5 flex-shrink-0">
-            <div className="text-right">
-              <p className={`text-lg font-bold tabular-nums ${isPast?"text-gray-400":"text-gray-900 dark:text-white"}`}>
-                {isPast?"-":""}{days}<span className="text-[10px] font-normal text-gray-400 ml-0.5">d</span>
-                {" "}{hours}<span className="text-[10px] font-normal text-gray-400 ml-0.5">h</span>
-              </p>
-            </div>
-            <button onClick={() => onDelete(milestone.id)}
-              className="p-1 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-red-50 dark:hover:bg-red-500/10 text-gray-300 hover:text-red-500 transition-all">
-              <I.Trash />
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className={"text-lg font-mono font-bold tabular-nums " + (isPast ? "text-gray-500" : "text-gray-900 dark:text-white")}>
+              {isPast ? "-" : ""}{days}
+              <span className="text-[9px] font-normal text-gray-500 ml-0.5">d</span>
+            </span>
+            <button onClick={function() { onDelete(m.id); }}
+              className="p-1 rounded opacity-0 group-hover:opacity-100 text-gray-600 hover:text-red-400 transition">
+              <IconTrash />
             </button>
           </div>
         </div>
-        {/* Mini progress bar */}
         {!isPast && (
-          <div className="h-1 rounded-full bg-gray-100 dark:bg-white/[0.06] overflow-hidden">
-            <div className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-1000"
-              style={{ width: `${progressPct}%` }} />
+          <div className="h-[3px] rounded-full bg-black/[0.03] dark:bg-white/[0.04] mt-2.5 overflow-hidden">
+            <div className="h-full rounded-full transition-all duration-1000"
+              style={{ width: progress + "%", background: "linear-gradient(90deg, #34d399, #60a5fa)" }} />
           </div>
         )}
       </div>
-    </TiltCard>
-  );
-}
+    );
+  }
 
-// ═══════════════════════════════════════
-// ADD MILESTONE
-// ═══════════════════════════════════════
-function AddMilestoneForm({ onAdd, onCancel }) {
-  const [name,setName] = useState("");
-  const [date,setDate] = useState("");
-  const ref = useRef(null);
-  useEffect(() => { ref.current?.focus(); }, []);
-  const submit = (e) => {
-    e.preventDefault();
-    if(name.trim()&&date) onAdd({ id:Date.now(), name:name.trim(), date, totalDays: Math.ceil((new Date(date+"T00:00:00")-new Date())/864e5) });
-  };
-  return (
-    <form onSubmit={submit} className="anim-scale-in space-y-3 p-4 rounded-xl glass-card">
-      <input ref={ref} type="text" placeholder="What are you counting down to?" value={name} onChange={e=>setName(e.target.value)}
-        className="w-full px-3 py-2.5 text-sm rounded-lg bg-gray-50 dark:bg-white/[0.06] border border-gray-200 dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition" />
-      <input type="date" value={date} onChange={e=>setDate(e.target.value)}
-        className="w-full px-3 py-2.5 text-sm rounded-lg bg-gray-50 dark:bg-white/[0.06] border border-gray-200 dark:border-white/[0.08] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition" />
-      <div className="flex gap-2">
-        <button type="submit" className="flex-1 px-3 py-2.5 text-sm font-medium rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 transition">Add</button>
-        <button type="button" onClick={onCancel} className="px-3 py-2.5 text-sm rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-white/[0.06] transition">Cancel</button>
-      </div>
-    </form>
-  );
-}
+  // ───────────── ADD MILESTONE FORM ─────────────
+  function AddMilestoneForm(props) {
+    var onAdd = props.onAdd;
+    var onCancel = props.onCancel;
 
-// ═══════════════════════════════════════
-// PARTICLES (ambient mode)
-// ═══════════════════════════════════════
-function Particles({ color }) {
-  const particles = useMemo(() =>
-    Array.from({ length: 30 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-      duration: Math.random() * 8 + 6,
-      delay: Math.random() * 5,
-      opacity: Math.random() * 0.4 + 0.1,
-    })), []);
+    var nState = useState(""), name = nState[0], setName = nState[1];
+    var dState = useState(""), date = dState[0], setDate = dState[1];
+    var ref = useRef(null);
 
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map(p => (
-        <div key={p.id} className="particle"
-          style={{
-            left: `${p.left}%`, bottom: '-10px',
+    useEffect(function() { if (ref.current) ref.current.focus(); }, []);
+
+    function handleSubmit(e) {
+      e.preventDefault();
+      if (name.trim() && date) {
+        onAdd({
+          id: Date.now(),
+          name: name.trim(),
+          date: date,
+          totalDays: Math.ceil((new Date(date + "T00:00:00") - new Date()) / 86400000)
+        });
+      }
+    }
+
+    return (
+      <form onSubmit={handleSubmit} className="si card p-4 space-y-2.5">
+        <input ref={ref} type="text" placeholder="Counting down to..." value={name}
+          onChange={function(e) { setName(e.target.value); }}
+          className="w-full px-3 py-2 text-sm rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/20 transition" />
+        <input type="date" value={date} onChange={function(e) { setDate(e.target.value); }}
+          className="w-full px-3 py-2 text-sm rounded-lg bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-white/20 transition" />
+        <div className="flex gap-2">
+          <button type="submit" className="flex-1 py-2 text-sm font-semibold rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:opacity-90 transition">Add</button>
+          <button type="button" onClick={onCancel} className="px-3 py-2 text-sm rounded-lg text-gray-500 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition">Cancel</button>
+        </div>
+      </form>
+    );
+  }
+
+  // ───────────── PARTICLES ─────────────
+  function Particles(props) {
+    var color = props.color;
+    var items = useMemo(function() {
+      var arr = [];
+      for (var i = 0; i < 25; i++) {
+        arr.push({
+          id: i,
+          left: Math.random() * 100,
+          size: Math.random() * 2.5 + 0.5,
+          duration: Math.random() * 10 + 8,
+          delay: Math.random() * 6,
+          opacity: Math.random() * 0.3 + 0.1
+        });
+      }
+      return arr;
+    }, []);
+
+    return (
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {items.map(function(p) {
+          return <div key={p.id} className="particle" style={{
+            left: p.left + "%", bottom: "-5px",
             width: p.size, height: p.size,
             background: color, opacity: p.opacity,
-            animationDuration: `${p.duration}s`,
-            animationDelay: `${p.delay}s`,
-          }} />
-      ))}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-// AMBIENT MODE
-// ═══════════════════════════════════════
-function AmbientMode({ time, onExit, dark }) {
-  const h = time.now.getHours();
-  const theme = getTimeTheme(h);
-  const timeStr = time.now.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",hour12:false});
-  const secs = time.now.toLocaleTimeString("en-US",{second:"2-digit"}).slice(-2);
-  const dateStr = time.now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
-
-  return (
-    <div className="ambient-mode anim-fade-in cursor-default" onClick={onExit}>
-      <div className={`absolute inset-0 ${dark?"bg-[#030305]":"bg-gray-50"} transition-colors duration-1000`}>
-        {/* Floating orbs */}
-        <div className="amb-orb-1 absolute rounded-full blur-[100px]"
-          style={{ width:500,height:500,top:'15%',left:'20%',background:theme.accent,opacity:dark?0.06:0.08 }} />
-        <div className="amb-orb-2 absolute rounded-full blur-[120px]"
-          style={{ width:400,height:400,bottom:'20%',right:'15%',background:theme.accent,opacity:dark?0.04:0.06,filter:'hue-rotate(60deg)' }} />
-        <div className="amb-orb-3 absolute rounded-full blur-[80px]"
-          style={{ width:300,height:300,top:'50%',left:'60%',background:theme.accent,opacity:dark?0.03:0.04,filter:'hue-rotate(-40deg)' }} />
-        <Particles color={theme.accent} />
+            animationDuration: p.duration + "s",
+            animationDelay: p.delay + "s"
+          }} />;
+        })}
       </div>
+    );
+  }
 
-      <div className="relative z-10 text-center select-none">
-        {/* Rings */}
-        <div className="relative w-48 h-48 mx-auto mb-10 ring-container">
-          {RINGS.map((ring,i) => (
-            <ProgressRing key={ring.label} size={ring.size} percentage={time[ring.key]} colors={ring.colors} label={ring.label} index={i} />
-          ))}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <AnimatedNumber value={time.dayProgress} decimals={0} className="text-xl font-bold tabular-nums text-gray-900 dark:text-white" />
-              <span className="text-xs text-gray-400">%</span>
-              <p className="text-[8px] uppercase tracking-[0.2em] text-gray-400 mt-0.5">today</p>
-            </div>
-          </div>
+  // ───────────── AMBIENT MODE ─────────────
+  function AmbientMode(props) {
+    var t = props.time;
+    var onExit = props.onExit;
+    var dark = props.dark;
+
+    var h = t.now.getHours();
+    var accent = getAccent(h);
+    var timeStr = t.now.toLocaleTimeString("en", { hour: "2-digit", minute: "2-digit", hour12: false });
+    var secStr = String(t.now.getSeconds()).padStart(2, "0");
+    var dateStr = t.now.toLocaleDateString("en", { weekday: "long", month: "long", day: "numeric" });
+
+    return (
+      <div className="fi" style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", cursor: "default" }}
+        onClick={onExit}>
+        {/* Background */}
+        <div className={"absolute inset-0 transition-colors duration-1000 " + (dark ? "bg-[#020204]" : "bg-[#fafafa]")}>
+          <div className="orb1 absolute rounded-full" style={{ width: 450, height: 450, top: "10%", left: "15%", background: accent.color, opacity: dark ? 0.07 : 0.09, filter: "blur(120px)" }} />
+          <div className="orb2 absolute rounded-full" style={{ width: 350, height: 350, bottom: "15%", right: "10%", background: accent.color, opacity: dark ? 0.05 : 0.07, filter: "blur(100px) hue-rotate(50deg)" }} />
+          <div className="orb3 absolute rounded-full" style={{ width: 250, height: 250, top: "45%", left: "55%", background: accent.color, opacity: dark ? 0.03 : 0.05, filter: "blur(80px) hue-rotate(-30deg)" }} />
+          <Particles color={accent.color} />
         </div>
 
-        {/* Time */}
-        <div className="anim-fade-up d2">
-          <p className="text-8xl md:text-9xl font-extralight tracking-tight tabular-nums text-gray-900 dark:text-white leading-none">
+        {/* Content */}
+        <div className="relative z-10 text-center select-none">
+          <div className="relative w-40 h-40 mx-auto mb-8">
+            {RINGS.map(function(ring, i) {
+              return <ProgressRing key={ring.label} size={ring.size} pct={t[ring.key]} colors={ring.colors} label={ring.label} index={i} />;
+            })}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <AnimNum value={t.dayPct} decimals={0} className="text-lg font-mono font-bold text-gray-900 dark:text-white" />
+              <span className="text-[10px] text-gray-400">%</span>
+            </div>
+          </div>
+
+          <p className="fu font-mono tracking-tight tabular-nums leading-none text-gray-900 dark:text-white"
+            style={{ fontSize: "clamp(4rem, 12vw, 8rem)", fontWeight: 200, animationDelay: "0.1s" }}>
             {timeStr}
+            <span className="text-gray-300 dark:text-gray-700" style={{ fontSize: "0.35em", marginLeft: 4 }}>{secStr}</span>
           </p>
-          <p className="text-2xl font-extralight tabular-nums text-gray-300 dark:text-gray-600 mt-1">{secs}</p>
-        </div>
-        <p className="text-base font-light text-gray-400 dark:text-gray-500 mt-4 anim-fade-up d3">{dateStr}</p>
-
-        {/* Motivation */}
-        <p className="text-sm text-gray-300 dark:text-gray-700 mt-6 max-w-sm mx-auto anim-fade-up d4 italic">
-          "{getMotivation('Day', time.dayProgress)}"
-        </p>
-
-        <p className="text-xs text-gray-300 dark:text-gray-700 mt-12 anim-fade-in d7">
-          Press <span className="kbd border-gray-300 dark:border-gray-700 mx-1">Esc</span> or click to exit
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-// FOCUS SECTION
-// ═══════════════════════════════════════
-function FocusSection({ workdayProgress, workdayRemaining, active, onToggle }) {
-  const h = Math.floor(workdayRemaining/60), m = workdayRemaining%60;
-  return (
-    <TiltCard className={`rounded-2xl p-6 transition-all duration-500 ${
-      active ? "glass bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/40 dark:border-blue-500/15 focus-glow"
-             : "glass-card"
-    }`}>
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2.5">
-          <div className={`p-2 rounded-xl transition-colors ${active?"bg-blue-500/10":"bg-gray-100 dark:bg-white/[0.06]"}`}>
-            <I.Zap className={active?"text-blue-500":"text-gray-400"} />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Focus Mode</h3>
-            <p className="text-[11px] text-gray-400 dark:text-gray-500">Workday 9 AM – 6 PM</p>
-          </div>
-        </div>
-        <button onClick={onToggle}
-          className={`relative w-11 h-[26px] rounded-full transition-colors duration-300 ${active?"bg-blue-500":"bg-gray-200 dark:bg-white/10"}`}>
-          <div className="toggle-knob absolute top-[3px] w-5 h-5 rounded-full bg-white shadow-sm" style={{ left:active?"calc(100% - 23px)":"3px" }} />
-        </button>
-      </div>
-      <div className={`collapse-section ${active?"open":""}`}>
-        <div className="collapse-inner">
-          <div className="h-1.5 rounded-full overflow-hidden bg-blue-100 dark:bg-blue-900/20 mb-3">
-            <div className="h-full rounded-full transition-all duration-1000 ease-out"
-              style={{ width:`${workdayProgress}%`, background:"linear-gradient(to right, #3b82f6, #60a5fa)" }} />
-          </div>
-          <div className="flex items-center justify-between mb-5">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              {workdayProgress>=100?"Workday complete. Rest well.":workdayProgress<=0?"Workday hasn't started.":
-              <>{h}h {m}m remaining</>}
-            </span>
-            <AnimatedNumber value={workdayProgress} decimals={0} suffix="%" className="text-xs font-semibold text-blue-500 tabular-nums" />
-          </div>
-          <div className="border-t border-gray-100 dark:border-white/[0.06] pt-5">
-            <PomodoroTimer />
-          </div>
+          <p className="fu text-sm text-gray-400 dark:text-gray-500 mt-3 tracking-wide" style={{ animationDelay: "0.2s" }}>{dateStr}</p>
+          <p className="fu text-xs text-gray-300 dark:text-gray-700 mt-5 max-w-xs mx-auto italic" style={{ animationDelay: "0.3s" }}>
+            "{getMotivation("Day", t.dayPct)}"
+          </p>
+          <p className="fi text-[10px] text-gray-300 dark:text-gray-800 mt-10" style={{ animationDelay: "1s" }}>
+            <span className="kbd border-gray-300 dark:border-gray-800">esc</span> to exit
+          </p>
         </div>
       </div>
-    </TiltCard>
-  );
-}
+    );
+  }
 
-// ═══════════════════════════════════════
-// SECTION HEADER
-// ═══════════════════════════════════════
-function SectionHeader({ icon: Icon, label, delay = "d0", children }) {
-  return (
-    <div className={`flex items-center justify-between mb-4 anim-fade-up ${delay}`}>
-      <div className="flex items-center gap-2">
-        <Icon className="text-gray-400" />
-        <h2 className="text-[11px] font-semibold uppercase tracking-[0.15em] text-gray-400 dark:text-gray-500">{label}</h2>
-      </div>
-      {children}
-    </div>
-  );
-}
+  // ───────────── MAIN APP ─────────────
+  function App() {
+    var darkState = useState(function() { return window.matchMedia("(prefers-color-scheme: dark)").matches; });
+    var dark = darkState[0], setDark = darkState[1];
 
-// ═══════════════════════════════════════
-// MAIN APP
-// ═══════════════════════════════════════
-function App() {
-  const [dark, setDark] = useState(() => window.matchMedia("(prefers-color-scheme: dark)").matches);
-  const [time, setTime] = useState(getTimeProgress);
-  const [focusMode, setFocusMode] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  const [ambient, setAmbient] = useState(false);
-  const [milestones, setMilestones] = useState(() => {
-    try { const s = JSON.parse(localStorage.getItem("m_milestones")); if(s&&s.length) return s; } catch{}
-    return [
-      { id:1, name:"Q2 Review", date:"2026-06-30", totalDays:95 },
-      { id:2, name:"Product Launch", date:"2026-09-15", totalDays:172 },
-    ];
-  });
+    var timeState = useState(getTimeProgress);
+    var time = timeState[0], setTime = timeState[1];
 
-  useEffect(() => { const id = setInterval(() => setTime(getTimeProgress()), 1000); return () => clearInterval(id); }, []);
-  useEffect(() => { document.documentElement.classList.toggle("dark", dark); }, [dark]);
-  useEffect(() => { localStorage.setItem("m_milestones", JSON.stringify(milestones)); }, [milestones]);
+    var focusState = useState(false);
+    var focus = focusState[0], setFocus = focusState[1];
 
-  // Keyboard shortcuts
-  useEffect(() => {
-    const fn = (e) => {
-      if(e.target.tagName==="INPUT"||e.target.tagName==="TEXTAREA") return;
-      if(e.key==="d"||e.key==="D") setDark(p=>!p);
-      if(e.key==="f"||e.key==="F") setFocusMode(p=>!p);
-      if(e.key==="a"||e.key==="A") setAmbient(p=>!p);
-      if(e.key==="Escape") setAmbient(false);
-    };
-    window.addEventListener("keydown",fn);
-    return () => window.removeEventListener("keydown",fn);
-  }, []);
+    var formState = useState(false);
+    var showForm = formState[0], setShowForm = formState[1];
 
-  const addMilestone = useCallback((m) => {
-    setMilestones(prev => [...prev,m].sort((a,b) => new Date(a.date)-new Date(b.date)));
-    setShowForm(false);
-  }, []);
-  const deleteMilestone = useCallback((id) => { setMilestones(prev => prev.filter(m=>m.id!==id)); }, []);
+    var ambState = useState(false);
+    var ambient = ambState[0], setAmbient = ambState[1];
 
-  const hour = time.now.getHours();
-  const theme = getTimeTheme(hour);
-  const greeting = getGreeting(hour);
-  const dateStr = time.now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
-  const timeStr = time.now.toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false});
+    var msState = useState(function() {
+      try {
+        var saved = JSON.parse(localStorage.getItem("momentum_milestones_v2"));
+        if (saved && saved.length > 0) return saved;
+      } catch(e) {}
+      return [
+        { id: 1, name: "Q2 Review", date: "2026-06-30", totalDays: 95 },
+        { id: 2, name: "Product Launch", date: "2026-09-15", totalDays: 172 },
+      ];
+    });
+    var milestones = msState[0], setMilestones = msState[1];
 
-  if (ambient) return <AmbientMode time={time} onExit={() => setAmbient(false)} dark={dark} />;
+    // Tick every second
+    useEffect(function() {
+      var id = setInterval(function() { setTime(getTimeProgress()); }, 1000);
+      return function() { clearInterval(id); };
+    }, []);
 
-  return (
-    <div className="noise min-h-screen bg-gray-50 dark:bg-[#0a0a0a] text-gray-900 dark:text-white transition-colors duration-500">
-      {/* Mesh gradient background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-1/3 -right-1/4 w-[900px] h-[900px] rounded-full blur-[180px] transition-all duration-[5000ms]"
-          style={{ background: theme.accent, opacity: dark ? 0.025 : 0.04 }} />
-        <div className="absolute -bottom-1/4 -left-1/4 w-[700px] h-[700px] rounded-full blur-[150px] transition-all duration-[5000ms]"
-          style={{ background: theme.accent, opacity: dark ? 0.015 : 0.03, filter: 'hue-rotate(80deg)' }} />
-      </div>
+    // Theme
+    useEffect(function() {
+      document.documentElement.classList.toggle("dark", dark);
+      document.documentElement.classList.toggle("light", !dark);
+    }, [dark]);
 
-      <div className="relative max-w-xl mx-auto px-5 py-10 md:py-16">
+    // Persist milestones
+    useEffect(function() {
+      localStorage.setItem("momentum_milestones_v2", JSON.stringify(milestones));
+    }, [milestones]);
 
-        {/* ── HEADER ── */}
-        <header className="anim-fade-up d0 flex items-start justify-between mb-10">
-          <div>
-            <p className="text-sm font-medium mb-0.5 transition-colors duration-[2000ms]" style={{ color: theme.accent }}>{greeting}</p>
-            <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">Momentum</h1>
-            <div className="flex items-baseline gap-2 mt-1">
-              <p className="text-sm text-gray-400 dark:text-gray-500">{dateStr}</p>
-              <span className="text-gray-200 dark:text-gray-700">·</span>
-              <p className="text-sm text-gray-300 dark:text-gray-600 tabular-nums">{timeStr}</p>
+    // Keyboard shortcuts
+    useEffect(function() {
+      function handler(e) {
+        if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+        if (e.key === "d" || e.key === "D") setDark(function(v) { return !v; });
+        if (e.key === "f" || e.key === "F") setFocus(function(v) { return !v; });
+        if (e.key === "a" || e.key === "A") setAmbient(function(v) { return !v; });
+        if (e.key === "Escape") setAmbient(false);
+      }
+      window.addEventListener("keydown", handler);
+      return function() { window.removeEventListener("keydown", handler); };
+    }, []);
+
+    var addMilestone = useCallback(function(m) {
+      setMilestones(function(prev) {
+        return prev.concat([m]).sort(function(a, b) { return new Date(a.date) - new Date(b.date); });
+      });
+      setShowForm(false);
+    }, []);
+
+    var deleteMilestone = useCallback(function(id) {
+      setMilestones(function(prev) { return prev.filter(function(m) { return m.id !== id; }); });
+    }, []);
+
+    var hour = time.now.getHours();
+    var accent = getAccent(hour);
+    var greeting = getGreeting(hour);
+    var dateStr = time.now.toLocaleDateString("en", { weekday: "short", month: "short", day: "numeric" });
+    var timeStr = time.now.toLocaleTimeString("en", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
+    var focusH = Math.floor(time.workRemain / 60);
+    var focusM = time.workRemain % 60;
+
+    // Ambient mode
+    if (ambient) {
+      return <AmbientMode time={time} onExit={function() { setAmbient(false); }} dark={dark} />;
+    }
+
+    return (
+      <div className="noise min-h-screen bg-[#fafafa] dark:bg-[#080809] text-gray-900 dark:text-white transition-colors duration-700">
+        {/* Background blobs */}
+        <div className="fixed inset-0 pointer-events-none overflow-hidden">
+          <div className="morph-blob absolute -top-32 -right-32 w-[600px] h-[600px]"
+            style={{ background: accent.color, opacity: dark ? 0.03 : 0.05, filter: "blur(150px)", transition: "all 5s" }} />
+          <div className="morph-blob absolute -bottom-48 -left-32 w-[500px] h-[500px]"
+            style={{ background: accent.color, opacity: dark ? 0.02 : 0.04, filter: "blur(130px) hue-rotate(60deg)", animationDelay: "-4s", transition: "all 5s" }} />
+        </div>
+
+        <div className="relative max-w-2xl mx-auto px-5 py-8 md:py-14">
+
+          {/* Header */}
+          <header className="fu flex items-end justify-between mb-8">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-1 transition-colors duration-[3s]" style={{ color: accent.color }}>
+                {greeting}
+              </p>
+              <h1 className="text-2xl font-black tracking-tight text-gray-900 dark:text-white">Momentum</h1>
+              <p className="text-xs text-gray-400 dark:text-gray-600 font-mono mt-1 tabular-nums">{dateStr} &middot; {timeStr}</p>
             </div>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <button onClick={() => setAmbient(true)} title="Ambient (A)"
-              className="p-2.5 rounded-xl glass-card hover:bg-gray-100 dark:hover:bg-white/[0.08] text-gray-500 dark:text-gray-400 transition-all">
-              <I.Expand />
-            </button>
-            <button onClick={() => setDark(!dark)} title="Theme (D)"
-              className="p-2.5 rounded-xl glass-card hover:bg-gray-100 dark:hover:bg-white/[0.08] text-gray-500 dark:text-gray-400 transition-all">
-              {dark ? <I.Sun /> : <I.Moon />}
-            </button>
-          </div>
-        </header>
+            <div className="flex gap-1">
+              <button onClick={function() { setAmbient(true); }} title="Ambient (A)"
+                className="p-2 rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition">
+                <IconExpand />
+              </button>
+              <button onClick={function() { setDark(!dark); }} title="Theme (D)"
+                className="p-2 rounded-xl text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition">
+                {dark ? <IconSun /> : <IconMoon />}
+              </button>
+            </div>
+          </header>
 
-        {/* ── TIME PROGRESS ── */}
-        <section className="mb-10">
-          <SectionHeader icon={I.Clock} label="Time Progress" delay="d1" />
-          <TiltCard className="aurora-border rounded-2xl p-7 glass-card anim-fade-up d2">
-            <div className="flex flex-col sm:flex-row items-center gap-8">
-              {/* Rings */}
-              <div className="relative w-44 h-44 flex-shrink-0 ring-container">
-                {RINGS.map((ring,i) => (
-                  <ProgressRing key={ring.label} size={ring.size} percentage={time[ring.key]} colors={ring.colors} label={ring.label} index={i} />
-                ))}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <AnimatedNumber value={time.dayProgress} decimals={0}
-                      className="text-2xl font-bold tabular-nums text-gray-900 dark:text-white" />
-                    <span className="text-xs text-gray-400 ml-0.5">%</span>
-                    <p className="text-[8px] uppercase tracking-[0.2em] text-gray-400 mt-0.5">today</p>
+          {/* Bento Grid */}
+          <div className="bento">
+
+            {/* Rings + Labels */}
+            <div className="span-2 fu aurora card p-6" style={{ animationDelay: "0.08s" }}>
+              <div className="flex flex-col sm:flex-row items-center gap-6">
+                <div className="relative w-40 h-40 flex-shrink-0">
+                  {RINGS.map(function(ring, i) {
+                    return <ProgressRing key={ring.label} size={ring.size} pct={time[ring.key]} colors={ring.colors} label={ring.label} index={i} />;
+                  })}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <AnimNum value={time.dayPct} decimals={0} className="text-xl font-mono font-bold text-gray-900 dark:text-white tabular-nums" />
+                    <span className="text-[8px] uppercase tracking-[0.2em] text-gray-400 font-semibold">today</span>
                   </div>
                 </div>
-              </div>
-
-              {/* Labels */}
-              <div className="flex-1 space-y-3.5 w-full">
-                {RINGS.map((ring, i) => (
-                  <div key={ring.label} className="group anim-fade-up" style={{ animationDelay:`${0.3+i*0.08}s` }}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-2 h-2 rounded-full transition-transform group-hover:scale-150" style={{ background:ring.colors[0] }} />
-                        <span className="text-sm text-gray-600 dark:text-gray-400">{ring.label}</span>
+                <div className="flex-1 w-full space-y-3">
+                  {RINGS.map(function(ring, i) {
+                    return (
+                      <div key={ring.label} className="group sli" style={{ animationDelay: (0.3 + i * 0.06) + "s" }}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full transition-transform duration-200 group-hover:scale-[2]" style={{ background: ring.colors[0] }} />
+                            <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{ring.label}</span>
+                          </div>
+                          <AnimNum value={time[ring.key]} decimals={1} suffix="%" className="text-sm font-mono font-semibold tabular-nums text-gray-900 dark:text-white" />
+                        </div>
+                        <div className="overflow-hidden max-h-0 group-hover:max-h-10 transition-all duration-300">
+                          <p className="text-[10px] text-gray-400 dark:text-gray-600 mt-1 pl-[14px] leading-relaxed">
+                            {getMotivation(ring.label, time[ring.key])}
+                          </p>
+                        </div>
                       </div>
-                      <AnimatedNumber value={time[ring.key]} decimals={1} suffix="%"
-                        className="text-sm font-semibold tabular-nums text-gray-900 dark:text-white" />
-                    </div>
-                    <div className="overflow-hidden max-h-0 group-hover:max-h-12 transition-all duration-300 ease-out">
-                      <p className="text-[11px] text-gray-400 dark:text-gray-600 mt-1 pl-[18px] leading-relaxed">
-                        {getMotivation(ring.label, time[ring.key])}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                    );
+                  })}
+                </div>
               </div>
             </div>
-          </TiltCard>
-        </section>
 
-        {/* ── FOCUS MODE ── */}
-        <section className="mb-10 anim-fade-up d4">
-          <SectionHeader icon={I.Zap} label="Focus" delay="d3" />
-          <FocusSection
-            workdayProgress={time.workdayProgress}
-            workdayRemaining={time.workdayRemaining}
-            active={focusMode}
-            onToggle={() => setFocusMode(!focusMode)}
-          />
-        </section>
+            {/* Big day remaining */}
+            <div className="fu card p-5 flex flex-col justify-between" style={{ animationDelay: "0.16s", minHeight: 160 }}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-600">Day left</p>
+              <div>
+                <span className="grad-text font-mono font-black tabular-nums leading-none"
+                  style={{ fontSize: "3.2rem", background: accent.gradient }}>
+                  <AnimNum value={100 - time.dayPct} decimals={0} />
+                </span>
+                <span className="text-lg text-gray-300 dark:text-gray-700 font-light ml-0.5">%</span>
+              </div>
+              <p className="text-[10px] text-gray-400 dark:text-gray-600">{getMotivation("Day", time.dayPct)}</p>
+            </div>
 
-        {/* ── HABITS ── */}
-        <section className="mb-10 anim-fade-up d5">
-          <SectionHeader icon={I.Flame} label="Daily Habits" delay="d5" />
-          <TiltCard className="rounded-2xl p-5 glass-card">
-            <HabitTracker />
-          </TiltCard>
-        </section>
+            {/* Year stat */}
+            <div className="fu card p-5 flex flex-col justify-between" style={{ animationDelay: "0.24s", minHeight: 160 }}>
+              <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-600">Year</p>
+              <div className="flex items-baseline gap-1">
+                <span className="grad-text font-mono font-black tabular-nums leading-none"
+                  style={{ fontSize: "3.2rem", background: "linear-gradient(135deg, #818cf8, #a78bfa)" }}>
+                  <AnimNum value={time.yearPct} decimals={1} />
+                </span>
+                <span className="text-lg text-gray-300 dark:text-gray-700 font-light">%</span>
+              </div>
+              <p className="text-[10px] text-gray-400 dark:text-gray-600">
+                Day {Math.ceil(time.yearPct / 100 * 365)} of 365
+              </p>
+            </div>
 
-        {/* ── MILESTONES ── */}
-        <section className="anim-fade-up d6">
-          <SectionHeader icon={I.Target} label="Milestones" delay="d6">
-            {!showForm && (
-              <button onClick={() => setShowForm(true)}
-                className="flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium rounded-lg text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-white/[0.06] transition-all">
-                <I.Plus /> Add
-              </button>
-            )}
-          </SectionHeader>
-          <div className="space-y-2">
-            {showForm && <AddMilestoneForm onAdd={addMilestone} onCancel={() => setShowForm(false)} />}
-            {milestones.map(m => <MilestoneCard key={m.id} milestone={m} onDelete={deleteMilestone} />)}
-            {milestones.length===0 && !showForm && (
-              <p className="text-center py-8 text-sm text-gray-300 dark:text-gray-600">No milestones yet.</p>
-            )}
+            {/* Focus + Pomodoro */}
+            <div className={"span-2 fu card p-5 transition-all duration-500 " + (focus ? "focus-glow" : "")}
+              style={{ animationDelay: "0.32s" }}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <IconZap className={focus ? "text-blue-400" : "text-gray-400"} />
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-600">Focus</span>
+                  {time.workPct > 0 && time.workPct < 100 && (
+                    <span className="text-[10px] font-mono text-gray-400 dark:text-gray-600 tabular-nums">&middot; {focusH}h{focusM}m left</span>
+                  )}
+                </div>
+                <button onClick={function() { setFocus(!focus); }}
+                  className={"relative w-10 h-6 rounded-full transition-colors duration-300 " + (focus ? "bg-blue-500" : "bg-black/[0.06] dark:bg-white/[0.08]")}>
+                  <div className="toggle-k absolute top-[3px] w-[18px] h-[18px] rounded-full bg-white shadow-sm"
+                    style={{ left: focus ? "calc(100% - 21px)" : "3px" }} />
+                </button>
+              </div>
+              {focus && (
+                <div className="h-1 rounded-full bg-black/[0.04] dark:bg-white/[0.04] mb-4 overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-1000"
+                    style={{ width: time.workPct + "%", background: "linear-gradient(90deg, #3b82f6, #60a5fa)" }} />
+                </div>
+              )}
+              <div className={"collapse-wrap " + (focus ? "open" : "")}>
+                <div className="collapse-inner">
+                  <Pomodoro />
+                </div>
+              </div>
+            </div>
+
+            {/* Habits */}
+            <div className="span-2 fu card p-5" style={{ animationDelay: "0.4s" }}>
+              <div className="flex items-center gap-2 mb-3">
+                <IconFlame className="text-orange-400" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-600">Habits</span>
+              </div>
+              <HabitTracker />
+            </div>
+
+            {/* Milestones */}
+            <div className="span-2 fu" style={{ animationDelay: "0.48s" }}>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <IconTarget className="text-gray-400" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-600">Milestones</span>
+                </div>
+                {!showForm && (
+                  <button onClick={function() { setShowForm(true); }}
+                    className="flex items-center gap-1 px-2 py-1 text-[10px] font-semibold text-gray-500 hover:text-gray-900 dark:hover:text-white rounded-lg hover:bg-black/[0.04] dark:hover:bg-white/[0.06] transition">
+                    <IconPlus /> Add
+                  </button>
+                )}
+              </div>
+              <div className="space-y-1.5">
+                {showForm && <AddMilestoneForm onAdd={addMilestone} onCancel={function() { setShowForm(false); }} />}
+                {milestones.map(function(m) {
+                  return <MilestoneCard key={m.id} milestone={m} onDelete={deleteMilestone} />;
+                })}
+                {milestones.length === 0 && !showForm && (
+                  <p className="text-center py-6 text-xs text-gray-400 dark:text-gray-700">No milestones</p>
+                )}
+              </div>
+            </div>
           </div>
-        </section>
 
-        {/* ── FOOTER ── */}
-        <footer className="anim-fade-in mt-16 space-y-3 text-center" style={{ animationDelay:"1.2s" }}>
-          <div className="flex items-center justify-center gap-4 text-[10px] text-gray-300 dark:text-gray-700">
+          {/* Footer */}
+          <footer className="fi mt-12 flex items-center justify-center gap-4 text-[9px] text-gray-300 dark:text-gray-800" style={{ animationDelay: "1s" }}>
             <span><span className="kbd border-gray-200 dark:border-gray-800">D</span> theme</span>
             <span><span className="kbd border-gray-200 dark:border-gray-800">F</span> focus</span>
             <span><span className="kbd border-gray-200 dark:border-gray-800">A</span> ambient</span>
-          </div>
-          <p className="text-[11px] text-gray-300 dark:text-gray-700 tracking-wide font-light">Make every moment count.</p>
-        </footer>
+          </footer>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
 </script>
 </body>
 </html>
