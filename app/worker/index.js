@@ -7,7 +7,6 @@
 //   GET  /page/:id      — get a page + its children blocks
 //   GET  /blocks/:id    — get block children
 
-// Use api.notion.com to avoid Cloudflare-to-Cloudflare 1016 error
 const NOTION = "https://api.notion.com/v1";
 const CORS = {
   "Access-Control-Allow-Origin": "*",
