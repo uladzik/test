@@ -13,6 +13,7 @@ export interface Project {
   endDate?: string;
   status: ProjectStatus;
   createdAt: string;
+  coverGradient?: string;
 }
 
 export interface Meeting {

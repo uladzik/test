@@ -21,7 +21,7 @@ import { NotesCard } from "@/components/modules/notes-card";
 import { PaymentsCard } from "@/components/modules/payments-card";
 import { TimelineCard } from "@/components/modules/timeline-card";
 import { StatsCard } from "@/components/modules/stats-card";
-import { ChevronLeft, Calendar, CreditCard } from "lucide-react";
+import { ChevronLeft, Calendar, CreditCard, Clock, CheckCircle2 } from "lucide-react";
 
 const billingLabels: Record<string, string> = {
   monthly: "Monthly Payment",
@@ -48,39 +48,64 @@ export default async function ProjectDashboardPage({
   const milestones = dummyMilestones.filter((m) => m.projectId === projectId);
 
   const dateRange = formatDateRange(project.startDate, project.endDate);
+  const totalMinutes = timeEntries.reduce((s, e) => s + (e.durationMinutes || 0), 0);
+  const totalHours = Math.round((totalMinutes / 60) * 10) / 10;
+  const tasksDone = tasks.filter((t) => t.status === "done").length;
 
   return (
     <div className="max-w-[1400px]">
       {/* Breadcrumb */}
       <Link
         href="/projects"
-        className="inline-flex items-center gap-1 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors mb-6"
+        className="inline-flex items-center gap-1 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors mb-4"
       >
         <ChevronLeft size={16} />
         My projects
       </Link>
 
-      {/* Project header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight mb-2">{project.name}</h1>
-        <div className="flex flex-wrap items-center gap-4 text-sm text-[var(--muted)]">
-          {project.clientName && (
-            <span className="font-medium text-[var(--foreground)]">{project.clientName}</span>
+      {/* Project hero */}
+      <div className={`rounded-2xl bg-gradient-to-br ${project.coverGradient || "from-violet-500 to-purple-500"} p-6 pb-5 mb-6 relative overflow-hidden`}>
+        {/* Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <svg width="100%" height="100%" viewBox="0 0 800 200" preserveAspectRatio="none">
+            <circle cx="650" cy="80" r="150" fill="white" />
+            <circle cx="750" cy="180" r="100" fill="white" />
+            <circle cx="100" cy="180" r="60" fill="white" />
+          </svg>
+        </div>
+
+        <div className="relative">
+          <h1 className="text-2xl font-bold text-white mb-1 tracking-tight">{project.name}</h1>
+          {project.description && (
+            <p className="text-sm text-white/70 mb-4">{project.description}</p>
           )}
-          {dateRange && (
-            <span className="flex items-center gap-1.5">
-              <Calendar size={13} />
-              {dateRange}
+
+          {/* Meta pills */}
+          <div className="flex flex-wrap gap-2">
+            {project.clientName && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs font-medium">
+                {project.clientName}
+              </span>
+            )}
+            {dateRange && (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs">
+                <Calendar size={12} />
+                {dateRange}
+              </span>
+            )}
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs">
+              <CreditCard size={12} />
+              {billingLabels[project.billingType]}
             </span>
-          )}
-          <span className="flex items-center gap-1.5">
-            <CreditCard size={13} />
-            {billingLabels[project.billingType]}
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-dot" />
-            Active
-          </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs">
+              <Clock size={12} />
+              {totalHours}h tracked
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs">
+              <CheckCircle2 size={12} />
+              {tasksDone}/{tasks.length} tasks
+            </span>
+          </div>
         </div>
       </div>
 

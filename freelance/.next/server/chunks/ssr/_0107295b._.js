@@ -31,207 +31,540 @@ __turbopack_context__.s({
 const dummyProjects = [
     {
         id: "1",
-        name: "My Project",
-        description: "Brand identity and web design",
-        coverUrl: "/covers/project-x.svg",
+        name: "Acme Rebrand",
+        description: "Full brand identity refresh — logo, guidelines, web presence",
         clientName: "Acme Corp",
         billingType: "monthly",
         currency: "USD",
-        startDate: "2025-01-01",
-        endDate: "2025-02-28",
+        startDate: "2026-01-10",
+        endDate: "2026-04-30",
         status: "active",
-        createdAt: "2025-01-01T00:00:00Z"
+        createdAt: "2026-01-10T00:00:00Z",
+        coverGradient: "from-violet-500 via-purple-500 to-fuchsia-500"
     },
     {
         id: "2",
-        name: "Project Y",
-        description: "Mobile app redesign",
+        name: "Starter iOS App",
+        description: "MVP mobile app — onboarding, dashboard, payments",
         clientName: "StartupCo",
         billingType: "fixed",
         currency: "USD",
-        startDate: "2025-03-01",
-        endDate: "2025-06-30",
+        startDate: "2026-02-01",
+        endDate: "2026-07-31",
         status: "active",
-        createdAt: "2025-03-01T00:00:00Z"
+        createdAt: "2026-02-01T00:00:00Z",
+        coverGradient: "from-cyan-500 via-blue-500 to-indigo-500"
     },
     {
         id: "3",
-        name: "Project Z",
-        description: "E-commerce platform",
+        name: "RetailBrand Store",
+        description: "E-commerce redesign — product pages, checkout, CMS",
         clientName: "RetailBrand",
         billingType: "hourly",
         currency: "EUR",
-        startDate: "2025-02-15",
+        startDate: "2026-03-01",
+        endDate: "2026-06-15",
         status: "active",
-        createdAt: "2025-02-15T00:00:00Z"
+        createdAt: "2026-03-01T00:00:00Z",
+        coverGradient: "from-emerald-500 via-teal-500 to-cyan-500"
+    },
+    {
+        id: "4",
+        name: "Paused — Delta SaaS",
+        description: "Dashboard analytics platform (on hold)",
+        clientName: "Delta Analytics",
+        billingType: "monthly",
+        currency: "USD",
+        startDate: "2025-11-01",
+        endDate: "2026-03-01",
+        status: "paused",
+        createdAt: "2025-11-01T00:00:00Z",
+        coverGradient: "from-amber-400 via-orange-400 to-red-400"
+    },
+    {
+        id: "5",
+        name: "Zen Wellness Site",
+        description: "Marketing site + booking integration",
+        clientName: "Zen Studio",
+        billingType: "fixed",
+        currency: "USD",
+        startDate: "2025-09-01",
+        endDate: "2025-12-15",
+        status: "completed",
+        createdAt: "2025-09-01T00:00:00Z",
+        coverGradient: "from-rose-400 via-pink-400 to-purple-400"
     }
 ];
 const dummyMeetings = [
     {
         id: "m1",
         projectId: "1",
-        title: "Morning call",
-        startTime: "2025-06-18T08:00:00Z",
-        endTime: "2025-06-18T09:00:00Z",
+        title: "Morning standup",
+        startTime: "2026-03-28T08:30:00Z",
+        endTime: "2026-03-28T09:00:00Z",
         meetingType: "call"
     },
     {
         id: "m2",
         projectId: "1",
-        title: "Weekly meeting 30 min",
-        startTime: "2025-06-18T12:00:00Z",
-        endTime: "2025-06-18T12:30:00Z",
+        title: "Design review w/ client",
+        startTime: "2026-03-28T14:00:00Z",
+        endTime: "2026-03-28T15:00:00Z",
+        meetingType: "video"
+    },
+    {
+        id: "m3",
+        projectId: "1",
+        title: "Weekly sync",
+        startTime: "2026-03-30T12:00:00Z",
+        endTime: "2026-03-30T12:30:00Z",
+        meetingType: "video"
+    },
+    {
+        id: "m4",
+        projectId: "2",
+        title: "Sprint planning",
+        startTime: "2026-03-28T10:00:00Z",
+        endTime: "2026-03-28T11:00:00Z",
+        meetingType: "video"
+    },
+    {
+        id: "m5",
+        projectId: "2",
+        title: "QA walkthrough",
+        startTime: "2026-03-29T15:00:00Z",
+        endTime: "2026-03-29T16:00:00Z",
+        meetingType: "call"
+    },
+    {
+        id: "m6",
+        projectId: "3",
+        title: "Kickoff call",
+        startTime: "2026-03-28T11:00:00Z",
+        endTime: "2026-03-28T12:00:00Z",
         meetingType: "video"
     }
 ];
 const dummyTimeEntries = [
+    // Project 1
     {
         id: "t1",
         projectId: "1",
-        description: "Product screenshots",
-        startTime: "2025-06-18T09:00:00Z",
-        endTime: "2025-06-18T11:25:00Z",
+        description: "Logo concepts v3",
+        startTime: "2026-03-28T09:00:00Z",
+        endTime: "2026-03-28T11:25:00Z",
         durationMinutes: 145,
-        category: "Design System / Product Department"
+        category: "Branding / Design"
     },
     {
         id: "t2",
         projectId: "1",
-        description: "Leading page mockups",
-        startTime: "2025-06-15T10:00:00Z",
-        endTime: "2025-06-15T11:22:00Z",
+        description: "Typography system",
+        startTime: "2026-03-27T10:00:00Z",
+        endTime: "2026-03-27T11:22:00Z",
         durationMinutes: 82,
-        category: "Design / Product Department"
+        category: "Branding / Design"
     },
     {
         id: "t3",
         projectId: "1",
-        description: "Leading page mockups",
-        startTime: "2025-06-14T09:00:00Z",
-        endTime: "2025-06-14T09:50:00Z",
+        description: "Color palette refinement",
+        startTime: "2026-03-26T09:00:00Z",
+        endTime: "2026-03-26T09:50:00Z",
         durationMinutes: 50,
-        category: "Design / Product Department"
+        category: "Branding / Design"
     },
     {
         id: "t4",
         projectId: "1",
-        description: "Leading page mockups",
-        startTime: "2025-06-13T08:00:00Z",
-        endTime: "2025-06-13T11:24:00Z",
+        description: "Brand guide layout",
+        startTime: "2026-03-25T08:00:00Z",
+        endTime: "2026-03-25T11:24:00Z",
         durationMinutes: 204,
-        category: "Design / Product Department"
+        category: "Documentation"
+    },
+    {
+        id: "t5",
+        projectId: "1",
+        description: "Client feedback review",
+        startTime: "2026-03-24T14:00:00Z",
+        endTime: "2026-03-24T15:30:00Z",
+        durationMinutes: 90,
+        category: "Communication"
+    },
+    // Project 2
+    {
+        id: "t6",
+        projectId: "2",
+        description: "Onboarding flow wireframes",
+        startTime: "2026-03-28T13:00:00Z",
+        endTime: "2026-03-28T16:00:00Z",
+        durationMinutes: 180,
+        category: "UX / Wireframes"
+    },
+    {
+        id: "t7",
+        projectId: "2",
+        description: "Dashboard components",
+        startTime: "2026-03-27T09:00:00Z",
+        endTime: "2026-03-27T12:30:00Z",
+        durationMinutes: 210,
+        category: "UI Design"
+    },
+    {
+        id: "t8",
+        projectId: "2",
+        description: "Payment screen mockup",
+        startTime: "2026-03-26T10:00:00Z",
+        endTime: "2026-03-26T12:00:00Z",
+        durationMinutes: 120,
+        category: "UI Design"
+    },
+    // Project 3
+    {
+        id: "t9",
+        projectId: "3",
+        description: "Product page layout",
+        startTime: "2026-03-28T09:00:00Z",
+        endTime: "2026-03-28T11:00:00Z",
+        durationMinutes: 120,
+        category: "E-commerce / Design"
+    },
+    {
+        id: "t10",
+        projectId: "3",
+        description: "Checkout flow UX",
+        startTime: "2026-03-27T14:00:00Z",
+        endTime: "2026-03-27T17:00:00Z",
+        durationMinutes: 180,
+        category: "UX Research"
     }
 ];
 const dummyTasks = [
+    // Project 1
     {
         id: "tk1",
         projectId: "1",
-        title: "Morning call",
-        status: "todo",
-        priority: "high",
-        dueDate: "2025-06-18",
-        scheduledStart: "08:00",
+        title: "Morning standup",
+        status: "done",
+        priority: "medium",
+        dueDate: "2026-03-28",
+        scheduledStart: "08:30",
         scheduledEnd: "09:00",
-        color: "#fef3c7"
+        color: "#dbeafe"
     },
     {
         id: "tk2",
         projectId: "1",
-        title: "Weekly meeting 30 min",
+        title: "Logo concepts v3",
+        status: "in_progress",
+        priority: "high",
+        dueDate: "2026-03-28",
+        scheduledStart: "09:00",
+        scheduledEnd: "11:00",
+        color: "#fef3c7"
+    },
+    {
+        id: "tk3",
+        projectId: "1",
+        title: "Design review w/ client",
+        status: "todo",
+        priority: "high",
+        dueDate: "2026-03-28",
+        scheduledStart: "14:00",
+        scheduledEnd: "15:00",
+        color: "#dcfce7"
+    },
+    {
+        id: "tk4",
+        projectId: "1",
+        title: "Update brand guide",
         status: "todo",
         priority: "medium",
-        dueDate: "2025-06-18",
-        scheduledStart: "12:00",
-        scheduledEnd: "12:30",
-        color: "#dcfce7"
+        dueDate: "2026-03-29"
+    },
+    {
+        id: "tk5",
+        projectId: "1",
+        title: "Prepare mockup presentation",
+        status: "todo",
+        priority: "low",
+        dueDate: "2026-03-30"
+    },
+    {
+        id: "tk6",
+        projectId: "1",
+        title: "Social media templates",
+        status: "done",
+        priority: "medium",
+        dueDate: "2026-03-25"
+    },
+    {
+        id: "tk7",
+        projectId: "1",
+        title: "Business card design",
+        status: "done",
+        priority: "low",
+        dueDate: "2026-03-22"
+    },
+    // Project 2
+    {
+        id: "tk8",
+        projectId: "2",
+        title: "Onboarding flow wireframes",
+        status: "in_progress",
+        priority: "high",
+        dueDate: "2026-03-28",
+        scheduledStart: "10:00",
+        scheduledEnd: "12:00",
+        color: "#e0e7ff"
+    },
+    {
+        id: "tk9",
+        projectId: "2",
+        title: "Dashboard UI components",
+        status: "in_progress",
+        priority: "high",
+        dueDate: "2026-03-29"
+    },
+    {
+        id: "tk10",
+        projectId: "2",
+        title: "Payment screen design",
+        status: "todo",
+        priority: "medium",
+        dueDate: "2026-03-31"
+    },
+    {
+        id: "tk11",
+        projectId: "2",
+        title: "App icon design",
+        status: "done",
+        priority: "low",
+        dueDate: "2026-03-20"
+    },
+    // Project 3
+    {
+        id: "tk12",
+        projectId: "3",
+        title: "Product page layout",
+        status: "in_progress",
+        priority: "high",
+        dueDate: "2026-03-28"
+    },
+    {
+        id: "tk13",
+        projectId: "3",
+        title: "Category navigation UX",
+        status: "todo",
+        priority: "medium",
+        dueDate: "2026-04-01"
+    },
+    {
+        id: "tk14",
+        projectId: "3",
+        title: "Checkout flow design",
+        status: "todo",
+        priority: "high",
+        dueDate: "2026-04-05"
     }
 ];
 const dummyChatMessages = [
     {
         id: "c1",
         projectId: "1",
-        content: "Here is your last activity",
+        content: "Logo v3 looks great — let's go with direction B",
         messageType: "text",
-        createdAt: "2025-06-18T10:00:00Z"
+        createdAt: "2026-03-28T10:15:00Z"
     },
     {
         id: "c2",
         projectId: "1",
-        content: "Last message received",
+        content: "Can we make the purple a bit deeper?",
         messageType: "text",
-        createdAt: "2025-06-17T14:00:00Z"
+        createdAt: "2026-03-27T16:30:00Z"
     },
     {
         id: "c3",
         projectId: "1",
-        content: "Call from 09.06",
+        content: "Call — 12 min",
         messageType: "call_log",
-        createdAt: "2025-06-09T09:00:00Z"
+        createdAt: "2026-03-26T09:00:00Z"
+    },
+    {
+        id: "c4",
+        projectId: "1",
+        content: "Sent updated brand guide PDF",
+        messageType: "system",
+        createdAt: "2026-03-25T14:00:00Z"
+    },
+    {
+        id: "c5",
+        projectId: "2",
+        content: "Onboarding screens approved!",
+        messageType: "text",
+        createdAt: "2026-03-28T09:00:00Z"
+    },
+    {
+        id: "c6",
+        projectId: "2",
+        content: "Need push notification flow added",
+        messageType: "text",
+        createdAt: "2026-03-27T11:00:00Z"
+    },
+    {
+        id: "c7",
+        projectId: "3",
+        content: "Product grid looks perfect",
+        messageType: "text",
+        createdAt: "2026-03-28T10:00:00Z"
+    },
+    {
+        id: "c8",
+        projectId: "3",
+        content: "Call — 25 min, discussed checkout",
+        messageType: "call_log",
+        createdAt: "2026-03-27T15:00:00Z"
     }
 ];
 const dummyLinks = [
     {
         id: "l1",
         projectId: "1",
-        label: "FigmaProject link",
-        url: "https://figma.com/example1",
+        label: "Brand Guidelines — Figma",
+        url: "https://figma.com/acme-brand",
         linkType: "figma"
     },
     {
         id: "l2",
         projectId: "1",
-        label: "FigmaProject link",
-        url: "https://figma.com/example2",
-        linkType: "figma"
+        label: "Project Brief — Notion",
+        url: "https://notion.so/acme-brief",
+        linkType: "notion"
     },
     {
         id: "l3",
         projectId: "1",
-        label: "FigmaProject link",
-        url: "https://figma.com/example3",
+        label: "Assets folder — Drive",
+        url: "https://drive.google.com/acme",
+        linkType: "drive"
+    },
+    {
+        id: "l4",
+        projectId: "1",
+        label: "Landing page prototype",
+        url: "https://figma.com/proto/acme",
+        linkType: "prototype"
+    },
+    {
+        id: "l5",
+        projectId: "2",
+        label: "App Screens — Figma",
+        url: "https://figma.com/starter-app",
         linkType: "figma"
+    },
+    {
+        id: "l6",
+        projectId: "2",
+        label: "Sprint Board — Notion",
+        url: "https://notion.so/starter",
+        linkType: "notion"
+    },
+    {
+        id: "l7",
+        projectId: "3",
+        label: "Store Design — Figma",
+        url: "https://figma.com/retail",
+        linkType: "figma"
+    },
+    {
+        id: "l8",
+        projectId: "3",
+        label: "Product Data — Drive",
+        url: "https://drive.google.com/retail",
+        linkType: "drive"
     }
 ];
 const dummyDocuments = [
     {
         id: "d1",
         projectId: "1",
-        title: "Docs June",
+        title: "Brand Guidelines v3",
         docType: "brief",
         isFavorite: true,
-        createdAt: "2025-06-20T00:00:00Z"
+        createdAt: "2026-03-20T00:00:00Z"
     },
     {
         id: "d2",
         projectId: "1",
-        title: "Docs May",
+        title: "Logo Concepts PDF",
         docType: "report",
         isFavorite: true,
-        createdAt: "2025-05-21T00:00:00Z"
+        createdAt: "2026-03-15T00:00:00Z"
     },
     {
         id: "d3",
         projectId: "1",
-        title: "Design 24",
+        title: "Color Palette Reference",
         docType: "other",
         isFavorite: true,
-        createdAt: "2025-06-24T00:00:00Z"
+        createdAt: "2026-03-10T00:00:00Z"
     },
     {
         id: "d4",
         projectId: "1",
-        title: "Design brief May 2025, Done with the client",
-        docType: "brief",
+        title: "NDA — Signed Agreement",
+        docType: "agreement",
         isFavorite: false,
-        createdAt: "2025-06-20T00:00:00Z"
+        createdAt: "2026-01-10T00:00:00Z"
     },
     {
         id: "d5",
         projectId: "1",
-        title: "Design brief May 2025, Done with the client",
+        title: "Project Brief — Jan 2026",
         docType: "brief",
         isFavorite: false,
-        createdAt: "2025-06-20T00:00:00Z"
+        createdAt: "2026-01-12T00:00:00Z"
+    },
+    {
+        id: "d6",
+        projectId: "1",
+        title: "Invoice template",
+        docType: "other",
+        isFavorite: false,
+        createdAt: "2026-02-01T00:00:00Z"
+    },
+    {
+        id: "d7",
+        projectId: "2",
+        title: "App Requirements Doc",
+        docType: "brief",
+        isFavorite: true,
+        createdAt: "2026-02-05T00:00:00Z"
+    },
+    {
+        id: "d8",
+        projectId: "2",
+        title: "Wireframes Export",
+        docType: "report",
+        isFavorite: false,
+        createdAt: "2026-03-10T00:00:00Z"
+    },
+    {
+        id: "d9",
+        projectId: "3",
+        title: "E-commerce UX Audit",
+        docType: "report",
+        isFavorite: true,
+        createdAt: "2026-03-05T00:00:00Z"
+    },
+    {
+        id: "d10",
+        projectId: "3",
+        title: "Product Schema",
+        docType: "other",
+        isFavorite: false,
+        createdAt: "2026-03-08T00:00:00Z"
     }
 ];
 const dummyNotes = [
@@ -239,113 +572,263 @@ const dummyNotes = [
         id: "n1",
         projectId: "1",
         title: "Client preferences",
-        content: "Prefers minimalist design. Likes blue and white palette. No gradients on landing page.",
-        createdAt: "2025-06-15T10:00:00Z",
-        updatedAt: "2025-06-17T14:30:00Z"
+        content: "Prefers minimalist design. Loves deep purple + white. No gradients on cards. Serif font for headings only.",
+        createdAt: "2026-03-15T10:00:00Z",
+        updatedAt: "2026-03-27T14:30:00Z"
     },
     {
         id: "n2",
         projectId: "1",
-        title: "Meeting notes — kickoff",
-        content: "Budget confirmed at $4,500/mo. Deliverables: brand guide, landing page, 5 inner pages.",
-        createdAt: "2025-01-05T09:00:00Z",
-        updatedAt: "2025-01-05T09:00:00Z"
+        title: "Meeting takeaways — Mar 25",
+        content: "Logo direction B approved. Need to finalize by Friday. Business cards rush order.",
+        createdAt: "2026-03-25T09:00:00Z",
+        updatedAt: "2026-03-25T09:00:00Z"
     },
     {
         id: "n3",
         projectId: "1",
-        title: "Feedback round 2",
-        content: "Hero section approved. CTA button needs to be larger. Footer links — add social media.",
-        createdAt: "2025-06-10T11:00:00Z",
-        updatedAt: "2025-06-12T16:00:00Z"
+        title: "Competitor analysis",
+        content: "Checked 5 competitors. Most use blue/gray palettes. Our purple angle is unique — client happy.",
+        createdAt: "2026-02-10T11:00:00Z",
+        updatedAt: "2026-02-12T16:00:00Z"
+    },
+    {
+        id: "n4",
+        projectId: "2",
+        title: "Tech constraints",
+        content: "iOS 16+ only. Must use SwiftUI. Stripe for payments. Push via Firebase.",
+        createdAt: "2026-02-01T10:00:00Z",
+        updatedAt: "2026-03-15T11:00:00Z"
+    },
+    {
+        id: "n5",
+        projectId: "2",
+        title: "Onboarding feedback",
+        content: "Users skip tutorial. Reduce to 2 steps max. Add progress indicator.",
+        createdAt: "2026-03-20T14:00:00Z",
+        updatedAt: "2026-03-22T09:00:00Z"
+    },
+    {
+        id: "n6",
+        projectId: "3",
+        title: "Store requirements",
+        content: "~500 SKUs at launch. Need filtering by size/color/price. Shopify backend stays.",
+        createdAt: "2026-03-01T10:00:00Z",
+        updatedAt: "2026-03-05T16:00:00Z"
     }
 ];
 const dummyPayments = [
+    // Project 1
     {
         id: "p1",
         projectId: "1",
         amount: 4500,
         currency: "USD",
-        periodStart: "2025-01-01",
-        periodEnd: "2025-01-31",
+        periodStart: "2026-01-01",
+        periodEnd: "2026-01-31",
         status: "paid",
-        description: "January payment"
+        description: "January retainer"
     },
     {
         id: "p2",
         projectId: "1",
         amount: 4500,
         currency: "USD",
-        periodStart: "2025-02-01",
-        periodEnd: "2025-02-28",
+        periodStart: "2026-02-01",
+        periodEnd: "2026-02-28",
         status: "paid",
-        description: "February payment"
+        description: "February retainer"
     },
     {
         id: "p3",
         projectId: "1",
         amount: 4500,
         currency: "USD",
-        periodStart: "2025-03-01",
-        periodEnd: "2025-03-31",
+        periodStart: "2026-03-01",
+        periodEnd: "2026-03-31",
         status: "sent",
-        description: "March payment"
+        description: "March retainer"
     },
     {
         id: "p4",
         projectId: "1",
         amount: 4500,
         currency: "USD",
-        periodStart: "2025-04-01",
-        periodEnd: "2025-04-30",
+        periodStart: "2026-04-01",
+        periodEnd: "2026-04-30",
         status: "pending",
-        description: "April payment"
+        description: "April retainer"
     },
+    // Project 2
     {
         id: "p5",
-        projectId: "1",
-        amount: 4500,
+        projectId: "2",
+        amount: 12000,
         currency: "USD",
-        periodStart: "2025-05-01",
-        periodEnd: "2025-05-31",
-        status: "overdue",
-        description: "May payment"
+        periodStart: "2026-02-01",
+        periodEnd: "2026-04-30",
+        status: "paid",
+        description: "Phase 1 — Design"
+    },
+    {
+        id: "p6",
+        projectId: "2",
+        amount: 12000,
+        currency: "USD",
+        periodStart: "2026-05-01",
+        periodEnd: "2026-07-31",
+        status: "pending",
+        description: "Phase 2 — Development"
+    },
+    // Project 3
+    {
+        id: "p7",
+        projectId: "3",
+        amount: 3200,
+        currency: "EUR",
+        periodStart: "2026-03-01",
+        periodEnd: "2026-03-31",
+        status: "paid",
+        description: "March — 40hrs @ €80"
+    },
+    {
+        id: "p8",
+        projectId: "3",
+        amount: 2400,
+        currency: "EUR",
+        periodStart: "2026-04-01",
+        periodEnd: "2026-04-30",
+        status: "pending",
+        description: "April estimate — 30hrs"
     }
 ];
 const dummyMilestones = [
+    // Project 1
     {
         id: "ms1",
         projectId: "1",
-        title: "Brand guide delivery",
-        description: "Complete brand guidelines document",
-        dueDate: "2025-01-20",
+        title: "Discovery & research",
+        description: "Competitor audit, moodboards",
+        dueDate: "2026-01-24",
         status: "completed",
         sortOrder: 1
     },
     {
         id: "ms2",
         projectId: "1",
-        title: "Landing page design",
-        description: "Desktop + mobile mockups for landing page",
-        dueDate: "2025-02-01",
+        title: "Logo concepts",
+        description: "3 directions, client review",
+        dueDate: "2026-02-07",
         status: "completed",
         sortOrder: 2
     },
     {
         id: "ms3",
         projectId: "1",
-        title: "Inner pages design",
-        description: "About, Services, Contact, Blog, Portfolio",
-        dueDate: "2025-02-15",
-        status: "in_progress",
+        title: "Brand guidelines",
+        description: "Colors, type, usage rules",
+        dueDate: "2026-03-14",
+        status: "completed",
         sortOrder: 3
     },
     {
         id: "ms4",
         projectId: "1",
-        title: "Development handoff",
-        description: "Final assets and specs for dev team",
-        dueDate: "2025-02-28",
+        title: "Collateral design",
+        description: "Business cards, social templates",
+        dueDate: "2026-03-28",
+        status: "in_progress",
+        sortOrder: 4
+    },
+    {
+        id: "ms5",
+        projectId: "1",
+        title: "Website design",
+        description: "Landing + 3 inner pages",
+        dueDate: "2026-04-15",
+        status: "pending",
+        sortOrder: 5
+    },
+    {
+        id: "ms6",
+        projectId: "1",
+        title: "Final delivery",
+        description: "All assets + handoff",
+        dueDate: "2026-04-30",
+        status: "pending",
+        sortOrder: 6
+    },
+    // Project 2
+    {
+        id: "ms7",
+        projectId: "2",
+        title: "UX research",
+        dueDate: "2026-02-15",
+        status: "completed",
+        sortOrder: 1
+    },
+    {
+        id: "ms8",
+        projectId: "2",
+        title: "Wireframes",
+        dueDate: "2026-03-01",
+        status: "completed",
+        sortOrder: 2
+    },
+    {
+        id: "ms9",
+        projectId: "2",
+        title: "UI design",
+        dueDate: "2026-04-01",
+        status: "in_progress",
+        sortOrder: 3
+    },
+    {
+        id: "ms10",
+        projectId: "2",
+        title: "Prototype & testing",
+        dueDate: "2026-05-15",
+        status: "pending",
+        sortOrder: 4
+    },
+    {
+        id: "ms11",
+        projectId: "2",
+        title: "Dev handoff",
+        dueDate: "2026-06-30",
+        status: "pending",
+        sortOrder: 5
+    },
+    // Project 3
+    {
+        id: "ms12",
+        projectId: "3",
+        title: "UX audit",
+        dueDate: "2026-03-15",
+        status: "completed",
+        sortOrder: 1
+    },
+    {
+        id: "ms13",
+        projectId: "3",
+        title: "Product page redesign",
+        dueDate: "2026-04-01",
+        status: "in_progress",
+        sortOrder: 2
+    },
+    {
+        id: "ms14",
+        projectId: "3",
+        title: "Checkout flow",
+        dueDate: "2026-05-01",
+        status: "pending",
+        sortOrder: 3
+    },
+    {
+        id: "ms15",
+        projectId: "3",
+        title: "Launch",
+        dueDate: "2026-06-15",
         status: "pending",
         sortOrder: 4
     }
@@ -1778,6 +2261,8 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$modules
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$left$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronLeft$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/chevron-left.js [app-rsc] (ecmascript) <export default as ChevronLeft>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__Calendar$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/calendar.js [app-rsc] (ecmascript) <export default as Calendar>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/credit-card.js [app-rsc] (ecmascript) <export default as CreditCard>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clock$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__Clock$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/clock.js [app-rsc] (ecmascript) <export default as Clock>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/circle-check.js [app-rsc] (ecmascript) <export default as CheckCircle2>");
 ;
 ;
 ;
@@ -1811,110 +2296,200 @@ async function ProjectDashboardPage({ params }) {
     const payments = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$dummy$2d$data$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["dummyPayments"].filter((p)=>p.projectId === projectId);
     const milestones = __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$lib$2f$dummy$2d$data$2e$ts__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["dummyMilestones"].filter((m)=>m.projectId === projectId);
     const dateRange = formatDateRange(project.startDate, project.endDate);
+    const totalMinutes = timeEntries.reduce((s, e)=>s + (e.durationMinutes || 0), 0);
+    const totalHours = Math.round(totalMinutes / 60 * 10) / 10;
+    const tasksDone = tasks.filter((t)=>t.status === "done").length;
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
         className: "max-w-[1400px]",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["default"], {
                 href: "/projects",
-                className: "inline-flex items-center gap-1 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors mb-6",
+                className: "inline-flex items-center gap-1 text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors mb-4",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$left$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronLeft$3e$__["ChevronLeft"], {
                         size: 16
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 59,
+                        lineNumber: 62,
                         columnNumber: 9
                     }, this),
                     "My projects"
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                lineNumber: 55,
+                lineNumber: 58,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "mb-8",
+                className: `rounded-2xl bg-gradient-to-br ${project.coverGradient || "from-violet-500 to-purple-500"} p-6 pb-5 mb-6 relative overflow-hidden`,
                 children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                        className: "text-3xl font-bold tracking-tight mb-2",
-                        children: project.name
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "absolute inset-0 opacity-10",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("svg", {
+                            width: "100%",
+                            height: "100%",
+                            viewBox: "0 0 800 200",
+                            preserveAspectRatio: "none",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                    cx: "650",
+                                    cy: "80",
+                                    r: "150",
+                                    fill: "white"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                    lineNumber: 71,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                    cx: "750",
+                                    cy: "180",
+                                    r: "100",
+                                    fill: "white"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                    lineNumber: 72,
+                                    columnNumber: 13
+                                }, this),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
+                                    cx: "100",
+                                    cy: "180",
+                                    r: "60",
+                                    fill: "white"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                    lineNumber: 73,
+                                    columnNumber: 13
+                                }, this)
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                            lineNumber: 70,
+                            columnNumber: 11
+                        }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 65,
+                        lineNumber: 69,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "flex flex-wrap items-center gap-4 text-sm text-[var(--muted)]",
+                        className: "relative",
                         children: [
-                            project.clientName && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: "font-medium text-[var(--foreground)]",
-                                children: project.clientName
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                className: "text-2xl font-bold text-white mb-1 tracking-tight",
+                                children: project.name
                             }, void 0, false, {
                                 fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                                lineNumber: 68,
-                                columnNumber: 13
-                            }, this),
-                            dateRange && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: "flex items-center gap-1.5",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__Calendar$3e$__["Calendar"], {
-                                        size: 13
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                                        lineNumber: 72,
-                                        columnNumber: 15
-                                    }, this),
-                                    dateRange
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                                lineNumber: 71,
-                                columnNumber: 13
-                            }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: "flex items-center gap-1.5",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"], {
-                                        size: 13
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                                        lineNumber: 77,
-                                        columnNumber: 13
-                                    }, this),
-                                    billingLabels[project.billingType]
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                                lineNumber: 76,
+                                lineNumber: 78,
                                 columnNumber: 11
                             }, this),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                className: "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium",
+                            project.description && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                className: "text-sm text-white/70 mb-4",
+                                children: project.description
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                lineNumber: 80,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex flex-wrap gap-2",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                        className: "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse-dot"
+                                    project.clientName && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs font-medium",
+                                        children: project.clientName
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                                        lineNumber: 81,
+                                        lineNumber: 86,
+                                        columnNumber: 15
+                                    }, this),
+                                    dateRange && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$calendar$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__Calendar$3e$__["Calendar"], {
+                                                size: 12
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                                lineNumber: 92,
+                                                columnNumber: 17
+                                            }, this),
+                                            dateRange
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                        lineNumber: 91,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"], {
+                                                size: 12
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                                lineNumber: 97,
+                                                columnNumber: 15
+                                            }, this),
+                                            billingLabels[project.billingType]
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                        lineNumber: 96,
                                         columnNumber: 13
                                     }, this),
-                                    "Active"
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$clock$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__Clock$3e$__["Clock"], {
+                                                size: 12
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                                lineNumber: 101,
+                                                columnNumber: 15
+                                            }, this),
+                                            totalHours,
+                                            "h tracked"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                        lineNumber: 100,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                        className: "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white text-xs",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle2$3e$__["CheckCircle2"], {
+                                                size: 12
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                                lineNumber: 105,
+                                                columnNumber: 15
+                                            }, this),
+                                            tasksDone,
+                                            "/",
+                                            tasks.length,
+                                            " tasks"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/projects/[projectId]/page.tsx",
+                                        lineNumber: 104,
+                                        columnNumber: 13
+                                    }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                                lineNumber: 80,
+                                lineNumber: 84,
                                 columnNumber: 11
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 66,
+                        lineNumber: 77,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                lineNumber: 64,
+                lineNumber: 67,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1924,7 +2499,7 @@ async function ProjectDashboardPage({ params }) {
                         projectId: projectId
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 89,
+                        lineNumber: 114,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$modules$2f$time$2d$track$2d$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["TimeTrackCard"], {
@@ -1932,7 +2507,7 @@ async function ProjectDashboardPage({ params }) {
                         entries: timeEntries
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 90,
+                        lineNumber: 115,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$modules$2f$tasks$2d$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["TasksCard"], {
@@ -1940,13 +2515,13 @@ async function ProjectDashboardPage({ params }) {
                         tasks: tasks
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 91,
+                        lineNumber: 116,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                lineNumber: 88,
+                lineNumber: 113,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1957,7 +2532,7 @@ async function ProjectDashboardPage({ params }) {
                         messages: chatMessages
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 96,
+                        lineNumber: 121,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$modules$2f$links$2d$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["LinksCard"], {
@@ -1965,7 +2540,7 @@ async function ProjectDashboardPage({ params }) {
                         links: links
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 97,
+                        lineNumber: 122,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$modules$2f$documents$2d$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["DocumentsCard"], {
@@ -1973,13 +2548,13 @@ async function ProjectDashboardPage({ params }) {
                         documents: documents
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 98,
+                        lineNumber: 123,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                lineNumber: 95,
+                lineNumber: 120,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1990,7 +2565,7 @@ async function ProjectDashboardPage({ params }) {
                         notes: notes
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 103,
+                        lineNumber: 128,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$modules$2f$timeline$2d$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["TimelineCard"], {
@@ -2000,7 +2575,7 @@ async function ProjectDashboardPage({ params }) {
                         endDate: project.endDate
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 104,
+                        lineNumber: 129,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$modules$2f$payments$2d$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["PaymentsCard"], {
@@ -2008,7 +2583,7 @@ async function ProjectDashboardPage({ params }) {
                         payments: payments
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 110,
+                        lineNumber: 135,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$components$2f$modules$2f$stats$2d$card$2e$tsx__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["StatsCard"], {
@@ -2019,19 +2594,19 @@ async function ProjectDashboardPage({ params }) {
                         milestones: milestones
                     }, void 0, false, {
                         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                        lineNumber: 111,
+                        lineNumber: 136,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-                lineNumber: 102,
+                lineNumber: 127,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/projects/[projectId]/page.tsx",
-        lineNumber: 53,
+        lineNumber: 56,
         columnNumber: 5
     }, this);
 }
