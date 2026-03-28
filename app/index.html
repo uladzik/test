@@ -19,14 +19,11 @@
     * { margin:0; padding:0; box-sizing:border-box }
     body { font-family:'Inter',system-ui,sans-serif; -webkit-font-smoothing:antialiased; overflow-x:hidden }
 
-    /* Mesh gradient BG */
     @keyframes meshMove { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
     .mesh-bg { background-size:400% 400%; animation:meshMove 20s ease infinite }
 
-    /* Gradient text */
     .gt { -webkit-background-clip:text!important; background-clip:text!important; -webkit-text-fill-color:transparent }
 
-    /* Glass */
     .glass { position:relative; border-radius:24px; overflow:hidden; transition:transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s }
     .dark .glass { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.05); backdrop-filter:blur(40px) saturate(1.6); -webkit-backdrop-filter:blur(40px) saturate(1.6) }
     .light .glass { background:rgba(255,255,255,.45); border:1px solid rgba(255,255,255,.6); backdrop-filter:blur(40px) saturate(1.8); -webkit-backdrop-filter:blur(40px) saturate(1.8); box-shadow:0 1px 2px rgba(0,0,0,.03),inset 0 1px 0 rgba(255,255,255,.5) }
@@ -38,94 +35,65 @@
     .light .glass::before { background:radial-gradient(600px circle at var(--mx,50%) var(--my,50%),rgba(255,255,255,.3),transparent 40%) }
     .glass:hover::before { opacity:1 }
 
-    /* 3D tilt */
-    .tilt { transition:transform .4s cubic-bezier(.16,1,.3,1); transform-style:preserve-3d; will-change:transform }
-
-    /* Ring */
     .ring-draw { transition:stroke-dashoffset 1.8s cubic-bezier(.16,1,.3,1) }
     @keyframes breathe { 0%,100%{opacity:.25;transform:translate(-50%,-50%) scale(1)} 50%{opacity:.5;transform:translate(-50%,-50%) scale(1.05)} }
     .breathe { animation:breathe 4s ease-in-out infinite }
 
-    /* Animations */
     @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
     @keyframes fadeIn { from{opacity:0} to{opacity:1} }
     @keyframes scaleIn { from{opacity:0;transform:scale(.95)} to{opacity:1;transform:scale(1)} }
-    @keyframes slideIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
     @keyframes checkPop { 0%{transform:scale(0) rotate(-45deg)} 60%{transform:scale(1.3) rotate(5deg)} 100%{transform:scale(1) rotate(0)} }
     @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    @keyframes glow { 0%,100%{opacity:.5} 50%{opacity:1} }
     @keyframes quoteFade { 0%{opacity:0;transform:translateY(8px)} 12%{opacity:1;transform:translateY(0)} 88%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(-8px)} }
     .fu { animation:fadeUp .7s cubic-bezier(.16,1,.3,1) both }
     .fi { animation:fadeIn .6s ease both }
     .si { animation:scaleIn .4s cubic-bezier(.16,1,.3,1) both }
-    .sli { animation:slideIn .5s cubic-bezier(.16,1,.3,1) both }
     .check-pop { animation:checkPop .35s cubic-bezier(.34,1.56,.64,1) both }
-    .shimmer-text { background-size:200% 100%; animation:shimmer 2s ease-in-out infinite }
 
-    /* Morph blobs */
     @keyframes morph1 { 0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%} 50%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%} }
     @keyframes morph2 { 0%,100%{border-radius:40% 60% 70% 30%/40% 50% 60% 50%} 50%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%} }
     .blob1 { animation:morph1 15s ease-in-out infinite }
     .blob2 { animation:morph2 18s ease-in-out infinite }
 
-    /* Particles */
     @keyframes partFloat { 0%{transform:translateY(0) scale(1);opacity:0} 10%{opacity:.6} 90%{opacity:.4} 100%{transform:translateY(-100vh) scale(0);opacity:0} }
     .particle { position:absolute; border-radius:50%; pointer-events:none; animation:partFloat linear infinite }
 
-    /* Ambient orbs */
     @keyframes orbA { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(120px,-100px) scale(1.2)} 66%{transform:translate(-60px,80px) scale(.85)} }
     @keyframes orbB { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-100px,90px) scale(1.15)} }
     @keyframes orbC { 0%,100%{transform:translate(0,0)} 33%{transform:translate(70px,90px)} 66%{transform:translate(-40px,-50px)} }
 
-    /* Toggle */
     .tog-k { transition:left .3s cubic-bezier(.68,-.55,.27,1.55) }
 
-    /* Collapse */
     .coll { display:grid; grid-template-rows:0fr; transition:grid-template-rows .4s cubic-bezier(.16,1,.3,1) }
     .coll.open { grid-template-rows:1fr }
     .coll-i { overflow:hidden }
 
-    /* Pomo pulse */
     @keyframes pomoPulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.15)} 50%{box-shadow:0 0 0 14px rgba(239,68,68,0)} }
     .pomo-go { animation:pomoPulse 2s ease-in-out infinite; border-radius:50% }
 
-    /* Heat */
     .hcell { transition:all .15s ease }
     .hcell:hover { transform:scale(1.35); z-index:10 }
 
-    /* Focus glow */
     .focus-glow { box-shadow:0 0 80px -20px rgba(59,130,246,.15) }
     .dark .focus-glow { box-shadow:0 0 80px -20px rgba(96,165,250,.1) }
 
-    /* Aurora border */
-    @keyframes auRot { to{transform:rotate(360deg)} }
-    .aurora { position:relative }
-    .aurora::before { content:''; position:absolute; inset:-1px; border-radius:inherit; padding:1px; background:conic-gradient(#3b82f640,#8b5cf640,#ec489940,#10b98140,#3b82f640); -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0); -webkit-mask-composite:xor; mask-composite:exclude; animation:auRot 6s linear infinite }
-
-    /* Hour sweep */
     @keyframes hourSweep { 0%{transform:scaleX(0);opacity:1} 100%{transform:scaleX(1);opacity:0} }
     .hour-sweep { position:fixed; top:0; left:0; right:0; height:2px; transform-origin:left; z-index:100; animation:hourSweep 2.5s cubic-bezier(.16,1,.3,1) both }
 
-    /* Noise */
     .noise::after { content:''; position:fixed; inset:0; pointer-events:none; z-index:9999; opacity:.015; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E") }
     .dark .noise::after { opacity:.025 }
 
-    /* Scrollbar */
     ::-webkit-scrollbar { width:4px }
     ::-webkit-scrollbar-track { background:transparent }
     ::-webkit-scrollbar-thumb { background:rgba(255,255,255,.05); border-radius:2px }
     .light ::-webkit-scrollbar-thumb { background:rgba(0,0,0,.06) }
 
-    /* Bento */
     .bento { display:grid; grid-template-columns:1fr 1fr; gap:10px }
     @media(max-width:640px) { .bento { grid-template-columns:1fr } }
     .span2 { grid-column:1/-1 }
 
-    /* Kbd */
     .kbd { display:inline-flex; align-items:center; padding:1px 5px; font-size:8px; font-weight:600; border-radius:4px; border:1px solid; font-family:'JetBrains Mono',monospace }
 
-    /* CmdK */
     .cmdk-ov { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.6); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; align-items:flex-start; justify-content:center; padding-top:min(18vh,140px) }
     .cmdk-p { width:100%; max-width:500px; margin:0 16px; border-radius:20px; overflow:hidden; animation:scaleIn .2s cubic-bezier(.16,1,.3,1) both }
     .dark .cmdk-p { background:rgba(20,20,25,.92); border:1px solid rgba(255,255,255,.08); box-shadow:0 30px 100px -15px rgba(0,0,0,.7) }
@@ -134,19 +102,15 @@
     .cmdk-i:hover, .cmdk-i.act { background:rgba(255,255,255,.06) }
     .light .cmdk-i:hover, .light .cmdk-i.act { background:rgba(0,0,0,.04) }
 
-    /* Hero time */
     .hero-time { font-size:clamp(3rem,10vw,6rem); font-weight:100; letter-spacing:-0.04em; line-height:1 }
     @media(min-width:640px) { .hero-time { font-size:clamp(4rem,12vw,7.5rem) } }
 
-    /* Sparkline */
     .spark { opacity:.6; transition:opacity .3s }
     .spark:hover { opacity:1 }
 
-    /* Metric card number hover */
     .glass .gt { transition:filter .3s }
     .glass:hover .gt { filter:brightness(1.15) }
 
-    /* Hero day card */
     .hero-card { position:relative; overflow:hidden; border-radius:28px; transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s; perspective:800px }
     .dark .hero-card { background:linear-gradient(145deg,rgba(255,255,255,.03) 0%,rgba(255,255,255,.01) 100%); border:1px solid rgba(255,255,255,.07); backdrop-filter:blur(40px) }
     .light .hero-card { background:linear-gradient(145deg,rgba(255,255,255,.6) 0%,rgba(255,255,255,.35) 100%); border:1px solid rgba(255,255,255,.7); backdrop-filter:blur(40px) }
@@ -154,25 +118,41 @@
     .dark .hero-card:hover { box-shadow:0 30px 80px -20px rgba(0,0,0,.6); border-color:rgba(255,255,255,.12) }
     .light .hero-card:hover { box-shadow:0 30px 80px -20px rgba(0,0,0,.12) }
 
-    /* Arc sweep */
     @keyframes arcSweep { from{stroke-dashoffset:var(--arc-total)} to{stroke-dashoffset:var(--arc-offset)} }
     .arc-sweep { animation:arcSweep 2s cubic-bezier(.16,1,.3,1) both }
 
-    /* Hero glow pulse */
     @keyframes heroGlow { 0%,100%{opacity:.03} 50%{opacity:.06} }
     .hero-glow { animation:heroGlow 6s ease-in-out infinite }
 
-    /* Stat row */
     .stat-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px }
     @media(max-width:640px) { .stat-row { grid-template-columns:1fr } }
 
-    /* Mini card */
     .mini-card { border-radius:20px; overflow:hidden; transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s }
     .dark .mini-card { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.04); backdrop-filter:blur(30px) }
     .light .mini-card { background:rgba(255,255,255,.4); border:1px solid rgba(255,255,255,.5); backdrop-filter:blur(30px) }
     .mini-card:hover { transform:translateY(-2px) }
     .dark .mini-card:hover { border-color:rgba(255,255,255,.08); box-shadow:0 12px 40px -10px rgba(0,0,0,.4) }
     .light .mini-card:hover { box-shadow:0 12px 40px -10px rgba(0,0,0,.08) }
+
+    /* Year dots */
+    .dots-grid { display:grid; grid-template-columns:repeat(19,1fr); gap:4px }
+    @media(max-width:480px) { .dots-grid { grid-template-columns:repeat(15,1fr); gap:3px } }
+    .dot { width:100%; aspect-ratio:1; border-radius:50%; transition:transform .15s,opacity .3s }
+    .dot:hover { transform:scale(1.6); z-index:10 }
+    .dot-past { opacity:.15 }
+    .dot-today { box-shadow:0 0 8px var(--ac), 0 0 16px var(--ac); transform:scale(1.2) }
+    .dot-future { opacity:.85 }
+    @keyframes dotReveal { from{opacity:0;transform:scale(0)} to{opacity:var(--dot-op,1);transform:scale(var(--dot-sc,1))} }
+
+    /* Month dots */
+    .month-dots-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px }
+    .month-label { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.15em; color:rgba(255,255,255,.3) }
+    .light .month-label { color:rgba(0,0,0,.25) }
+
+    /* Tooltip */
+    .dot-tip { position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%); padding:4px 8px; border-radius:8px; font-size:10px; font-weight:600; white-space:nowrap; pointer-events:none; z-index:20 }
+    .dark .dot-tip { background:rgba(0,0,0,.85); color:#fff; border:1px solid rgba(255,255,255,.1) }
+    .light .dot-tip { background:rgba(255,255,255,.95); color:#000; border:1px solid rgba(0,0,0,.08); box-shadow:0 4px 12px rgba(0,0,0,.1) }
   </style>
 </head>
 <body>
@@ -194,7 +174,7 @@ function ic(paths, w) {
       viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor',
       strokeWidth: 1.5, strokeLinecap: 'round', strokeLinejoin: 'round',
       className: (p && p.className) || ''
-    }, paths.map(function(d, i) { return h(d[0], Object.assign({ key: i }, d[1])) }));
+    }, paths.map(function(d, i) { return h(d[0], Object.assign({ key: i }, d[1])); }));
   };
 }
 
@@ -214,7 +194,10 @@ var ISearch = ic([['circle',{cx:11,cy:11,r:8}],['line',{x1:21,y1:21,x2:16.65,y2:
 var ICmd = ic([['path',{d:'M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z'}]], 14);
 var IUser = ic([['path',{d:'M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'}],['circle',{cx:12,cy:7,r:4}]], 14);
 var IEdit = ic([['path',{d:'M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7'}],['path',{d:'M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z'}]], 13);
-var IBar = ic([['path',{d:'M12 20V10'}],['path',{d:'M18 20V4'}],['path',{d:'M6 20v-4'}]], 13);
+var IGrid = ic([['rect',{x:3,y:3,width:7,height:7}],['rect',{x:14,y:3,width:7,height:7}],['rect',{x:14,y:14,width:7,height:7}],['rect',{x:3,y:14,width:7,height:7}]], 15);
+var ICalendar = ic([['rect',{x:3,y:4,width:18,height:18,rx:2,ry:2}],['line',{x1:16,y1:2,x2:16,y2:6}],['line',{x1:8,y1:2,x2:8,y2:6}],['line',{x1:3,y1:10,x2:21,y2:10}]], 15);
+var IChevL = ic([['polyline',{points:'15 18 9 12 15 6',strokeWidth:2}]], 14);
+var IChevR = ic([['polyline',{points:'9 18 15 12 9 6',strokeWidth:2}]], 14);
 
 // ─── Sound ───
 function playChime() {
@@ -312,6 +295,27 @@ var RINGS = [
   { l: "Day",   k: "dP", c: ["#fb7185","#fecdd3"], s: 48 }
 ];
 
+// ─── History tracking ───
+function saveSnapshot(time) {
+  try {
+    var key = "m_history";
+    var data = JSON.parse(localStorage.getItem(key) || "{}");
+    var today = time.now.toISOString().slice(0, 10);
+    data[today] = { yP: +time.yP.toFixed(2), mP: +time.mP.toFixed(2), wP: +time.wP.toFixed(2), dP: +time.dP.toFixed(2) };
+    var keys = Object.keys(data).sort();
+    while (keys.length > 60) { delete data[keys.shift()]; }
+    localStorage.setItem(key, JSON.stringify(data));
+    return data;
+  } catch(e) { return {}; }
+}
+
+function getSparkData(history, ringKey, count) {
+  var keys = Object.keys(history).sort();
+  var recent = keys.slice(-count);
+  if (recent.length < 2) return null;
+  return recent.map(function(k) { return history[k][ringKey] || 0; });
+}
+
 // ─── Sparkline ───
 function Spark(p) {
   var d = p.data, col = p.color, w = p.w || 60, ht = p.h || 20;
@@ -359,10 +363,7 @@ function Ring(p) {
   var off = ci - (Math.min(pct, 100) / 100) * ci;
   var c = sz / 2, gid = "rg" + lbl;
   var ms = S(false), mt = ms[0], sM = ms[1];
-  E(function() {
-    var t = setTimeout(function() { sM(true); }, 100 + idx * 150);
-    return function() { clearTimeout(t); };
-  }, []);
+  E(function() { var t = setTimeout(function() { sM(true); }, 100 + idx * 150); return function() { clearTimeout(t); }; }, []);
   return h('div', { className: "absolute", style: { width: sz, height: sz, top: '50%', left: '50%', transform: 'translate(-50%,-50%)' } },
     active ? h('div', { className: "breathe absolute rounded-full", style: { width: sz + 10, height: sz + 10, top: '50%', left: '50%', border: '1.5px solid ' + cols[0], opacity: 0.25 } }) : null,
     h('svg', { width: sz, height: sz },
@@ -434,32 +435,25 @@ function Pomo() {
   var bs = S(false), brk = bs[0], sB = bs[1];
   var ns = S(function() { try { return parseInt(localStorage.getItem("mp")) || 0; } catch(e) { return 0; } });
   var sess = ns[0], sN = ns[1];
-
   E(function() {
     if (!run) return;
     var id = setInterval(function() {
       sS(function(s) {
         if (s <= 1) {
           sR(false); playChime();
-          if (!brk) {
-            var n = sess + 1; sN(n); localStorage.setItem("mp", String(n));
-            sB(true); return B;
-          } else {
-            sB(false); return W;
-          }
+          if (!brk) { var n = sess + 1; sN(n); localStorage.setItem("mp", String(n)); sB(true); return B; }
+          else { sB(false); return W; }
         }
         return s - 1;
       });
     }, 1000);
     return function() { clearInterval(id); };
   }, [run, brk, sess]);
-
   var reset = function() { sR(false); sB(false); sS(W); };
   var mn = Math.floor(sec / 60), sc = sec % 60;
   var tot = brk ? B : W, pct = ((tot - sec) / tot) * 100;
   var rad = 30, ci = 2 * Math.PI * rad, doff = ci - (pct / 100) * ci;
   var col = brk ? "#34d399" : "#f87171";
-
   return h('div', { className: "flex items-center gap-4" },
     h('div', { className: "relative " + (run && !brk ? "pomo-go" : "") },
       h('svg', { width: 70, height: 70 },
@@ -495,22 +489,15 @@ function Habits() {
   var ns = S(""), nn = ns[0], sN = ns[1];
   var iref = R(null);
   var today = new Date().toISOString().slice(0, 10);
-
   var last7 = M(function() {
     var d = [];
-    for (var i = 6; i >= 0; i--) {
-      var x = new Date(); x.setDate(x.getDate() - i);
-      d.push({ k: x.toISOString().slice(0, 10), l: x.toLocaleDateString("en", { weekday: "narrow" }) });
-    }
+    for (var i = 6; i >= 0; i--) { var x = new Date(); x.setDate(x.getDate() - i); d.push({ k: x.toISOString().slice(0, 10), l: x.toLocaleDateString("en", { weekday: "narrow" }) }); }
     return d;
   }, [today]);
-
   E(function() { localStorage.setItem("mh", JSON.stringify(habs)); }, [habs]);
   E(function() { if (adding && iref.current) iref.current.focus(); }, [adding]);
-
   var celS = S(null), cel = celS[0], sCel = celS[1];
   var popS = S(null), pop = popS[0], sPop = popS[1];
-
   function tog(id, dk) {
     sH(function(p) {
       return p.map(function(x) {
@@ -518,8 +505,7 @@ function Habits() {
         var hh = {}; Object.keys(x.h).forEach(function(k) { hh[k] = x.h[k]; });
         hh[dk] = !hh[dk];
         if (hh[dk]) {
-          sPop(id + "-" + dk);
-          setTimeout(function() { sPop(null); }, 400);
+          sPop(id + "-" + dk); setTimeout(function() { sPop(null); }, 400);
           var st = 0, dd = new Date();
           while (hh[dd.toISOString().slice(0, 10)]) { st++; dd.setDate(dd.getDate() - 1); }
           if (st === 7 || st === 14 || st === 30 || st === 100) sCel({ name: x.name, streak: st });
@@ -528,23 +514,10 @@ function Habits() {
       });
     });
   }
-
-  E(function() {
-    if (!cel) return;
-    var t = setTimeout(function() { sCel(null); }, 3500);
-    return function() { clearTimeout(t); };
-  }, [cel]);
-
-  function streak(hab) {
-    var s = 0, d = new Date();
-    while (hab.h[d.toISOString().slice(0, 10)]) { s++; d.setDate(d.getDate() - 1); }
-    return s;
-  }
+  E(function() { if (!cel) return; var t = setTimeout(function() { sCel(null); }, 3500); return function() { clearTimeout(t); }; }, [cel]);
+  function streak(hab) { var s = 0, d = new Date(); while (hab.h[d.toISOString().slice(0, 10)]) { s++; d.setDate(d.getDate() - 1); } return s; }
   function wkCt(hab) { var c = 0; last7.forEach(function(d) { if (hab.h[d.k]) c++; }); return c; }
-  function addH(e) {
-    e.preventDefault();
-    if (nn.trim()) { sH(function(p) { return p.concat([{ id: Date.now(), name: nn.trim(), h: {} }]); }); sN(""); sA(false); }
-  }
+  function addH(e) { e.preventDefault(); if (nn.trim()) { sH(function(p) { return p.concat([{ id: Date.now(), name: nn.trim(), h: {} }]); }); sN(""); sA(false); } }
   function delH(id) { sH(function(p) { return p.filter(function(x) { return x.id !== id; }); }); }
 
   return h('div', { className: "space-y-0.5" },
@@ -554,9 +527,7 @@ function Habits() {
     h('div', { className: "flex items-center mb-2" },
       h('div', { className: "flex-1" }),
       h('div', { className: "flex gap-[3px] mr-6" },
-        last7.map(function(d) {
-          return h('div', { key: d.k, className: "w-[22px] text-center text-[8px] font-mono font-medium text-gray-400 dark:text-gray-600 uppercase" }, d.l);
-        }))),
+        last7.map(function(d) { return h('div', { key: d.k, className: "w-[22px] text-center text-[8px] font-mono font-medium text-gray-400 dark:text-gray-600 uppercase" }, d.l); }))),
     habs.map(function(hab) {
       var st = streak(hab), ct = hab.h[today], wc = wkCt(hab);
       var isMilestone = st === 7 || st === 14 || st === 30 || st === 100;
@@ -586,8 +557,7 @@ function Habits() {
           h('button', { type: "submit", className: "px-3 py-1.5 text-xs font-semibold rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900" }, "Add"),
           h('button', { type: "button", onClick: function() { sA(false); }, className: "px-2 text-xs text-gray-400" }, "Cancel"))
       : h('button', { onClick: function() { sA(true); },
-          className: "flex items-center gap-1 text-[10px] text-gray-500 hover:text-gray-300 transition pt-2" },
-          h(IPlus), " Add habit")
+          className: "flex items-center gap-1 text-[10px] text-gray-500 hover:text-gray-300 transition pt-2" }, h(IPlus), " Add habit")
   );
 }
 
@@ -597,7 +567,6 @@ function MCard(p) {
   var now = new Date(), tgt = new Date(m.date + "T00:00:00"), diff = tgt - now, past = diff < 0;
   var abs = Math.abs(diff), days = Math.floor(abs / 864e5);
   var td = m.td || days, prog = past ? 100 : Math.max(0, Math.min(100, ((td - days) / td) * 100));
-
   return h('div', { className: "si glass p-4 group" },
     h('div', { className: "flex items-center justify-between" },
       h('div', { className: "min-w-0 flex-1" },
@@ -606,8 +575,7 @@ function MCard(p) {
           tgt.toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" }))),
       h('div', { className: "flex items-center gap-2 flex-shrink-0" },
         h('span', { className: "text-xl font-mono font-bold tabular-nums " + (past ? "text-gray-500" : "text-gray-900 dark:text-white") },
-          (past ? "-" : "") + days,
-          h('span', { className: "text-[9px] font-normal text-gray-500 ml-0.5" }, "d")),
+          (past ? "-" : "") + days, h('span', { className: "text-[9px] font-normal text-gray-500 ml-0.5" }, "d")),
         h('button', { onClick: function() { onDel(m.id); },
           className: "p-1 rounded opacity-0 group-hover:opacity-100 text-gray-600 hover:text-red-400 transition" }, h(ITrash)))),
     !past ? h('div', { className: "h-[3px] rounded-full bg-black/[0.03] dark:bg-white/[0.03] mt-3 overflow-hidden" },
@@ -622,12 +590,7 @@ function AddM(p) {
   var ds = S(""), date = ds[0], sD = ds[1];
   var ref = R(null);
   E(function() { if (ref.current) ref.current.focus(); }, []);
-  function sub(e) {
-    e.preventDefault();
-    if (name.trim() && date) {
-      p.onAdd({ id: Date.now(), name: name.trim(), date: date, td: Math.ceil((new Date(date + "T00:00:00") - new Date()) / 864e5) });
-    }
-  }
+  function sub(e) { e.preventDefault(); if (name.trim() && date) p.onAdd({ id: Date.now(), name: name.trim(), date: date, td: Math.ceil((new Date(date + "T00:00:00") - new Date()) / 864e5) }); }
   return h('form', { onSubmit: sub, className: "si glass p-5 space-y-3" },
     h('input', { ref: ref, type: "text", placeholder: "Counting down to\u2026", value: name, onChange: function(e) { sN(e.target.value); },
       className: "w-full px-3 py-2 text-sm rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.06] text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/10 transition" }),
@@ -643,9 +606,7 @@ function AddM(p) {
 function Particles(p) {
   var items = M(function() {
     var a = [];
-    for (var i = 0; i < 30; i++) {
-      a.push({ i: i, l: Math.random() * 100, sz: Math.random() * 2 + 0.5, dur: Math.random() * 12 + 6, del: Math.random() * 8, op: Math.random() * 0.25 + 0.05 });
-    }
+    for (var i = 0; i < 30; i++) a.push({ i: i, l: Math.random() * 100, sz: Math.random() * 2 + 0.5, dur: Math.random() * 12 + 6, del: Math.random() * 8, op: Math.random() * 0.25 + 0.05 });
     return a;
   }, []);
   return h('div', { className: "fixed inset-0 overflow-hidden pointer-events-none", style: { zIndex: 1 } },
@@ -662,7 +623,6 @@ function Ambient(p) {
   var ts = t.now.toLocaleTimeString("en", { hour: "2-digit", minute: "2-digit", hour12: false });
   var sc = String(t.now.getSeconds()).padStart(2, "0");
   var ds = t.now.toLocaleDateString("en", { weekday: "long", month: "long", day: "numeric" });
-
   return h('div', { className: "fi", onClick: p.onX,
     style: { position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", cursor: "default" } },
     h('div', { className: "absolute inset-0 transition-colors duration-1000 " + (dark ? "bg-[#020204]" : "bg-[#fafafa]") },
@@ -678,13 +638,127 @@ function Ambient(p) {
           h('span', { className: "text-[10px] text-gray-400" }, "%"))),
       h('p', { className: "fu font-mono tracking-tight tabular-nums leading-none text-gray-900 dark:text-white",
         style: { fontSize: "clamp(4rem,14vw,9rem)", fontWeight: 100, animationDelay: "0.1s" } },
-        ts,
-        h('span', { className: "text-gray-300 dark:text-gray-700", style: { fontSize: "0.3em", marginLeft: 6 } }, sc)),
+        ts, h('span', { className: "text-gray-300 dark:text-gray-700", style: { fontSize: "0.3em", marginLeft: 6 } }, sc)),
       h('p', { className: "fu text-sm text-gray-400 dark:text-gray-500 mt-3 tracking-wide", style: { animationDelay: "0.2s" } }, ds),
       h('p', { className: "fu text-xs text-gray-300 dark:text-gray-700 mt-6 max-w-xs mx-auto italic", style: { animationDelay: "0.3s" } },
         "\u201C" + tip("Day", t.dP) + "\u201D"),
       h('p', { className: "fi text-[10px] text-gray-300 dark:text-gray-800 mt-12", style: { animationDelay: "1s" } },
         h('span', { className: "kbd border-gray-300 dark:border-gray-800" }, "esc"), " to exit"))
+  );
+}
+
+// ─── Year Dots ───
+function YearDots(p) {
+  var dark = p.dark, ac = p.accent;
+  var now = new Date();
+  var year = now.getFullYear();
+  var startOfYear = new Date(year, 0, 1);
+  var isLeap = new Date(year, 1, 29).getDate() === 29;
+  var totalDays = isLeap ? 366 : 365;
+  var dayOfYear = Math.ceil((now - startOfYear) / 864e5);
+  var daysLeft = totalDays - dayOfYear;
+  var pct = Math.round((dayOfYear / totalDays) * 100);
+
+  var hovS = S(null), hov = hovS[0], sHov = hovS[1];
+
+  // Build month markers
+  var months = M(function() {
+    var m = [];
+    for (var i = 0; i < 12; i++) {
+      var firstDay = new Date(year, i, 1);
+      var dayNum = Math.ceil((firstDay - startOfYear) / 864e5) + 1;
+      m.push({ name: firstDay.toLocaleDateString("en", { month: "short" }), start: dayNum });
+    }
+    return m;
+  }, [year]);
+
+  function dateForDay(d) {
+    var dt = new Date(year, 0, d);
+    return dt.toLocaleDateString("en", { month: "short", day: "numeric", weekday: "short" });
+  }
+
+  // Find which month a day belongs to
+  function monthForDay(d) {
+    for (var i = months.length - 1; i >= 0; i--) {
+      if (d >= months[i].start) return i;
+    }
+    return 0;
+  }
+
+  return h('div', { className: "fi", onClick: function(e) { if (e.target === e.currentTarget) p.onClose(); },
+    style: { position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", cursor: "default" } },
+
+    // BG
+    h('div', { className: "absolute inset-0 transition-colors duration-500 " + (dark ? "bg-[#020204]/95" : "bg-[#f8f9fb]/95"),
+      style: { backdropFilter: "blur(30px)", WebkitBackdropFilter: "blur(30px)" } }),
+
+    h('div', { className: "si relative z-10 w-full max-w-lg mx-4 p-8 rounded-[32px]",
+      style: dark
+        ? { background: "linear-gradient(145deg,rgba(255,255,255,.03),rgba(255,255,255,.01))", border: "1px solid rgba(255,255,255,.07)" }
+        : { background: "linear-gradient(145deg,rgba(255,255,255,.7),rgba(255,255,255,.4))", border: "1px solid rgba(255,255,255,.8)", boxShadow: "0 30px 80px -20px rgba(0,0,0,.12)" } },
+
+      // Header
+      h('div', { className: "flex items-start justify-between mb-6" },
+        h('div', null,
+          h('p', { className: "text-3xl font-mono font-bold text-gray-900 dark:text-white tabular-nums" }, year),
+          h('p', { className: "text-xs text-gray-400 dark:text-gray-600 font-mono mt-1" },
+            "Day " + dayOfYear + " \u00B7 " + pct + "%")),
+        h('div', { className: "text-right" },
+          h('p', { className: "text-3xl font-mono font-bold tabular-nums gt", style: { background: ac.g } }, daysLeft),
+          h('p', { className: "text-xs text-gray-400 dark:text-gray-600 mt-1" }, "days left"))),
+
+      // Hover tooltip
+      hov !== null ? h('div', { className: "text-center mb-3" },
+        h('span', { className: "text-[11px] font-mono font-medium text-gray-400 dark:text-gray-500" }, dateForDay(hov))
+      ) : h('div', { className: "mb-3", style: { height: 18 } }),
+
+      // Dot grid
+      h('div', { className: "dots-grid", style: { "--ac": ac.c } },
+        (function() {
+          var dots = [];
+          for (var i = 1; i <= totalDays; i++) {
+            var isPast = i < dayOfYear;
+            var isToday = i === dayOfYear;
+            var mi = monthForDay(i);
+            var evenMonth = mi % 2 === 0;
+            var dotColor = isToday ? ac.c
+              : isPast ? (dark ? "rgba(255,255,255,.12)" : "rgba(0,0,0,.1)")
+              : (dark ? (evenMonth ? "rgba(255,255,255,.75)" : "rgba(255,255,255,.55)") : (evenMonth ? "rgba(0,0,0,.65)" : "rgba(0,0,0,.4)"));
+
+            dots.push(h('div', {
+              key: i,
+              className: "dot" + (isToday ? " dot-today" : isPast ? " dot-past" : " dot-future"),
+              onMouseEnter: function(day) { return function() { sHov(day); }; }(i),
+              onMouseLeave: function() { sHov(null); },
+              style: { background: dotColor, "--ac": ac.c }
+            }));
+          }
+          return dots;
+        })()
+      ),
+
+      // Month labels row
+      h('div', { className: "flex justify-between mt-4 px-1" },
+        months.filter(function(_, i) { return i % 2 === 0; }).map(function(m) {
+          return h('span', { key: m.name, className: "month-label" }, m.name);
+        })
+      ),
+
+      // Bottom stats
+      h('div', { className: "flex items-center justify-between mt-5 pt-4 border-t border-black/[0.04] dark:border-white/[0.04]" },
+        h('div', { className: "flex items-center gap-3" },
+          h('div', { className: "flex items-center gap-1.5" },
+            h('div', { className: "w-2 h-2 rounded-full", style: { background: dark ? "rgba(255,255,255,.12)" : "rgba(0,0,0,.1)" } }),
+            h('span', { className: "text-[10px] text-gray-400 dark:text-gray-600" }, "Elapsed")),
+          h('div', { className: "flex items-center gap-1.5" },
+            h('div', { className: "w-2 h-2 rounded-full", style: { background: dark ? "rgba(255,255,255,.75)" : "rgba(0,0,0,.55)" } }),
+            h('span', { className: "text-[10px] text-gray-400 dark:text-gray-600" }, "Remaining")),
+          h('div', { className: "flex items-center gap-1.5" },
+            h('div', { className: "w-2 h-2 rounded-full", style: { background: ac.c, boxShadow: "0 0 6px " + ac.c } }),
+            h('span', { className: "text-[10px] text-gray-400 dark:text-gray-600" }, "Today"))),
+        h('span', { className: "text-[10px] text-gray-400 dark:text-gray-700" },
+          h('span', { className: "kbd border-gray-300 dark:border-gray-800" }, "esc"), " close"))
+    )
   );
 }
 
@@ -707,13 +781,9 @@ function HourSweep(p) {
 function QuoteR() {
   var qs = S(0), qi = qs[0], sQ = qs[1];
   var ks = S(0), k = ks[0], sK = ks[1];
-  E(function() {
-    var id = setInterval(function() { sQ(function(i) { return (i + 1) % QTS.length; }); sK(function(v) { return v + 1; }); }, 8000);
-    return function() { clearInterval(id); };
-  }, []);
+  E(function() { var id = setInterval(function() { sQ(function(i) { return (i + 1) % QTS.length; }); sK(function(v) { return v + 1; }); }, 8000); return function() { clearInterval(id); }; }, []);
   return h('p', { key: k, className: "text-[10px] text-gray-300 dark:text-gray-700 italic max-w-sm mx-auto leading-relaxed",
-    style: { animation: "quoteFade 8s ease both" } },
-    "\u201C" + QTS[qi] + "\u201D");
+    style: { animation: "quoteFade 8s ease both" } }, "\u201C" + QTS[qi] + "\u201D");
 }
 
 // ─── App ───
@@ -723,6 +793,7 @@ function App() {
   var fs = S(false), focus = fs[0], sF = fs[1];
   var sf = S(false), showForm = sf[0], sSF = sf[1];
   var ab = S(false), amb = ab[0], sAm = ab[1];
+  var yd = S(false), yearDots = yd[0], sYd = yd[1];
   var ck = S(false), cmdkOpen = ck[0], sCk = ck[1];
   var cq = S(""), cmdkQ = cq[0], sCq = cq[1];
   var nameS = S(function() { try { return localStorage.getItem("m_name") || ""; } catch(e) { return ""; } }), userName = nameS[0], sName = nameS[1];
@@ -733,28 +804,46 @@ function App() {
     return [{ id: 1, name: "Q2 Review", date: "2026-06-30", td: 95 }, { id: 2, name: "Product Launch", date: "2026-09-15", td: 172 }];
   }), mils = ms[0], sMs = ms[1];
 
+  // History for real sparklines
+  var histS = S(function() { try { return JSON.parse(localStorage.getItem("m_history") || "{}"); } catch(e) { return {}; } });
+  var history = histS[0], sHist = histS[1];
+
   E(function() { var id = setInterval(function() { sT(getTP()); }, 1000); return function() { clearInterval(id); }; }, []);
   E(function() { document.documentElement.classList.toggle("dark", dark); document.documentElement.classList.toggle("light", !dark); }, [dark]);
   E(function() { localStorage.setItem("mm2", JSON.stringify(mils)); }, [mils]);
 
+  // Save snapshot every 5 minutes
+  var snapTimer = R(null);
+  E(function() {
+    function doSnap() { var d = saveSnapshot(time); sHist(d); }
+    doSnap(); // immediate
+    snapTimer.current = setInterval(doSnap, 300000);
+    return function() { clearInterval(snapTimer.current); };
+  }, []);
+
+  // Sparkline data from real history
+  var sparkD = M(function() {
+    var d = {};
+    RINGS.forEach(function(r) {
+      var real = getSparkData(history, r.k, 7);
+      if (real) { d[r.k] = real; }
+      else {
+        // Fallback: generate from current value until we have history
+        var v = time[r.k], a = [];
+        for (var i = 6; i >= 0; i--) a.push(Math.max(0, Math.min(100, v - i * v / 7 * (0.7 + Math.random() * 0.6))));
+        a[6] = v; d[r.k] = a;
+      }
+    });
+    return d;
+  }, [history, Math.floor(time.yP)]);
+
   var noteTimer = R(null);
   function updateNote(v) {
-    sNote(v);
-    clearTimeout(noteTimer.current);
+    sNote(v); clearTimeout(noteTimer.current);
     noteTimer.current = setTimeout(function() { localStorage.setItem("m_note", v); }, 500);
   }
 
   function saveName(n) { sName(n); localStorage.setItem("m_name", n); sEN(false); }
-
-  var sparkD = M(function() {
-    var d = {};
-    RINGS.forEach(function(r) {
-      var v = time[r.k], a = [];
-      for (var i = 6; i >= 0; i--) a.push(Math.max(0, Math.min(100, v - i * v / 7 * (0.7 + Math.random() * 0.6))));
-      a[6] = v; d[r.k] = a;
-    });
-    return d;
-  }, [Math.floor(time.yP)]);
 
   // Keyboard shortcuts
   E(function() {
@@ -764,8 +853,9 @@ function App() {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") { e.preventDefault(); sCk(true); sCq(""); return; }
       if (e.key === "d" || e.key === "D") sDk(function(v) { return !v; });
       if (e.key === "f" || e.key === "F") sF(function(v) { return !v; });
-      if (e.key === "a" || e.key === "A") sAm(function(v) { return !v; });
-      if (e.key === "Escape") sAm(false);
+      if (e.key === "a" || e.key === "A") { sAm(function(v) { return !v; }); return; }
+      if (e.key === "y" || e.key === "Y") { sYd(function(v) { return !v; }); return; }
+      if (e.key === "Escape") { sAm(false); sYd(false); }
     }
     window.addEventListener("keydown", fn);
     return function() { window.removeEventListener("keydown", fn); };
@@ -776,6 +866,7 @@ function App() {
       { id: "theme", label: dark ? "Switch to light" : "Switch to dark", kw: "theme dark light toggle", ic: dark ? ISun : IMoon, sc: "D", fn: function() { sDk(function(v) { return !v; }); } },
       { id: "focus", label: focus ? "Disable focus" : "Enable focus", kw: "focus work pomodoro", ic: IZap, sc: "F", fn: function() { sF(function(v) { return !v; }); } },
       { id: "ambient", label: "Ambient mode", kw: "ambient fullscreen zen", ic: IExpand, sc: "A", fn: function() { sAm(true); } },
+      { id: "yeardots", label: "Year in dots", kw: "year dots progress calendar grid", ic: IGrid, sc: "Y", fn: function() { sYd(true); } },
       { id: "milestone", label: "Add milestone", kw: "milestone countdown deadline", ic: ITarget, fn: function() { sSF(true); } },
       { id: "pomo", label: "Start pomodoro", kw: "pomodoro timer start", ic: IPlay, fn: function() { sF(true); } },
       { id: "name", label: "Set your name", kw: "name personalize greeting", ic: IUser, fn: function() { sEN(true); } }
@@ -802,6 +893,7 @@ function App() {
     h(HourSweep, { color: ac.c }),
     h(Particles, { color: ac.c }),
     cmdkOpen ? h(CmdK, { query: cmdkQ, setQuery: sCq, onClose: function() { sCk(false); }, actions: cmdActs }) : null,
+    yearDots ? h(YearDots, { dark: dark, accent: ac, onClose: function() { sYd(false); } }) : null,
 
     // Background blobs
     h('div', { className: "fixed inset-0 pointer-events-none overflow-hidden", style: { zIndex: 0 } },
@@ -828,6 +920,8 @@ function App() {
           h('div', { className: "flex gap-1" },
             h('button', { onClick: function() { sCk(true); sCq(""); }, title: "\u2318K",
               className: "p-2.5 rounded-2xl text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition" }, h(ICmd)),
+            h('button', { onClick: function() { sYd(true); }, title: "Year dots",
+              className: "p-2.5 rounded-2xl text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition" }, h(IGrid)),
             h('button', { onClick: function() { sAm(true); }, title: "Ambient",
               className: "p-2.5 rounded-2xl text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-black/[0.04] dark:hover:bg-white/[0.04] transition" }, h(IExpand)),
             h('button', { onClick: function() { sDk(!dark); }, title: "Theme",
@@ -848,12 +942,10 @@ function App() {
           var dVal = time.dP, left = 100 - dVal, hrsLeft = Math.ceil(24 - hr - time.now.getMinutes() / 60);
           var arcR = 90, arcSw = 5, arcCi = Math.PI * arcR, arcOff = arcCi - (Math.min(dVal, 100) / 100) * arcCi;
           var dayCol = RINGS[3].c;
-
           return h('div', { className: "fu hero-card p-8 sm:p-10 group", style: { animationDelay: "0.08s" } },
             h('div', { className: "hero-glow absolute inset-0 pointer-events-none",
               style: { background: "radial-gradient(circle at 30% 50%," + dayCol[0] + "10,transparent 60%)" } }),
             h('div', { className: "relative flex flex-col sm:flex-row items-center gap-8" },
-              // Arc gauge
               h('div', { className: "relative flex-shrink-0", style: { width: 190, height: 100 } },
                 h('svg', { width: 190, height: 100, viewBox: "0 0 190 100", className: "overflow-visible" },
                   h('defs', null,
@@ -873,7 +965,6 @@ function App() {
                     style: { fontSize: "3.8rem", background: "linear-gradient(135deg," + dayCol[0] + "," + dayCol[1] + ")" } },
                     h(AN, { value: left, dec: 0 })),
                   h('span', { className: "text-xl text-gray-300 dark:text-gray-700 font-light ml-1" }, "%"))),
-              // Right side info
               h('div', { className: "flex-1 text-center sm:text-left" },
                 h('p', { className: "text-[9px] font-bold uppercase tracking-[0.3em] mb-2", style: { color: dayCol[0] } }, "Day Remaining"),
                 h('p', { className: "text-sm text-gray-400 dark:text-gray-500 font-medium mb-4" }, tip("Day", dVal)),
@@ -896,7 +987,8 @@ function App() {
             var sub = r.l === "Year" ? "Day " + Math.ceil(val / 100 * 365) + "/365"
               : r.l === "Month" ? "Day " + time.now.getDate()
               : "Day " + (time.now.getDay() || 7) + "/7";
-            return h('div', { key: r.l, className: "mini-card p-4 group" },
+            return h('div', { key: r.l, className: "mini-card p-4 group" + (r.l === "Year" ? " cursor-pointer" : ""),
+              onClick: r.l === "Year" ? function() { sYd(true); } : undefined },
               h('div', { className: "flex items-center gap-1.5 mb-3" },
                 h('div', { className: "w-1.5 h-1.5 rounded-full", style: { background: r.c[0], boxShadow: "0 0 6px " + r.c[0] + "50" } }),
                 h('span', { className: "text-[8px] font-bold uppercase tracking-[0.2em] text-gray-400 dark:text-gray-600" }, r.l),
@@ -932,8 +1024,7 @@ function App() {
                 h(IZap, { className: focus ? "text-blue-400" : "text-gray-400" }),
                 h('span', { className: "text-[9px] font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-600" }, "Focus"),
                 time.wdP > 0 && time.wdP < 100
-                  ? h('span', { className: "text-[10px] font-mono text-gray-400 dark:text-gray-600 tabular-nums" }, "\u00B7 " + fH + "h" + fM + "m left")
-                  : null),
+                  ? h('span', { className: "text-[10px] font-mono text-gray-400 dark:text-gray-600 tabular-nums" }, "\u00B7 " + fH + "h" + fM + "m left") : null),
               h('button', { onClick: function() { sF(!focus); },
                 className: "relative w-11 h-6 rounded-full transition-colors duration-300 " + (focus ? "bg-blue-500" : "bg-black/[0.05] dark:bg-white/[0.06]") },
                 h('div', { className: "tog-k absolute top-[3px] w-[18px] h-[18px] rounded-full bg-white shadow-sm",
@@ -970,10 +1061,11 @@ function App() {
       // Footer
       h('footer', { className: "fi mt-10 text-center space-y-5", style: { animationDelay: "1s" } },
         h(QuoteR),
-        h('div', { className: "flex items-center justify-center gap-4 text-[8px] text-gray-300 dark:text-gray-800" },
+        h('div', { className: "flex items-center justify-center gap-4 text-[8px] text-gray-300 dark:text-gray-800 flex-wrap" },
           h('span', null, h('span', { className: "kbd border-gray-200 dark:border-gray-800" }, "\u2318K"), " commands"),
           h('span', null, h('span', { className: "kbd border-gray-200 dark:border-gray-800" }, "D"), " theme"),
           h('span', null, h('span', { className: "kbd border-gray-200 dark:border-gray-800" }, "F"), " focus"),
+          h('span', null, h('span', { className: "kbd border-gray-200 dark:border-gray-800" }, "Y"), " year"),
           h('span', null, h('span', { className: "kbd border-gray-200 dark:border-gray-800" }, "A"), " ambient")))
     ) // close max-w container
   ); // close root div
