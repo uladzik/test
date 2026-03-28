@@ -2,7 +2,7 @@
 <html lang="en" class="dark">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"/>
   <title>Momentum</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -555,6 +555,7 @@ function Habits() {
     adding
       ? h('form', { onSubmit: addH, className: "flex gap-1.5 pt-2.5" },
           h('input', { ref: iref, type: "text", value: nn, onChange: function(e) { sN(e.target.value); }, placeholder: "New habit",
+            onFocus: function(e) { setTimeout(function() { e.target.scrollIntoView({ behavior: "smooth", block: "center" }); }, 300); },
             className: "flex-1 px-3 py-1.5 text-xs rounded-xl bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.05] dark:border-white/[0.06] text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-white/10 transition" }),
           h('button', { type: "submit", className: "px-3 py-1.5 text-xs font-semibold rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900" }, "Add"),
           h('button', { type: "button", onClick: function() { sA(false); }, className: "px-2 text-xs text-gray-400" }, "Cancel"))
@@ -591,12 +592,23 @@ function AddM(p) {
   var ns = S(""), name = ns[0], sN = ns[1];
   var ds = S(""), date = ds[0], sD = ds[1];
   var ref = R(null);
+  var formRef = R(null);
   E(function() { if (ref.current) ref.current.focus(); }, []);
+  // Scroll form into view when keyboard opens on mobile
+  function scrollIntoView() {
+    if (formRef.current) {
+      setTimeout(function() { formRef.current.scrollIntoView({ behavior: "smooth", block: "center" }); }, 300);
+    }
+  }
   function sub(e) { e.preventDefault(); if (name.trim() && date) p.onAdd({ id: Date.now(), name: name.trim(), date: date, td: Math.ceil((new Date(date + "T00:00:00") - new Date()) / 864e5) }); }
-  return h('form', { onSubmit: sub, className: "si glass p-5 space-y-3" },
-    h('input', { ref: ref, type: "text", placeholder: "Counting down to\u2026", value: name, onChange: function(e) { sN(e.target.value); },
+  return h('form', { ref: formRef, onSubmit: sub, className: "si glass p-5 space-y-3" },
+    h('input', { ref: ref, type: "text", placeholder: "Counting down to\u2026", value: name,
+      onChange: function(e) { sN(e.target.value); },
+      onFocus: scrollIntoView,
       className: "w-full px-3 py-2 text-sm rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.06] text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-white/10 transition" }),
-    h('input', { type: "date", value: date, onChange: function(e) { sD(e.target.value); },
+    h('input', { type: "date", value: date,
+      onChange: function(e) { sD(e.target.value); },
+      onFocus: scrollIntoView,
       className: "w-full px-3 py-2 text-sm rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.06] text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-white/10 transition" }),
     h('div', { className: "flex gap-2" },
       h('button', { type: "submit", className: "flex-1 py-2 text-sm font-semibold rounded-xl bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:opacity-90 transition" }, "Add"),
@@ -1108,6 +1120,7 @@ function App() {
               h(IEdit, { className: "text-gray-400" }),
               h('span', { className: "text-[9px] font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-600" }, "Quick Note")),
             h('textarea', { value: note, onChange: function(e) { updateNote(e.target.value); },
+              onFocus: function(e) { setTimeout(function() { e.target.scrollIntoView({ behavior: "smooth", block: "center" }); }, 300); },
               placeholder: "What\u2019s on your mind today\u2026", rows: 2,
               className: "w-full bg-transparent text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-700 focus:outline-none resize-none leading-relaxed" })),
 
