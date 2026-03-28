@@ -1,30 +1,6 @@
 {
   "version": 4,
   "routes": {
-    "/projects": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/projects",
-      "dataRoute": "/projects.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/": {
       "experimentalBypassFor": [
         {
@@ -48,13 +24,37 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
+    },
+    "/projects": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/projects",
+      "dataRoute": "/projects.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "0afd169fc016c1ea546b9dbfa126098f",
-    "previewModeSigningKey": "5f32f147b6ca184b24148aa7a9ce96eae15a8762d6e426fb1574d9c3789d93d2",
-    "previewModeEncryptionKey": "13808d33cfccfb5ade5465cc1e747241f7fe76b74e8c7790bc20faff9e81c03e"
+    "previewModeId": "f8a2c7aca9b90a2ad799af27e7638b8e",
+    "previewModeSigningKey": "fc04b0f1ef1ce5190d2dc2fc1984feca550ea1c7b6fb3744f69ae1e5696615b0",
+    "previewModeEncryptionKey": "11838357a35a73330c8f956fbabc5858788102a7299e749947604bbccc0ab384"
   }
 }

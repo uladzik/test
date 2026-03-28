@@ -1,16 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { CalendarDays, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, Plus, Video, Phone, MapPin } from "lucide-react";
+import { Meeting } from "@/lib/types";
 import { ModuleCardWrapper } from "./module-card-wrapper";
 
 interface MeetingsCardProps {
   projectId: string;
+  meetings: Meeting[];
 }
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-export function MeetingsCard({ projectId }: MeetingsCardProps) {
+const meetingTypeIcons: Record<string, React.ReactNode> = {
+  video: <Video size={12} />,
+  call: <Phone size={12} />,
+  in_person: <MapPin size={12} />,
+};
+
+export function MeetingsCard({ projectId, meetings }: MeetingsCardProps) {
   const now = new Date();
   const [monthOffset, setMonthOffset] = useState(0);
   const currentMonth = new Date(now.getFullYear(), now.getMonth() + monthOffset);
@@ -42,6 +50,23 @@ export function MeetingsCard({ projectId }: MeetingsCardProps) {
   const todayDate = now.getDate();
   const isCurrentMonth = monthOffset === 0;
 
+  // Days with meetings
+  const meetingDays = new Set(
+    meetings.map((m) => {
+      const d = new Date(m.startTime);
+      if (d.getFullYear() === year && d.getMonth() === month) {
+        return d.getDate();
+      }
+      return -1;
+    }).filter((d) => d !== -1)
+  );
+
+  // Upcoming meetings sorted by time
+  const upcomingMeetings = [...meetings]
+    .filter((m) => new Date(m.startTime) >= now)
+    .sort((a, b) => a.startTime.localeCompare(b.startTime))
+    .slice(0, 3);
+
   return (
     <ModuleCardWrapper
       title="Meetings"
@@ -54,7 +79,7 @@ export function MeetingsCard({ projectId }: MeetingsCardProps) {
         <div className="flex items-center gap-1">
           <button
             onClick={() => setMonthOffset((p) => p - 1)}
-            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-[var(--background)] transition-colors"
             aria-label="Previous month"
           >
             <ChevronLeft size={14} className="text-[var(--muted)]" />
@@ -62,7 +87,7 @@ export function MeetingsCard({ projectId }: MeetingsCardProps) {
           <span className="text-sm font-medium min-w-[140px] text-center">{monthName}</span>
           <button
             onClick={() => setMonthOffset((p) => p + 1)}
-            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-1.5 rounded-lg hover:bg-[var(--background)] transition-colors"
             aria-label="Next month"
           >
             <ChevronRight size={14} className="text-[var(--muted)]" />
@@ -70,7 +95,7 @@ export function MeetingsCard({ projectId }: MeetingsCardProps) {
         </div>
         <button className="flex items-center gap-1.5 text-[11px] text-[var(--accent)] bg-[var(--accent-bg)] px-2.5 py-1.5 rounded-lg hover:bg-[var(--accent)] hover:text-white transition-all font-medium">
           <Plus size={12} />
-          Add calendar
+          Add
         </button>
       </div>
 
@@ -87,15 +112,16 @@ export function MeetingsCard({ projectId }: MeetingsCardProps) {
       <div className="grid grid-cols-7">
         {cells.map((cell, i) => {
           const isToday = isCurrentMonth && cell.currentMonth && cell.day === todayDate;
+          const hasMeeting = cell.currentMonth && meetingDays.has(cell.day);
           return (
             <div
               key={i}
-              className={`text-center py-[7px] text-sm rounded-lg transition-colors ${
+              className={`text-center py-[5px] text-sm rounded-lg transition-colors relative ${
                 !cell.currentMonth
-                  ? "text-gray-200"
+                  ? "text-[var(--muted-light)] opacity-40"
                   : isToday
                   ? ""
-                  : "text-[var(--foreground)] hover:bg-gray-50 cursor-pointer"
+                  : "text-[var(--foreground)] hover:bg-[var(--background)] cursor-pointer"
               }`}
             >
               {isToday ? (
@@ -105,10 +131,51 @@ export function MeetingsCard({ projectId }: MeetingsCardProps) {
               ) : (
                 cell.day
               )}
+              {/* Meeting dot */}
+              {hasMeeting && (
+                <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-[var(--accent)]" />
+              )}
             </div>
           );
         })}
       </div>
+
+      {/* Upcoming meetings list */}
+      {upcomingMeetings.length > 0 && (
+        <div className="mt-4 pt-4 border-t border-[var(--border)]">
+          <p className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-widest mb-2">
+            Upcoming
+          </p>
+          <div className="space-y-2">
+            {upcomingMeetings.map((m) => {
+              const start = new Date(m.startTime);
+              const timeStr = start.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+              const dateStr = start.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+              return (
+                <div key={m.id} className="flex items-center gap-2.5 px-3 py-2 bg-[var(--background)] rounded-xl">
+                  <span className="text-[var(--accent)] shrink-0">
+                    {meetingTypeIcons[m.meetingType] || <Video size={12} />}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium truncate">{m.title}</p>
+                    <p className="text-[11px] text-[var(--muted)]">{dateStr} at {timeStr}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {meetings.length === 0 && (
+        <div className="mt-4 pt-4 border-t border-[var(--border)]">
+          <div className="text-center py-4">
+            <CalendarDays size={24} className="mx-auto text-[var(--muted-light)] mb-2" />
+            <p className="text-sm text-[var(--muted)]">No meetings scheduled</p>
+            <p className="text-xs text-[var(--muted-light)]">Add a meeting to get started</p>
+          </div>
+        </div>
+      )}
     </ModuleCardWrapper>
   );
 }

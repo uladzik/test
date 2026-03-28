@@ -8,6 +8,7 @@ import {
   dummyNotes,
   dummyPayments,
   dummyMilestones,
+  dummyMeetings,
 } from "@/lib/dummy-data";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -21,6 +22,7 @@ import { NotesCard } from "@/components/modules/notes-card";
 import { PaymentsCard } from "@/components/modules/payments-card";
 import { TimelineCard } from "@/components/modules/timeline-card";
 import { StatsCard } from "@/components/modules/stats-card";
+import { DashboardFAB } from "@/components/modules/dashboard-fab";
 import { ChevronLeft, Calendar, CreditCard, Clock, CheckCircle2 } from "lucide-react";
 
 const billingLabels: Record<string, string> = {
@@ -38,6 +40,7 @@ export default async function ProjectDashboardPage({
   const project = dummyProjects.find((p) => p.id === projectId);
   if (!project) notFound();
 
+  const meetings = dummyMeetings.filter((m) => m.projectId === projectId);
   const timeEntries = dummyTimeEntries.filter((t) => t.projectId === projectId);
   const tasks = dummyTasks.filter((t) => t.projectId === projectId);
   const chatMessages = dummyChatMessages.filter((c) => c.projectId === projectId);
@@ -109,38 +112,72 @@ export default async function ProjectDashboardPage({
         </div>
       </div>
 
-      {/* Row 1: Meetings | Time Track | Tasks */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr_280px] gap-4 mb-4">
-        <MeetingsCard projectId={projectId} />
-        <TimeTrackCard projectId={projectId} entries={timeEntries} />
-        <TasksCard projectId={projectId} tasks={tasks} />
+      {/* Bento grid layout */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-min">
+        {/* Meetings: tall, span 2 rows */}
+        <div className="lg:row-span-2">
+          <MeetingsCard projectId={projectId} meetings={meetings} />
+        </div>
+
+        {/* TimeTrack: tall, span 2 rows */}
+        <div className="lg:row-span-2">
+          <TimeTrackCard projectId={projectId} entries={timeEntries} />
+        </div>
+
+        {/* Tasks: medium, single */}
+        <div className="lg:col-span-2">
+          <TasksCard projectId={projectId} tasks={tasks} />
+        </div>
+
+        {/* Chat: compact */}
+        <div>
+          <ChatCard projectId={projectId} messages={chatMessages} />
+        </div>
+
+        {/* Links: compact */}
+        <div>
+          <LinksCard projectId={projectId} links={links} />
+        </div>
+
+        {/* Documents: wide, span 2 cols */}
+        <div className="lg:col-span-2">
+          <DocumentsCard projectId={projectId} documents={documents} />
+        </div>
+
+        {/* Notes: medium */}
+        <div>
+          <NotesCard projectId={projectId} notes={notes} />
+        </div>
+
+        {/* Timeline: medium */}
+        <div>
+          <TimelineCard
+            projectId={projectId}
+            milestones={milestones}
+            startDate={project.startDate}
+            endDate={project.endDate}
+          />
+        </div>
+
+        {/* Payments: medium */}
+        <div>
+          <PaymentsCard projectId={projectId} payments={payments} />
+        </div>
+
+        {/* Stats: medium */}
+        <div>
+          <StatsCard
+            projectId={projectId}
+            timeEntries={timeEntries}
+            payments={payments}
+            tasks={tasks}
+            milestones={milestones}
+          />
+        </div>
       </div>
 
-      {/* Row 2: Chat | Links | Documents */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1fr_1fr_2fr] gap-4 mb-4">
-        <ChatCard projectId={projectId} messages={chatMessages} />
-        <LinksCard projectId={projectId} links={links} />
-        <DocumentsCard projectId={projectId} documents={documents} />
-      </div>
-
-      {/* Row 3: Notes | Timeline | Payments | Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <NotesCard projectId={projectId} notes={notes} />
-        <TimelineCard
-          projectId={projectId}
-          milestones={milestones}
-          startDate={project.startDate}
-          endDate={project.endDate}
-        />
-        <PaymentsCard projectId={projectId} payments={payments} />
-        <StatsCard
-          projectId={projectId}
-          timeEntries={timeEntries}
-          payments={payments}
-          tasks={tasks}
-          milestones={milestones}
-        />
-      </div>
+      {/* Floating action button */}
+      <DashboardFAB projectId={projectId} />
     </div>
   );
 }
@@ -149,6 +186,6 @@ function formatDateRange(start?: string, end?: string): string | null {
   if (!start) return null;
   const fmt = (d: string) =>
     new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-  if (end) return `${fmt(start)} – ${fmt(end)}`;
+  if (end) return `${fmt(start)} -- ${fmt(end)}`;
   return `From ${fmt(start)}`;
 }

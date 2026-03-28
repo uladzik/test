@@ -19,7 +19,7 @@ export function ModuleCardWrapper({
   className = "",
 }: ModuleCardWrapperProps) {
   return (
-    <div className={`card p-5 flex flex-col ${className}`}>
+    <div className={`card p-5 flex flex-col h-full ${className}`}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           {icon && <span className="text-[var(--accent)]">{icon}</span>}

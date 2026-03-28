@@ -1,4 +1,7 @@
-import { Clock, Play } from "lucide-react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { Clock, Play, Square } from "lucide-react";
 import { TimeEntry } from "@/lib/types";
 import { ModuleCardWrapper } from "./module-card-wrapper";
 
@@ -8,16 +11,35 @@ interface TimeTrackCardProps {
 }
 
 export function TimeTrackCard({ projectId, entries }: TimeTrackCardProps) {
+  const [running, setRunning] = useState(false);
+  const [elapsed, setElapsed] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (running) {
+      intervalRef.current = setInterval(() => {
+        setElapsed((prev) => prev + 1);
+      }, 1000);
+    } else {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [running]);
+
   const today = new Date().toISOString().slice(0, 10);
   const todayEntries = entries.filter((e) => e.startTime.slice(0, 10) === today);
   const todayMinutes = todayEntries.reduce((sum, e) => sum + (e.durationMinutes || 0), 0);
 
-  // If no entries today, show all entries total for demo
   const displayMinutes = todayMinutes || entries.reduce((sum, e) => sum + (e.durationMinutes || 0), 0);
   const hours = Math.floor(displayMinutes / 60);
   const mins = displayMinutes % 60;
 
   const grouped = groupByDate(entries);
+
+  const elapsedMin = Math.floor(elapsed / 60);
+  const elapsedSec = elapsed % 60;
 
   return (
     <ModuleCardWrapper
@@ -33,9 +55,32 @@ export function TimeTrackCard({ projectId, entries }: TimeTrackCardProps) {
             {hours}h {mins.toString().padStart(2, "0")}m
           </p>
         </div>
-        <button className="w-10 h-10 rounded-full bg-[var(--accent)] text-white flex items-center justify-center hover:bg-[var(--accent-hover)] transition-colors shadow-sm" aria-label="Start timer">
-          <Play size={16} className="ml-0.5" />
-        </button>
+        <div className="flex items-center gap-2">
+          {running && (
+            <div className="flex items-center gap-1.5 text-sm font-mono tabular-nums text-[var(--danger)]">
+              <span className="w-2 h-2 rounded-full bg-[var(--danger)] animate-timer-pulse" />
+              {elapsedMin}:{elapsedSec.toString().padStart(2, "0")}
+            </div>
+          )}
+          <button
+            onClick={() => {
+              if (running) {
+                setRunning(false);
+                setElapsed(0);
+              } else {
+                setRunning(true);
+              }
+            }}
+            className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors shadow-sm ${
+              running
+                ? "bg-[var(--danger)] text-white hover:opacity-90"
+                : "bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)]"
+            }`}
+            aria-label={running ? "Stop timer" : "Start timer"}
+          >
+            {running ? <Square size={14} /> : <Play size={16} className="ml-0.5" />}
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -46,7 +91,7 @@ export function TimeTrackCard({ projectId, entries }: TimeTrackCardProps) {
             </div>
             <div className="space-y-1.5">
               {group.entries.map((entry) => (
-                <div key={entry.id} className="flex items-start justify-between py-1.5 px-3 rounded-lg hover:bg-gray-50 transition-colors">
+                <div key={entry.id} className="flex items-start justify-between py-1.5 px-3 rounded-lg hover:bg-[var(--background)] transition-colors">
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate">{entry.description}</p>
                     {entry.category && (
@@ -64,7 +109,11 @@ export function TimeTrackCard({ projectId, entries }: TimeTrackCardProps) {
           </div>
         ))}
         {entries.length === 0 && (
-          <p className="text-sm text-[var(--muted)] text-center py-6">No time entries yet</p>
+          <div className="text-center py-6">
+            <Clock size={24} className="mx-auto text-[var(--muted-light)] mb-2" />
+            <p className="text-sm text-[var(--muted)]">No time entries yet</p>
+            <p className="text-xs text-[var(--muted-light)]">Start the timer to begin tracking</p>
+          </div>
         )}
       </div>
     </ModuleCardWrapper>

@@ -1,6 +1,6 @@
 {
   "/_not-found/page": "/_not-found",
-  "/projects/[projectId]/page": "/projects/[projectId]",
   "/projects/page": "/projects",
+  "/projects/[projectId]/page": "/projects/[projectId]",
   "/page": "/"
 }

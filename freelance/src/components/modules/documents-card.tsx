@@ -42,8 +42,8 @@ export function DocumentsCard({ projectId, documents }: DocumentsCardProps) {
             onClick={() => setActiveFilter(tab)}
             className={`text-xs px-2.5 py-1.5 rounded-lg transition-all ${
               tab === activeFilter
-                ? "bg-[var(--foreground)] text-white font-medium"
-                : "text-[var(--muted)] hover:bg-gray-100 hover:text-[var(--foreground)]"
+                ? "bg-[var(--foreground)] text-[var(--background)] font-medium"
+                : "text-[var(--muted)] hover:bg-[var(--background)] hover:text-[var(--foreground)]"
             }`}
           >
             {tab}
@@ -56,7 +56,7 @@ export function DocumentsCard({ projectId, documents }: DocumentsCardProps) {
         {allDocs.map((doc) => (
           <div
             key={doc.id}
-            className="flex items-center justify-between text-sm py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+            className="flex items-center justify-between text-sm py-2 px-3 rounded-lg hover:bg-[var(--background)] transition-colors cursor-pointer"
           >
             <div className="flex items-center gap-2.5 min-w-0">
               <FileText size={14} className="text-[var(--muted)] shrink-0" />
@@ -72,7 +72,11 @@ export function DocumentsCard({ projectId, documents }: DocumentsCardProps) {
           </div>
         ))}
         {documents.length === 0 && (
-          <p className="text-sm text-[var(--muted)] text-center py-6">No documents yet</p>
+          <div className="text-center py-6">
+            <FileText size={24} className="mx-auto text-[var(--muted-light)] mb-2" />
+            <p className="text-sm text-[var(--muted)]">No documents yet</p>
+            <p className="text-xs text-[var(--muted-light)]">Upload or create documents</p>
+          </div>
         )}
       </div>
     </ModuleCardWrapper>
@@ -87,7 +91,7 @@ function DocColumn({ title, docs }: { title: string; docs: Document[] }) {
       </h4>
       <div className="space-y-1">
         {docs.map((doc, i) => (
-          <div key={`${doc.id}-${i}`} className="flex items-center justify-between text-xs py-1 px-2 rounded-md hover:bg-gray-50 transition-colors">
+          <div key={`${doc.id}-${i}`} className="flex items-center justify-between text-xs py-1 px-2 rounded-md hover:bg-[var(--background)] transition-colors">
             <div className="flex items-center gap-1.5 truncate min-w-0">
               <FileText size={12} className="text-[var(--muted)] shrink-0" />
               <span className="truncate">{doc.title}</span>

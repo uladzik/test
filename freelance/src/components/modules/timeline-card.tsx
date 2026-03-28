@@ -9,10 +9,10 @@ interface TimelineCardProps {
   endDate?: string;
 }
 
-const statusConfig: Record<string, { ring: string; bg: string; dotBg: string }> = {
-  completed: { ring: "ring-emerald-200", bg: "bg-emerald-500", dotBg: "bg-emerald-50" },
-  in_progress: { ring: "ring-blue-200", bg: "bg-blue-500", dotBg: "bg-blue-50" },
-  pending: { ring: "ring-gray-200", bg: "bg-gray-300", dotBg: "bg-gray-50" },
+const statusConfig: Record<string, { ring: string; bg: string }> = {
+  completed: { ring: "ring-emerald-200 dark:ring-emerald-800", bg: "bg-emerald-500" },
+  in_progress: { ring: "ring-blue-200 dark:ring-blue-800", bg: "bg-blue-500" },
+  pending: { ring: "ring-gray-200 dark:ring-gray-700", bg: "bg-gray-300 dark:bg-gray-600" },
 };
 
 export function TimelineCard({ projectId, milestones, startDate, endDate }: TimelineCardProps) {
@@ -32,7 +32,7 @@ export function TimelineCard({ projectId, milestones, startDate, endDate }: Time
           <span className="text-[var(--muted)] font-medium">Progress</span>
           <span className="font-semibold">{Math.round(progress)}%</span>
         </div>
-        <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-2.5 bg-[var(--background)] rounded-full overflow-hidden">
           <div
             className="h-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)] rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
@@ -52,7 +52,7 @@ export function TimelineCard({ projectId, milestones, startDate, endDate }: Time
                   {ms.status === "completed" && <Check size={10} className="text-white" strokeWidth={3} />}
                   {ms.status === "in_progress" && <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-dot" />}
                 </div>
-                {!isLast && <div className="w-px flex-1 bg-gray-200 my-1" />}
+                {!isLast && <div className="w-px flex-1 bg-[var(--border)] my-1" />}
               </div>
               <div className="pb-4 min-w-0">
                 <p className={`text-sm ${
@@ -74,7 +74,11 @@ export function TimelineCard({ projectId, milestones, startDate, endDate }: Time
           );
         })}
         {milestones.length === 0 && (
-          <p className="text-sm text-[var(--muted)] text-center py-6">No milestones yet</p>
+          <div className="text-center py-6">
+            <MilestoneIcon size={24} className="mx-auto text-[var(--muted-light)] mb-2" />
+            <p className="text-sm text-[var(--muted)]">No milestones yet</p>
+            <p className="text-xs text-[var(--muted-light)]">Define project milestones</p>
+          </div>
         )}
       </div>
     </ModuleCardWrapper>
@@ -91,6 +95,6 @@ function formatDateRange(start?: string, end?: string): string | null {
   if (!start) return null;
   const fmt = (d: string) =>
     new Date(d).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
-  if (end) return `${fmt(start)} – ${fmt(end)}`;
+  if (end) return `${fmt(start)} -- ${fmt(end)}`;
   return `From ${fmt(start)}`;
 }
