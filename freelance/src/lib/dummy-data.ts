@@ -1,0 +1,333 @@
+import { Project, Meeting, TimeEntry, Task, ChatMessage, Link, Document, Note, Payment, Milestone } from "./types";
+
+export const dummyProjects: Project[] = [
+  {
+    id: "1",
+    name: "My Project",
+    description: "Brand identity and web design",
+    coverUrl: "/covers/project-x.svg",
+    clientName: "Acme Corp",
+    billingType: "monthly",
+    currency: "USD",
+    startDate: "2025-01-01",
+    endDate: "2025-02-28",
+    status: "active",
+    createdAt: "2025-01-01T00:00:00Z",
+  },
+  {
+    id: "2",
+    name: "Project Y",
+    description: "Mobile app redesign",
+    clientName: "StartupCo",
+    billingType: "fixed",
+    currency: "USD",
+    startDate: "2025-03-01",
+    endDate: "2025-06-30",
+    status: "active",
+    createdAt: "2025-03-01T00:00:00Z",
+  },
+  {
+    id: "3",
+    name: "Project Z",
+    description: "E-commerce platform",
+    clientName: "RetailBrand",
+    billingType: "hourly",
+    currency: "EUR",
+    startDate: "2025-02-15",
+    status: "active",
+    createdAt: "2025-02-15T00:00:00Z",
+  },
+];
+
+export const dummyMeetings: Meeting[] = [
+  {
+    id: "m1",
+    projectId: "1",
+    title: "Morning call",
+    startTime: "2025-06-18T08:00:00Z",
+    endTime: "2025-06-18T09:00:00Z",
+    meetingType: "call",
+  },
+  {
+    id: "m2",
+    projectId: "1",
+    title: "Weekly meeting 30 min",
+    startTime: "2025-06-18T12:00:00Z",
+    endTime: "2025-06-18T12:30:00Z",
+    meetingType: "video",
+  },
+];
+
+export const dummyTimeEntries: TimeEntry[] = [
+  {
+    id: "t1",
+    projectId: "1",
+    description: "Product screenshots",
+    startTime: "2025-06-18T09:00:00Z",
+    endTime: "2025-06-18T11:25:00Z",
+    durationMinutes: 145,
+    category: "Design System / Product Department",
+  },
+  {
+    id: "t2",
+    projectId: "1",
+    description: "Leading page mockups",
+    startTime: "2025-06-15T10:00:00Z",
+    endTime: "2025-06-15T11:22:00Z",
+    durationMinutes: 82,
+    category: "Design / Product Department",
+  },
+  {
+    id: "t3",
+    projectId: "1",
+    description: "Leading page mockups",
+    startTime: "2025-06-14T09:00:00Z",
+    endTime: "2025-06-14T09:50:00Z",
+    durationMinutes: 50,
+    category: "Design / Product Department",
+  },
+  {
+    id: "t4",
+    projectId: "1",
+    description: "Leading page mockups",
+    startTime: "2025-06-13T08:00:00Z",
+    endTime: "2025-06-13T11:24:00Z",
+    durationMinutes: 204,
+    category: "Design / Product Department",
+  },
+];
+
+export const dummyTasks: Task[] = [
+  {
+    id: "tk1",
+    projectId: "1",
+    title: "Morning call",
+    status: "todo",
+    priority: "high",
+    dueDate: "2025-06-18",
+    scheduledStart: "08:00",
+    scheduledEnd: "09:00",
+    color: "#fef3c7",
+  },
+  {
+    id: "tk2",
+    projectId: "1",
+    title: "Weekly meeting 30 min",
+    status: "todo",
+    priority: "medium",
+    dueDate: "2025-06-18",
+    scheduledStart: "12:00",
+    scheduledEnd: "12:30",
+    color: "#dcfce7",
+  },
+];
+
+export const dummyChatMessages: ChatMessage[] = [
+  {
+    id: "c1",
+    projectId: "1",
+    content: "Here is your last activity",
+    messageType: "text",
+    createdAt: "2025-06-18T10:00:00Z",
+  },
+  {
+    id: "c2",
+    projectId: "1",
+    content: "Last message received",
+    messageType: "text",
+    createdAt: "2025-06-17T14:00:00Z",
+  },
+  {
+    id: "c3",
+    projectId: "1",
+    content: "Call from 09.06",
+    messageType: "call_log",
+    createdAt: "2025-06-09T09:00:00Z",
+  },
+];
+
+export const dummyLinks: Link[] = [
+  {
+    id: "l1",
+    projectId: "1",
+    label: "FigmaProject link",
+    url: "https://figma.com/example1",
+    linkType: "figma",
+  },
+  {
+    id: "l2",
+    projectId: "1",
+    label: "FigmaProject link",
+    url: "https://figma.com/example2",
+    linkType: "figma",
+  },
+  {
+    id: "l3",
+    projectId: "1",
+    label: "FigmaProject link",
+    url: "https://figma.com/example3",
+    linkType: "figma",
+  },
+];
+
+export const dummyDocuments: Document[] = [
+  {
+    id: "d1",
+    projectId: "1",
+    title: "Docs June",
+    docType: "brief",
+    isFavorite: true,
+    createdAt: "2025-06-20T00:00:00Z",
+  },
+  {
+    id: "d2",
+    projectId: "1",
+    title: "Docs May",
+    docType: "report",
+    isFavorite: true,
+    createdAt: "2025-05-21T00:00:00Z",
+  },
+  {
+    id: "d3",
+    projectId: "1",
+    title: "Design 24",
+    docType: "other",
+    isFavorite: true,
+    createdAt: "2025-06-24T00:00:00Z",
+  },
+  {
+    id: "d4",
+    projectId: "1",
+    title: "Design brief May 2025, Done with the client",
+    docType: "brief",
+    isFavorite: false,
+    createdAt: "2025-06-20T00:00:00Z",
+  },
+  {
+    id: "d5",
+    projectId: "1",
+    title: "Design brief May 2025, Done with the client",
+    docType: "brief",
+    isFavorite: false,
+    createdAt: "2025-06-20T00:00:00Z",
+  },
+];
+
+export const dummyNotes: Note[] = [
+  {
+    id: "n1",
+    projectId: "1",
+    title: "Client preferences",
+    content: "Prefers minimalist design. Likes blue and white palette. No gradients on landing page.",
+    createdAt: "2025-06-15T10:00:00Z",
+    updatedAt: "2025-06-17T14:30:00Z",
+  },
+  {
+    id: "n2",
+    projectId: "1",
+    title: "Meeting notes — kickoff",
+    content: "Budget confirmed at $4,500/mo. Deliverables: brand guide, landing page, 5 inner pages.",
+    createdAt: "2025-01-05T09:00:00Z",
+    updatedAt: "2025-01-05T09:00:00Z",
+  },
+  {
+    id: "n3",
+    projectId: "1",
+    title: "Feedback round 2",
+    content: "Hero section approved. CTA button needs to be larger. Footer links — add social media.",
+    createdAt: "2025-06-10T11:00:00Z",
+    updatedAt: "2025-06-12T16:00:00Z",
+  },
+];
+
+export const dummyPayments: Payment[] = [
+  {
+    id: "p1",
+    projectId: "1",
+    amount: 4500,
+    currency: "USD",
+    periodStart: "2025-01-01",
+    periodEnd: "2025-01-31",
+    status: "paid",
+    description: "January payment",
+  },
+  {
+    id: "p2",
+    projectId: "1",
+    amount: 4500,
+    currency: "USD",
+    periodStart: "2025-02-01",
+    periodEnd: "2025-02-28",
+    status: "paid",
+    description: "February payment",
+  },
+  {
+    id: "p3",
+    projectId: "1",
+    amount: 4500,
+    currency: "USD",
+    periodStart: "2025-03-01",
+    periodEnd: "2025-03-31",
+    status: "sent",
+    description: "March payment",
+  },
+  {
+    id: "p4",
+    projectId: "1",
+    amount: 4500,
+    currency: "USD",
+    periodStart: "2025-04-01",
+    periodEnd: "2025-04-30",
+    status: "pending",
+    description: "April payment",
+  },
+  {
+    id: "p5",
+    projectId: "1",
+    amount: 4500,
+    currency: "USD",
+    periodStart: "2025-05-01",
+    periodEnd: "2025-05-31",
+    status: "overdue",
+    description: "May payment",
+  },
+];
+
+export const dummyMilestones: Milestone[] = [
+  {
+    id: "ms1",
+    projectId: "1",
+    title: "Brand guide delivery",
+    description: "Complete brand guidelines document",
+    dueDate: "2025-01-20",
+    status: "completed",
+    sortOrder: 1,
+  },
+  {
+    id: "ms2",
+    projectId: "1",
+    title: "Landing page design",
+    description: "Desktop + mobile mockups for landing page",
+    dueDate: "2025-02-01",
+    status: "completed",
+    sortOrder: 2,
+  },
+  {
+    id: "ms3",
+    projectId: "1",
+    title: "Inner pages design",
+    description: "About, Services, Contact, Blog, Portfolio",
+    dueDate: "2025-02-15",
+    status: "in_progress",
+    sortOrder: 3,
+  },
+  {
+    id: "ms4",
+    projectId: "1",
+    title: "Development handoff",
+    description: "Final assets and specs for dev team",
+    dueDate: "2025-02-28",
+    status: "pending",
+    sortOrder: 4,
+  },
+];
