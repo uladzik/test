@@ -73,6 +73,15 @@
 
     .hcell { transition:all .15s ease }
     .hcell:hover { transform:scale(1.35); z-index:10 }
+    @media(max-width:480px) { .hcell { min-width:28px; min-height:28px; width:28px!important; height:28px!important } }
+
+    /* Mobile layout tweaks */
+    @media(max-width:480px) {
+      .glass { border-radius:18px }
+      .mob-hide { display:none!important }
+      .mob-compact { padding:16px!important }
+      .mob-gap { gap:6px!important }
+    }
 
     .focus-glow { box-shadow:0 0 80px -20px rgba(59,130,246,.15) }
     .dark .focus-glow { box-shadow:0 0 80px -20px rgba(96,165,250,.1) }
@@ -102,8 +111,10 @@
     .cmdk-i:hover, .cmdk-i.act { background:rgba(255,255,255,.06) }
     .light .cmdk-i:hover, .light .cmdk-i.act { background:rgba(0,0,0,.04) }
 
-    .hero-time { font-size:clamp(3rem,10vw,6rem); font-weight:100; letter-spacing:-0.04em; line-height:1 }
+    .hero-time { font-size:clamp(2.5rem,9vw,6rem); font-weight:100; letter-spacing:-0.04em; line-height:1 }
     @media(min-width:640px) { .hero-time { font-size:clamp(4rem,12vw,7.5rem) } }
+    /* Hide seconds on mobile */
+    @media(max-width:480px) { .hero-sec { display:none } }
 
     .spark { opacity:.6; transition:opacity .3s }
     .spark:hover { opacity:1 }
@@ -117,6 +128,12 @@
     .hero-card:hover { transform:translateY(-4px) }
     .dark .hero-card:hover { box-shadow:0 30px 80px -20px rgba(0,0,0,.6); border-color:rgba(255,255,255,.12) }
     .light .hero-card:hover { box-shadow:0 30px 80px -20px rgba(0,0,0,.12) }
+    /* Compact hero card on mobile */
+    @media(max-width:480px) { .hero-card { border-radius:20px }
+      .hero-card .hero-arc { display:none }
+      .hero-card .hero-compact { display:flex!important }
+    }
+    @media(min-width:481px) { .hero-card .hero-compact { display:none!important } }
 
     @keyframes arcSweep { from{stroke-dashoffset:var(--arc-total)} to{stroke-dashoffset:var(--arc-offset)} }
     .arc-sweep { animation:arcSweep 2s cubic-bezier(.16,1,.3,1) both }
@@ -125,7 +142,10 @@
     .hero-glow { animation:heroGlow 6s ease-in-out infinite }
 
     .stat-row { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px }
-    @media(max-width:640px) { .stat-row { grid-template-columns:1fr } }
+    @media(max-width:640px) { .stat-row { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; gap:8px; padding-bottom:4px; scrollbar-width:none }
+      .stat-row::-webkit-scrollbar { display:none }
+      .stat-row .mini-card { min-width:160px; flex-shrink:0; scroll-snap-align:start }
+    }
 
     .mini-card { border-radius:20px; overflow:hidden; transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s }
     .dark .mini-card { background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.04); backdrop-filter:blur(30px) }
@@ -1036,7 +1056,7 @@ function App() {
         // Giant time
         h('div', { className: "flex items-baseline gap-3" },
           h('span', { className: "hero-time font-mono tabular-nums gt", style: { background: ac.g } }, timeStr),
-          h('span', { className: "text-xl font-mono font-light tabular-nums text-gray-300 dark:text-gray-700", style: { marginBottom: 4 } }, secStr)),
+          h('span', { className: "hero-sec text-xl font-mono font-light tabular-nums text-gray-300 dark:text-gray-700", style: { marginBottom: 4 } }, secStr)),
         h('p', { className: "text-xs text-gray-400 dark:text-gray-600 font-mono mt-2 tabular-nums" }, dateStr),
         h('p', { className: "text-[11px] text-gray-400 dark:text-gray-600 mt-1 font-medium" }, emphasis)),
 
@@ -1048,10 +1068,36 @@ function App() {
           var dVal = time.dP, left = 100 - dVal, hrsLeft = Math.ceil(24 - hr - time.now.getMinutes() / 60);
           var arcR = 90, arcSw = 5, arcCi = Math.PI * arcR, arcOff = arcCi - (Math.min(dVal, 100) / 100) * arcCi;
           var dayCol = RINGS[3].c;
-          return h('div', { className: "fu hero-card p-8 sm:p-10 group", style: { animationDelay: "0.08s" } },
+          return h('div', { className: "fu hero-card p-5 sm:p-8 md:p-10 group", style: { animationDelay: "0.08s" } },
             h('div', { className: "hero-glow absolute inset-0 pointer-events-none",
               style: { background: "radial-gradient(circle at 30% 50%," + dayCol[0] + "10,transparent 60%)" } }),
-            h('div', { className: "relative flex flex-col sm:flex-row items-center gap-8" },
+
+            // ── Mobile compact layout ──
+            h('div', { className: "hero-compact relative items-center gap-4", style: { display: "none" } },
+              h('div', { className: "flex-1" },
+                h('p', { className: "text-[8px] font-bold uppercase tracking-[0.3em] mb-1", style: { color: dayCol[0] } }, "Day Remaining"),
+                h('div', { className: "flex items-baseline gap-1.5" },
+                  h('span', { className: "gt font-mono font-black tabular-nums leading-none",
+                    style: { fontSize: "2.2rem", background: "linear-gradient(135deg," + dayCol[0] + "," + dayCol[1] + ")" } },
+                    h(AN, { value: left, dec: 0 })),
+                  h('span', { className: "text-sm text-gray-400 dark:text-gray-700 font-light" }, "%")),
+                h('p', { className: "text-[11px] text-gray-400 dark:text-gray-600 mt-1" }, tip("Day", dVal))),
+              h('div', { className: "flex items-center gap-3 flex-shrink-0" },
+                h('div', { className: "text-center" },
+                  h('p', { className: "text-lg font-mono font-bold tabular-nums text-gray-900 dark:text-white" }, hrsLeft + "h"),
+                  h('p', { className: "text-[8px] text-gray-400 dark:text-gray-600 uppercase" }, "left")),
+                h('div', { className: "w-px h-6 bg-black/[0.05] dark:bg-white/[0.05]" }),
+                h('div', { className: "text-center" },
+                  h('p', { className: "text-lg font-mono font-bold tabular-nums text-gray-900 dark:text-white" },
+                    h(AN, { value: dVal, dec: 0, sfx: "%" })),
+                  h('p', { className: "text-[8px] text-gray-400 dark:text-gray-600 uppercase" }, "done"))),
+              // Compact progress bar
+              h('div', { className: "w-full h-[3px] rounded-full bg-black/[0.04] dark:bg-white/[0.04] mt-3 overflow-hidden" },
+                h('div', { className: "h-full rounded-full transition-all duration-1000",
+                  style: { width: Math.min(dVal, 100) + "%", background: "linear-gradient(90deg," + dayCol[0] + "," + dayCol[1] + ")", boxShadow: "0 0 8px " + dayCol[0] + "40" } }))),
+
+            // ── Desktop arc layout ──
+            h('div', { className: "hero-arc relative flex flex-col sm:flex-row items-center gap-8" },
               h('div', { className: "relative flex-shrink-0", style: { width: 190, height: 100 } },
                 h('svg', { width: 190, height: 100, viewBox: "0 0 190 100", className: "overflow-visible" },
                   h('defs', null,
@@ -1082,7 +1128,7 @@ function App() {
                   h('div', null,
                     h('p', { className: "text-2xl font-mono font-bold tabular-nums text-gray-900 dark:text-white" },
                       h(AN, { value: dVal, dec: 0, sfx: "%" })),
-                    h('p', { className: "text-[9px] text-gray-400 dark:text-gray-600 uppercase tracking-wider" }, "elapsed")))))
+                    h('p', { className: "text-[9px] text-gray-400 dark:text-gray-600 uppercase tracking-wider" }, "elapsed"))))))
           );
         })(),
 
