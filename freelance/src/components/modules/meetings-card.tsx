@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { CalendarDays, ChevronLeft, ChevronRight, Plus } from "lucide-react";
+import { ModuleCardWrapper } from "./module-card-wrapper";
 
 interface MeetingsCardProps {
   projectId: string;
@@ -10,13 +11,15 @@ interface MeetingsCardProps {
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export function MeetingsCard({ projectId }: MeetingsCardProps) {
-  const [currentMonth] = useState(new Date(2025, 5)); // June 2025
+  const now = new Date();
+  const [monthOffset, setMonthOffset] = useState(0);
+  const currentMonth = new Date(now.getFullYear(), now.getMonth() + monthOffset);
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
   const firstDay = new Date(year, month, 1);
   const lastDay = new Date(year, month + 1, 0);
-  const startDayOfWeek = (firstDay.getDay() + 6) % 7; // Monday = 0
+  const startDayOfWeek = (firstDay.getDay() + 6) % 7;
   const daysInMonth = lastDay.getDate();
 
   const prevMonthLastDay = new Date(year, month, 0).getDate();
@@ -35,40 +38,46 @@ export function MeetingsCard({ projectId }: MeetingsCardProps) {
     }
   }
 
-  const monthName = currentMonth.toLocaleDateString("en-US", { month: "long" });
-  const today = 18;
+  const monthName = currentMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const todayDate = now.getDate();
+  const isCurrentMonth = monthOffset === 0;
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-5">
-      <div className="flex items-center justify-between mb-1">
-        <h3 className="font-semibold text-base">Meetings</h3>
-        <Link
-          href={`/projects/${projectId}/meetings`}
-          className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-        >
-          Open
-        </Link>
-      </div>
-      <p className="text-xs text-[var(--muted)] mb-4">
-        Calendar, upcoming meetings, time-blocking
-      </p>
-
+    <ModuleCardWrapper
+      title="Meetings"
+      href={`/projects/${projectId}/meetings`}
+      subtitle="Calendar, upcoming meetings, time-blocking"
+      icon={<CalendarDays size={16} />}
+    >
       {/* Calendar header */}
-      <div className="flex items-center gap-2 mb-3">
-        <button className="text-[var(--muted)] hover:text-[var(--foreground)] text-sm">&lt;</button>
-        <span className="text-sm font-medium">{monthName}</span>
-        <button className="text-[var(--muted)] hover:text-[var(--foreground)] text-sm">&gt;</button>
-        <div className="ml-auto">
-          <button className="text-xs text-[var(--muted)] bg-gray-100 px-2 py-1 rounded hover:bg-gray-200 transition-colors">
-            + Add calendar integration
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => setMonthOffset((p) => p - 1)}
+            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+            aria-label="Previous month"
+          >
+            <ChevronLeft size={14} className="text-[var(--muted)]" />
+          </button>
+          <span className="text-sm font-medium min-w-[140px] text-center">{monthName}</span>
+          <button
+            onClick={() => setMonthOffset((p) => p + 1)}
+            className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+            aria-label="Next month"
+          >
+            <ChevronRight size={14} className="text-[var(--muted)]" />
           </button>
         </div>
+        <button className="flex items-center gap-1.5 text-[11px] text-[var(--accent)] bg-[var(--accent-bg)] px-2.5 py-1.5 rounded-lg hover:bg-[var(--accent)] hover:text-white transition-all font-medium">
+          <Plus size={12} />
+          Add calendar
+        </button>
       </div>
 
       {/* Day names */}
       <div className="grid grid-cols-7 mb-1">
         {DAYS.map((d) => (
-          <div key={d} className="text-center text-[10px] text-[var(--muted)] py-1">
+          <div key={d} className="text-center text-[11px] font-medium text-[var(--muted-light)] py-1">
             {d}
           </div>
         ))}
@@ -76,27 +85,30 @@ export function MeetingsCard({ projectId }: MeetingsCardProps) {
 
       {/* Days grid */}
       <div className="grid grid-cols-7">
-        {cells.map((cell, i) => (
-          <div
-            key={i}
-            className={`text-center py-2 text-sm ${
-              !cell.currentMonth
-                ? "text-gray-300"
-                : cell.day === today
-                ? "relative"
-                : "text-[var(--foreground)]"
-            }`}
-          >
-            {cell.currentMonth && cell.day === today ? (
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--accent)] text-white font-medium">
-                {cell.day}
-              </span>
-            ) : (
-              cell.day
-            )}
-          </div>
-        ))}
+        {cells.map((cell, i) => {
+          const isToday = isCurrentMonth && cell.currentMonth && cell.day === todayDate;
+          return (
+            <div
+              key={i}
+              className={`text-center py-[7px] text-sm rounded-lg transition-colors ${
+                !cell.currentMonth
+                  ? "text-gray-200"
+                  : isToday
+                  ? ""
+                  : "text-[var(--foreground)] hover:bg-gray-50 cursor-pointer"
+              }`}
+            >
+              {isToday ? (
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--accent)] text-white font-medium shadow-sm">
+                  {cell.day}
+                </span>
+              ) : (
+                cell.day
+              )}
+            </div>
+          );
+        })}
       </div>
-    </div>
+    </ModuleCardWrapper>
   );
 }

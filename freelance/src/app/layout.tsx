@@ -14,9 +14,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="antialiased">
         <Sidebar />
-        <main className="ml-60 min-h-screen p-8">{children}</main>
+        <main className="lg:ml-[var(--sidebar-width)] min-h-screen p-6 lg:p-10">
+          {children}
+        </main>
       </body>
     </html>
   );

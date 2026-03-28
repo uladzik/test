@@ -1,5 +1,6 @@
-import Link from "next/link";
+import { Clock, Play } from "lucide-react";
 import { TimeEntry } from "@/lib/types";
+import { ModuleCardWrapper } from "./module-card-wrapper";
 
 interface TimeTrackCardProps {
   projectId: string;
@@ -7,59 +8,54 @@ interface TimeTrackCardProps {
 }
 
 export function TimeTrackCard({ projectId, entries }: TimeTrackCardProps) {
-  const todayEntries = entries.filter((e) =>
-    e.startTime.startsWith("2025-06-18")
-  );
-  const todayMinutes = todayEntries.reduce(
-    (sum, e) => sum + (e.durationMinutes || 0),
-    0
-  );
-  const todayHours = Math.floor(todayMinutes / 60);
-  const todayMins = todayMinutes % 60;
+  const today = new Date().toISOString().slice(0, 10);
+  const todayEntries = entries.filter((e) => e.startTime.slice(0, 10) === today);
+  const todayMinutes = todayEntries.reduce((sum, e) => sum + (e.durationMinutes || 0), 0);
 
-  // Group entries by date
+  // If no entries today, show all entries total for demo
+  const displayMinutes = todayMinutes || entries.reduce((sum, e) => sum + (e.durationMinutes || 0), 0);
+  const hours = Math.floor(displayMinutes / 60);
+  const mins = displayMinutes % 60;
+
   const grouped = groupByDate(entries);
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-5">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <h3 className="font-semibold text-base">Time Track</h3>
-          <button className="text-[var(--muted)] hover:text-[var(--foreground)]">
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-              <path d="M4 2l4 4-4 4V2z" />
-            </svg>
-          </button>
+    <ModuleCardWrapper
+      title="Time Track"
+      href={`/projects/${projectId}/time-track`}
+      icon={<Clock size={16} />}
+    >
+      {/* Today summary */}
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <p className="text-xs text-[var(--muted)] mb-0.5">Today total</p>
+          <p className="text-2xl font-bold tabular-nums tracking-tight">
+            {hours}h {mins.toString().padStart(2, "0")}m
+          </p>
         </div>
-        <Link
-          href={`/projects/${projectId}/time-track`}
-          className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-        >
-          Open
-        </Link>
+        <button className="w-10 h-10 rounded-full bg-[var(--accent)] text-white flex items-center justify-center hover:bg-[var(--accent-hover)] transition-colors shadow-sm" aria-label="Start timer">
+          <Play size={16} className="ml-0.5" />
+        </button>
       </div>
-      <p className="text-sm text-[var(--muted)] mb-4">
-        Today total {todayHours}h {todayMins}min
-      </p>
 
       <div className="space-y-4">
         {grouped.map((group) => (
           <div key={group.label}>
-            <div className="text-[10px] font-medium text-[var(--muted)] uppercase tracking-wider mb-2">
+            <div className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-widest mb-2">
               {group.label}
             </div>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {group.entries.map((entry) => (
-                <div key={entry.id} className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm">{entry.description}</p>
+                <div key={entry.id} className="flex items-start justify-between py-1.5 px-3 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium truncate">{entry.description}</p>
                     {entry.category && (
-                      <p className="text-xs text-[var(--muted)]">
-                        _ {entry.category}
+                      <p className="text-[11px] text-[var(--muted)] truncate mt-0.5">
+                        {entry.category}
                       </p>
                     )}
                   </div>
-                  <span className="text-sm font-medium tabular-nums ml-4 shrink-0">
+                  <span className="text-sm font-semibold tabular-nums ml-4 shrink-0 text-[var(--foreground)]">
                     {formatDuration(entry.durationMinutes)}
                   </span>
                 </div>
@@ -67,8 +63,11 @@ export function TimeTrackCard({ projectId, entries }: TimeTrackCardProps) {
             </div>
           </div>
         ))}
+        {entries.length === 0 && (
+          <p className="text-sm text-[var(--muted)] text-center py-6">No time entries yet</p>
+        )}
       </div>
-    </div>
+    </ModuleCardWrapper>
   );
 }
 
@@ -80,8 +79,8 @@ function formatDuration(minutes?: number): string {
 }
 
 function groupByDate(entries: TimeEntry[]) {
+  const today = new Date().toISOString().slice(0, 10);
   const groups: Record<string, { label: string; entries: TimeEntry[] }> = {};
-  const today = "2025-06-18";
 
   for (const entry of entries) {
     const dateStr = entry.startTime.slice(0, 10);
@@ -90,11 +89,7 @@ function groupByDate(entries: TimeEntry[]) {
       label = "Today";
     } else {
       const d = new Date(dateStr);
-      label = d.toLocaleDateString("en-US", {
-        weekday: "short",
-        day: "numeric",
-        month: "long",
-      });
+      label = d.toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "long" });
     }
 
     if (!groups[dateStr]) {

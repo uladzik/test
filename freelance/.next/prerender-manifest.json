@@ -1,30 +1,6 @@
 {
   "version": 4,
   "routes": {
-    "/projects": {
-      "experimentalBypassFor": [
-        {
-          "type": "header",
-          "key": "Next-Action"
-        },
-        {
-          "type": "header",
-          "key": "content-type",
-          "value": "multipart/form-data;.*"
-        }
-      ],
-      "initialRevalidateSeconds": false,
-      "srcRoute": "/projects",
-      "dataRoute": "/projects.rsc",
-      "allowHeader": [
-        "host",
-        "x-matched-path",
-        "x-prerender-revalidate",
-        "x-prerender-revalidate-if-generated",
-        "x-next-revalidated-tags",
-        "x-next-revalidate-tag-token"
-      ]
-    },
     "/": {
       "experimentalBypassFor": [
         {
@@ -48,13 +24,37 @@
         "x-next-revalidated-tags",
         "x-next-revalidate-tag-token"
       ]
+    },
+    "/projects": {
+      "experimentalBypassFor": [
+        {
+          "type": "header",
+          "key": "Next-Action"
+        },
+        {
+          "type": "header",
+          "key": "content-type",
+          "value": "multipart/form-data;.*"
+        }
+      ],
+      "initialRevalidateSeconds": false,
+      "srcRoute": "/projects",
+      "dataRoute": "/projects.rsc",
+      "allowHeader": [
+        "host",
+        "x-matched-path",
+        "x-prerender-revalidate",
+        "x-prerender-revalidate-if-generated",
+        "x-next-revalidated-tags",
+        "x-next-revalidate-tag-token"
+      ]
     }
   },
   "dynamicRoutes": {},
   "notFoundRoutes": [],
   "preview": {
-    "previewModeId": "2a559f4b1f8657a00c1860581227d999",
-    "previewModeSigningKey": "2a7e5914132442f049b4653bb59e212b751ed0309010821aa8a84cffd96a419f",
-    "previewModeEncryptionKey": "36c9cb97ac4fbb1b03e326258a7d867680fa87d7a590b2946bb89e887ef6f66c"
+    "previewModeId": "b44780dc33d719f6c995988ea77f2b0c",
+    "previewModeSigningKey": "ebd1b029eaa4875d8dbc0aed07d9db8825701f3fb6b942917312ee60858018d4",
+    "previewModeEncryptionKey": "de3fbb9ae365cbef80126024c03ec6db4da494da109d686ee2f754d16e9bfca8"
   }
 }

@@ -1,18 +1,82 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f5f5;
-  --foreground: #171717;
+  --background: #f8f8fa;
+  --foreground: #0f0f12;
   --card: #ffffff;
-  --card-hover: #fafafa;
-  --border: #e5e5e5;
-  --muted: #737373;
-  --accent: #5b5bd6;
-  --accent-light: #8b8bf8;
+  --card-hover: #fafafb;
+  --border: #e8e8ec;
+  --border-light: #f0f0f3;
+  --muted: #8b8b9e;
+  --muted-light: #b0b0c0;
+  --accent: #6c5ce7;
+  --accent-hover: #5a4bd6;
+  --accent-light: #a29bfe;
+  --accent-bg: #f0eeff;
+  --success: #00b894;
+  --success-bg: #e6f9f4;
+  --warning: #fdcb6e;
+  --warning-bg: #fef9e7;
+  --danger: #e17055;
+  --danger-bg: #fdf0ed;
+  --info: #74b9ff;
+  --info-bg: #edf5ff;
+  --sidebar-width: 260px;
+  --radius: 14px;
+  --radius-sm: 10px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Smooth transitions for interactive elements */
+button, a {
+  transition: all 0.15s ease;
+}
+
+/* Card base style */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  border-color: var(--border-light);
+}
+
+/* Glass effect for modern feel */
+.glass {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Status dot pulse animation */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Fade in animation */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out forwards;
 }

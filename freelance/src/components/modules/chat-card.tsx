@@ -1,5 +1,6 @@
-import Link from "next/link";
+import { MessageCircle, Phone } from "lucide-react";
 import { ChatMessage } from "@/lib/types";
+import { ModuleCardWrapper } from "./module-card-wrapper";
 
 interface ChatCardProps {
   projectId: string;
@@ -8,27 +9,29 @@ interface ChatCardProps {
 
 export function ChatCard({ projectId, messages }: ChatCardProps) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-base">Chat</h3>
-        <Link
-          href={`/projects/${projectId}/chat`}
-          className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-        >
-          Open
-        </Link>
-      </div>
-
-      <div className="space-y-2">
+    <ModuleCardWrapper
+      title="Chat"
+      href={`/projects/${projectId}/chat`}
+      icon={<MessageCircle size={16} />}
+    >
+      <div className="space-y-1.5">
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className="px-3 py-2.5 bg-gray-50 rounded-lg text-sm"
+            className="flex items-start gap-2.5 px-3 py-2.5 bg-[var(--background)] rounded-xl text-sm"
           >
-            {msg.content}
+            {msg.messageType === "call_log" ? (
+              <Phone size={14} className="text-[var(--success)] mt-0.5 shrink-0" />
+            ) : (
+              <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] mt-2 shrink-0" />
+            )}
+            <span className="line-clamp-2">{msg.content}</span>
           </div>
         ))}
+        {messages.length === 0 && (
+          <p className="text-sm text-[var(--muted)] text-center py-6">No messages yet</p>
+        )}
       </div>
-    </div>
+    </ModuleCardWrapper>
   );
 }

@@ -1,5 +1,6 @@
-import Link from "next/link";
+import { Milestone as MilestoneIcon, Check } from "lucide-react";
 import { Milestone } from "@/lib/types";
+import { ModuleCardWrapper } from "./module-card-wrapper";
 
 interface TimelineCardProps {
   projectId: string;
@@ -8,40 +9,33 @@ interface TimelineCardProps {
   endDate?: string;
 }
 
-const statusConfig: Record<string, { color: string; icon: string }> = {
-  completed: { color: "bg-emerald-500", icon: "check" },
-  in_progress: { color: "bg-blue-500", icon: "dot" },
-  pending: { color: "bg-gray-300", icon: "dot" },
+const statusConfig: Record<string, { ring: string; bg: string; dotBg: string }> = {
+  completed: { ring: "ring-emerald-200", bg: "bg-emerald-500", dotBg: "bg-emerald-50" },
+  in_progress: { ring: "ring-blue-200", bg: "bg-blue-500", dotBg: "bg-blue-50" },
+  pending: { ring: "ring-gray-200", bg: "bg-gray-300", dotBg: "bg-gray-50" },
 };
 
 export function TimelineCard({ projectId, milestones, startDate, endDate }: TimelineCardProps) {
   const dateRange = formatDateRange(startDate, endDate);
+  const progress = getProgress(milestones);
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-5">
-      <div className="flex items-center justify-between mb-1">
-        <h3 className="font-semibold text-base">Project Timeline</h3>
-        <Link
-          href={`/projects/${projectId}/timeline`}
-          className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-        >
-          Open
-        </Link>
-      </div>
-      {dateRange && (
-        <p className="text-xs text-[var(--muted)] mb-4">{dateRange}</p>
-      )}
-
+    <ModuleCardWrapper
+      title="Project Timeline"
+      href={`/projects/${projectId}/timeline`}
+      subtitle={dateRange || undefined}
+      icon={<MilestoneIcon size={16} />}
+    >
       {/* Progress bar */}
       <div className="mb-5">
-        <div className="flex justify-between text-[10px] text-[var(--muted)] mb-1">
-          <span>Progress</span>
-          <span>{Math.round(getProgress(milestones))}%</span>
+        <div className="flex justify-between text-xs mb-1.5">
+          <span className="text-[var(--muted)] font-medium">Progress</span>
+          <span className="font-semibold">{Math.round(progress)}%</span>
         </div>
-        <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
           <div
-            className="h-full bg-[var(--accent)] rounded-full transition-all"
-            style={{ width: `${getProgress(milestones)}%` }}
+            className="h-full bg-gradient-to-r from-[var(--accent)] to-[var(--accent-light)] rounded-full transition-all duration-500"
+            style={{ width: `${progress}%` }}
           />
         </div>
       </div>
@@ -53,39 +47,37 @@ export function TimelineCard({ projectId, milestones, startDate, endDate }: Time
           const isLast = i === milestones.length - 1;
           return (
             <div key={ms.id} className="flex gap-3">
-              {/* Vertical line + dot */}
               <div className="flex flex-col items-center">
-                <div
-                  className={`w-3 h-3 rounded-full shrink-0 mt-1 flex items-center justify-center ${config.color}`}
-                >
-                  {ms.status === "completed" && (
-                    <svg width="8" height="8" viewBox="0 0 8 8" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M1.5 4L3.5 6L6.5 2" />
-                    </svg>
-                  )}
+                <div className={`w-5 h-5 rounded-full shrink-0 mt-0.5 flex items-center justify-center ring-2 ${config.ring} ${config.bg}`}>
+                  {ms.status === "completed" && <Check size={10} className="text-white" strokeWidth={3} />}
+                  {ms.status === "in_progress" && <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-dot" />}
                 </div>
                 {!isLast && <div className="w-px flex-1 bg-gray-200 my-1" />}
               </div>
-
-              {/* Content */}
-              <div className={`pb-4 ${isLast ? "" : ""}`}>
-                <p className={`text-sm ${ms.status === "completed" ? "text-[var(--muted)] line-through" : "font-medium"}`}>
+              <div className="pb-4 min-w-0">
+                <p className={`text-sm ${
+                  ms.status === "completed"
+                    ? "text-[var(--muted)] line-through"
+                    : ms.status === "in_progress"
+                    ? "font-semibold text-[var(--accent)]"
+                    : "font-medium"
+                }`}>
                   {ms.title}
                 </p>
                 {ms.dueDate && (
-                  <p className="text-[10px] text-[var(--muted)] mt-0.5">
-                    {new Date(ms.dueDate).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })}
+                  <p className="text-[11px] text-[var(--muted)] mt-0.5">
+                    {new Date(ms.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </p>
                 )}
               </div>
             </div>
           );
         })}
+        {milestones.length === 0 && (
+          <p className="text-sm text-[var(--muted)] text-center py-6">No milestones yet</p>
+        )}
       </div>
-    </div>
+    </ModuleCardWrapper>
   );
 }
 

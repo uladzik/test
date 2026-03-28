@@ -1,106 +1,98 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { FileText } from "lucide-react";
 import { Document } from "@/lib/types";
+import { ModuleCardWrapper } from "./module-card-wrapper";
 
 interface DocumentsCardProps {
   projectId: string;
   documents: Document[];
 }
 
-const tabs = ["Favorites", "Recent", "Created by client"] as const;
-const filterTabs = ["All", "My Docs", "Shared", "Privat", "Workspace", "Assigned", "Archived"] as const;
+const filterTabs = ["All", "My Docs", "Shared", "Private", "Workspace", "Assigned", "Archived"] as const;
 
 export function DocumentsCard({ projectId, documents }: DocumentsCardProps) {
-  const [activeTab] = useState<string>("Favorites");
+  const [activeFilter, setActiveFilter] = useState<string>("All");
 
   const favorites = documents.filter((d) => d.isFavorite);
-  const recent = documents.slice().sort(
+  const recent = [...documents].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
   const allDocs = documents.filter((d) => !d.isFavorite);
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-base">Documents</h3>
-        <Link
-          href={`/projects/${projectId}/documents`}
-          className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-        >
-          Open
-        </Link>
-      </div>
-
+    <ModuleCardWrapper
+      title="Documents"
+      href={`/projects/${projectId}/documents`}
+      icon={<FileText size={16} />}
+    >
       {/* Top section: 3-column layout */}
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        {/* Favorites */}
-        <div>
-          <h4 className="text-[10px] font-medium text-[var(--muted)] uppercase tracking-wider mb-2">
-            Favorites
-          </h4>
-          <div className="space-y-1.5">
-            {favorites.map((doc) => (
-              <DocRow key={doc.id} doc={doc} />
-            ))}
-          </div>
-        </div>
-
-        {/* Recent */}
-        <div>
-          <h4 className="text-[10px] font-medium text-[var(--muted)] uppercase tracking-wider mb-2">
-            Recent
-          </h4>
-          <div className="space-y-1.5">
-            {recent.slice(0, 3).map((doc) => (
-              <DocRow key={doc.id} doc={doc} />
-            ))}
-          </div>
-        </div>
-
-        {/* Created by client */}
-        <div>
-          <h4 className="text-[10px] font-medium text-[var(--muted)] uppercase tracking-wider mb-2">
-            Created by client
-          </h4>
-          <div className="space-y-1.5">
-            {recent.slice(0, 3).map((doc) => (
-              <DocRow key={`client-${doc.id}`} doc={doc} />
-            ))}
-          </div>
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <DocColumn title="Favorites" docs={favorites} />
+        <DocColumn title="Recent" docs={recent.slice(0, 3)} />
+        <DocColumn title="Created by client" docs={recent.slice(0, 3)} />
       </div>
 
       {/* Filter tabs */}
-      <div className="flex gap-3 mb-3 border-t border-[var(--border)] pt-3">
+      <div className="flex gap-1 mb-3 border-t border-[var(--border)] pt-3 flex-wrap">
         {filterTabs.map((tab) => (
           <button
             key={tab}
-            className={`text-xs ${
-              tab === "All"
-                ? "text-[var(--foreground)] font-medium"
-                : "text-[var(--muted)] hover:text-[var(--foreground)]"
-            } transition-colors`}
+            onClick={() => setActiveFilter(tab)}
+            className={`text-xs px-2.5 py-1.5 rounded-lg transition-all ${
+              tab === activeFilter
+                ? "bg-[var(--foreground)] text-white font-medium"
+                : "text-[var(--muted)] hover:bg-gray-100 hover:text-[var(--foreground)]"
+            }`}
           >
             {tab}
           </button>
         ))}
       </div>
 
-      {/* All documents list */}
-      <div className="space-y-2">
+      {/* Document list */}
+      <div className="space-y-1">
         {allDocs.map((doc) => (
           <div
             key={doc.id}
-            className="flex items-center justify-between text-sm py-1"
+            className="flex items-center justify-between text-sm py-2 px-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
           >
-            <div className="flex items-center gap-2">
-              <DocIcon />
-              <span>{doc.title}</span>
+            <div className="flex items-center gap-2.5 min-w-0">
+              <FileText size={14} className="text-[var(--muted)] shrink-0" />
+              <span className="truncate">{doc.title}</span>
             </div>
-            <span className="text-xs text-[var(--muted)]">
-              Last updated{" "}
+            <span className="text-[11px] text-[var(--muted)] shrink-0 ml-3 tabular-nums">
+              {new Date(doc.createdAt).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })}
+            </span>
+          </div>
+        ))}
+        {documents.length === 0 && (
+          <p className="text-sm text-[var(--muted)] text-center py-6">No documents yet</p>
+        )}
+      </div>
+    </ModuleCardWrapper>
+  );
+}
+
+function DocColumn({ title, docs }: { title: string; docs: Document[] }) {
+  return (
+    <div>
+      <h4 className="text-[10px] font-semibold text-[var(--muted)] uppercase tracking-widest mb-2">
+        {title}
+      </h4>
+      <div className="space-y-1">
+        {docs.map((doc, i) => (
+          <div key={`${doc.id}-${i}`} className="flex items-center justify-between text-xs py-1 px-2 rounded-md hover:bg-gray-50 transition-colors">
+            <div className="flex items-center gap-1.5 truncate min-w-0">
+              <FileText size={12} className="text-[var(--muted)] shrink-0" />
+              <span className="truncate">{doc.title}</span>
+            </div>
+            <span className="text-[var(--muted)] tabular-nums shrink-0 ml-2">
               {new Date(doc.createdAt).toLocaleDateString("en-GB", {
                 day: "2-digit",
                 month: "2-digit",
@@ -111,40 +103,5 @@ export function DocumentsCard({ projectId, documents }: DocumentsCardProps) {
         ))}
       </div>
     </div>
-  );
-}
-
-function DocRow({ doc }: { doc: Document }) {
-  return (
-    <div className="flex items-center justify-between text-xs">
-      <div className="flex items-center gap-1.5 truncate">
-        <DocIcon />
-        <span className="truncate">{doc.title}</span>
-      </div>
-      <span className="text-[var(--muted)] tabular-nums shrink-0 ml-2">
-        {new Date(doc.createdAt).toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        })}
-      </span>
-    </div>
-  );
-}
-
-function DocIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      className="text-[var(--muted)] shrink-0"
-    >
-      <path d="M4 2h4l3 3v7a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z" />
-      <path d="M8 2v3h3" />
-    </svg>
   );
 }

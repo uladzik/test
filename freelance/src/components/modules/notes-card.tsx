@@ -1,37 +1,34 @@
-import Link from "next/link";
+import { StickyNote } from "lucide-react";
 import { Note } from "@/lib/types";
+import { ModuleCardWrapper } from "./module-card-wrapper";
 
 interface NotesCardProps {
   projectId: string;
   notes: Note[];
 }
 
+const noteColors = ["bg-amber-50", "bg-blue-50", "bg-emerald-50", "bg-purple-50", "bg-rose-50"];
+
 export function NotesCard({ projectId, notes }: NotesCardProps) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-base">Notes</h3>
-        <Link
-          href={`/projects/${projectId}/notes`}
-          className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-        >
-          Open
-        </Link>
-      </div>
-
-      <div className="space-y-3">
-        {notes.map((note) => (
+    <ModuleCardWrapper
+      title="Notes"
+      href={`/projects/${projectId}/notes`}
+      icon={<StickyNote size={16} />}
+    >
+      <div className="space-y-2">
+        {notes.map((note, i) => (
           <div
             key={note.id}
-            className="p-3 bg-gray-50 rounded-lg"
+            className={`p-3.5 rounded-xl ${noteColors[i % noteColors.length]} border border-black/5`}
           >
             {note.title && (
               <h4 className="text-sm font-medium mb-1">{note.title}</h4>
             )}
-            <p className="text-xs text-[var(--muted)] line-clamp-2">
+            <p className="text-xs text-[var(--muted)] line-clamp-2 leading-relaxed">
               {note.content}
             </p>
-            <p className="text-[10px] text-gray-400 mt-1.5">
+            <p className="text-[10px] text-[var(--muted)] mt-2">
               {new Date(note.updatedAt).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -39,7 +36,10 @@ export function NotesCard({ projectId, notes }: NotesCardProps) {
             </p>
           </div>
         ))}
+        {notes.length === 0 && (
+          <p className="text-sm text-[var(--muted)] text-center py-6">No notes yet</p>
+        )}
       </div>
-    </div>
+    </ModuleCardWrapper>
   );
 }

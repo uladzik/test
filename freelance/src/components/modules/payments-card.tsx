@@ -1,5 +1,6 @@
-import Link from "next/link";
+import { CreditCard } from "lucide-react";
 import { Payment } from "@/lib/types";
+import { ModuleCardWrapper } from "./module-card-wrapper";
 
 interface PaymentsCardProps {
   projectId: string;
@@ -7,10 +8,10 @@ interface PaymentsCardProps {
 }
 
 const statusStyles: Record<string, { bg: string; text: string; label: string }> = {
-  paid: { bg: "bg-emerald-50", text: "text-emerald-700", label: "Paid" },
-  sent: { bg: "bg-blue-50", text: "text-blue-700", label: "Sent" },
-  pending: { bg: "bg-amber-50", text: "text-amber-700", label: "Pending" },
-  overdue: { bg: "bg-red-50", text: "text-red-700", label: "Overdue" },
+  paid: { bg: "bg-emerald-100/80", text: "text-emerald-700", label: "Paid" },
+  sent: { bg: "bg-blue-100/80", text: "text-blue-700", label: "Sent" },
+  pending: { bg: "bg-amber-100/80", text: "text-amber-700", label: "Pending" },
+  overdue: { bg: "bg-red-100/80", text: "text-red-700", label: "Overdue" },
 };
 
 export function PaymentsCard({ projectId, payments }: PaymentsCardProps) {
@@ -22,54 +23,48 @@ export function PaymentsCard({ projectId, payments }: PaymentsCardProps) {
     .reduce((sum, p) => sum + p.amount, 0);
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-5">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-base">Payments</h3>
-        <Link
-          href={`/projects/${projectId}/payments`}
-          className="text-xs text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
-        >
-          Open
-        </Link>
-      </div>
-
+    <ModuleCardWrapper
+      title="Payments"
+      href={`/projects/${projectId}/payments`}
+      icon={<CreditCard size={16} />}
+    >
       {/* Summary */}
-      <div className="flex gap-4 mb-4">
-        <div className="flex-1 p-3 bg-emerald-50 rounded-lg">
-          <p className="text-[10px] text-emerald-600 uppercase tracking-wider font-medium mb-0.5">Received</p>
-          <p className="text-lg font-semibold text-emerald-700">
+      <div className="flex gap-3 mb-4">
+        <div className="flex-1 p-3.5 bg-[var(--success-bg)] rounded-xl border border-emerald-100">
+          <p className="text-[10px] text-emerald-600 uppercase tracking-widest font-semibold mb-1">Received</p>
+          <p className="text-xl font-bold text-emerald-700 tabular-nums">
             ${totalPaid.toLocaleString()}
           </p>
         </div>
-        <div className="flex-1 p-3 bg-amber-50 rounded-lg">
-          <p className="text-[10px] text-amber-600 uppercase tracking-wider font-medium mb-0.5">Outstanding</p>
-          <p className="text-lg font-semibold text-amber-700">
+        <div className="flex-1 p-3.5 bg-[var(--warning-bg)] rounded-xl border border-amber-100">
+          <p className="text-[10px] text-amber-600 uppercase tracking-widest font-semibold mb-1">Outstanding</p>
+          <p className="text-xl font-bold text-amber-700 tabular-nums">
             ${totalPending.toLocaleString()}
           </p>
         </div>
       </div>
 
       {/* Payment list */}
-      <div className="space-y-2">
+      <div className="space-y-1">
         {payments.map((payment) => {
-          const style = statusStyles[payment.status];
+          const style = statusStyles[payment.status] || statusStyles.pending;
           return (
             <div
               key={payment.id}
-              className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
+              className="flex items-center justify-between py-2.5 px-3 rounded-lg hover:bg-gray-50 transition-colors"
             >
-              <div>
-                <p className="text-sm">{payment.description}</p>
-                <p className="text-[10px] text-[var(--muted)]">
+              <div className="min-w-0">
+                <p className="text-sm font-medium truncate">{payment.description}</p>
+                <p className="text-[11px] text-[var(--muted)]">
                   {formatPeriod(payment.periodStart, payment.periodEnd)}
                 </p>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium tabular-nums">
+              <div className="flex items-center gap-2.5 ml-3 shrink-0">
+                <span className="text-sm font-semibold tabular-nums">
                   ${payment.amount.toLocaleString()}
                 </span>
                 <span
-                  className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${style.bg} ${style.text}`}
+                  className={`text-[10px] font-semibold px-2 py-1 rounded-lg ${style.bg} ${style.text}`}
                 >
                   {style.label}
                 </span>
@@ -77,8 +72,11 @@ export function PaymentsCard({ projectId, payments }: PaymentsCardProps) {
             </div>
           );
         })}
+        {payments.length === 0 && (
+          <p className="text-sm text-[var(--muted)] text-center py-6">No payments yet</p>
+        )}
       </div>
-    </div>
+    </ModuleCardWrapper>
   );
 }
 
