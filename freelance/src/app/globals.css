@@ -3,85 +3,85 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f6f6f9;
-  --foreground: #1a1a2e;
+  --background: #fafaf9;
+  --foreground: #1c1917;
   --card: #ffffff;
-  --card-hover: #fafafe;
-  --border: #eaeaef;
-  --border-light: #f2f2f5;
-  --muted: #6e6e85;
-  --muted-light: #a0a0b5;
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-light: #818cf8;
-  --accent-bg: #eef2ff;
-  --success: #059669;
-  --success-bg: #ecfdf5;
-  --warning: #d97706;
-  --warning-bg: #fffbeb;
+  --card-hover: #fafaf9;
+  --border: #e7e5e4;
+  --border-light: #f5f5f4;
+  --muted: #78716c;
+  --muted-light: #a8a29e;
+  --accent: #292524;
+  --accent-hover: #1c1917;
+  --accent-light: #57534e;
+  --accent-bg: #f5f5f4;
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --warning: #ca8a04;
+  --warning-bg: #fefce8;
   --danger: #dc2626;
   --danger-bg: #fef2f2;
-  --info: #2563eb;
-  --info-bg: #eff6ff;
+  --info: #57534e;
+  --info-bg: #f5f5f4;
   --sidebar-width: 260px;
-  --radius: 14px;
-  --radius-sm: 10px;
-  --overlay: rgba(0, 0, 0, 0.4);
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 4px rgba(0, 0, 0, 0.02);
-  --shadow-card-hover: 0 4px 20px rgba(0, 0, 0, 0.07), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --overlay: rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --shadow-card-hover: 0 3px 16px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 .dark {
-  --background: #0c0c15;
-  --foreground: #e4e4ed;
-  --card: #16162a;
-  --card-hover: #1e1e34;
-  --border: #262640;
-  --border-light: #1e1e34;
-  --muted: #8585a0;
-  --muted-light: #505068;
-  --accent: #818cf8;
-  --accent-hover: #6366f1;
-  --accent-light: #a5b4fc;
-  --accent-bg: #1e1b4b;
-  --success: #34d399;
-  --success-bg: #052e16;
-  --warning: #fbbf24;
-  --warning-bg: #1c1a05;
+  --background: #0c0a09;
+  --foreground: #e7e5e4;
+  --card: #1c1917;
+  --card-hover: #231f1d;
+  --border: #2e2a27;
+  --border-light: #252220;
+  --muted: #a8a29e;
+  --muted-light: #57534e;
+  --accent: #e7e5e4;
+  --accent-hover: #d6d3d1;
+  --accent-light: #a8a29e;
+  --accent-bg: #292524;
+  --success: #4ade80;
+  --success-bg: #0a1f0f;
+  --warning: #facc15;
+  --warning-bg: #1a1805;
   --danger: #f87171;
   --danger-bg: #1f0a0a;
-  --info: #60a5fa;
-  --info-bg: #0c1929;
-  --overlay: rgba(0, 0, 0, 0.65);
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
-  --shadow-card-hover: 0 6px 24px rgba(0, 0, 0, 0.35);
+  --info: #a8a29e;
+  --info-bg: #1c1917;
+  --overlay: rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.4);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --background: #0c0c15;
-    --foreground: #e4e4ed;
-    --card: #16162a;
-    --card-hover: #1e1e34;
-    --border: #262640;
-    --border-light: #1e1e34;
-    --muted: #8585a0;
-    --muted-light: #505068;
-    --accent: #818cf8;
-    --accent-hover: #6366f1;
-    --accent-light: #a5b4fc;
-    --accent-bg: #1e1b4b;
-    --success: #34d399;
-    --success-bg: #052e16;
-    --warning: #fbbf24;
-    --warning-bg: #1c1a05;
+    --background: #0c0a09;
+    --foreground: #e7e5e4;
+    --card: #1c1917;
+    --card-hover: #231f1d;
+    --border: #2e2a27;
+    --border-light: #252220;
+    --muted: #a8a29e;
+    --muted-light: #57534e;
+    --accent: #e7e5e4;
+    --accent-hover: #d6d3d1;
+    --accent-light: #a8a29e;
+    --accent-bg: #292524;
+    --success: #4ade80;
+    --success-bg: #0a1f0f;
+    --warning: #facc15;
+    --warning-bg: #1a1805;
     --danger: #f87171;
     --danger-bg: #1f0a0a;
-    --info: #60a5fa;
-    --info-bg: #0c1929;
-    --overlay: rgba(0, 0, 0, 0.65);
-    --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-card-hover: 0 6px 24px rgba(0, 0, 0, 0.35);
+    --info: #a8a29e;
+    --info-bg: #1c1917;
+    --overlay: rgba(0, 0, 0, 0.6);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -234,8 +234,8 @@ button, a {
 
 /* FAB pulse */
 @keyframes fab-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(108, 92, 231, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(41, 37, 36, 0.3); }
+  50% { box-shadow: 0 0 0 12px rgba(41, 37, 36, 0); }
 }
 .animate-fab-pulse {
   animation: fab-pulse 2s ease-in-out infinite;
