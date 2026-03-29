@@ -29,7 +29,7 @@ const dummyProjects = [
         endDate: "2026-04-30",
         status: "active",
         createdAt: "2026-01-10T00:00:00Z",
-        coverGradient: "from-violet-500 via-purple-500 to-fuchsia-500"
+        coverGradient: "from-indigo-600 via-violet-600 to-purple-500"
     },
     {
         id: "2",
@@ -42,7 +42,7 @@ const dummyProjects = [
         endDate: "2026-07-31",
         status: "active",
         createdAt: "2026-02-01T00:00:00Z",
-        coverGradient: "from-cyan-500 via-blue-500 to-indigo-500"
+        coverGradient: "from-sky-600 via-blue-600 to-indigo-600"
     },
     {
         id: "3",
@@ -55,7 +55,7 @@ const dummyProjects = [
         endDate: "2026-06-15",
         status: "active",
         createdAt: "2026-03-01T00:00:00Z",
-        coverGradient: "from-emerald-500 via-teal-500 to-cyan-500"
+        coverGradient: "from-teal-600 via-emerald-600 to-green-500"
     },
     {
         id: "4",
@@ -68,7 +68,7 @@ const dummyProjects = [
         endDate: "2026-03-01",
         status: "paused",
         createdAt: "2025-11-01T00:00:00Z",
-        coverGradient: "from-amber-400 via-orange-400 to-red-400"
+        coverGradient: "from-amber-500 via-orange-500 to-rose-500"
     },
     {
         id: "5",
@@ -81,7 +81,7 @@ const dummyProjects = [
         endDate: "2025-12-15",
         status: "completed",
         createdAt: "2025-09-01T00:00:00Z",
-        coverGradient: "from-rose-400 via-pink-400 to-purple-400"
+        coverGradient: "from-rose-500 via-pink-500 to-fuchsia-500"
     }
 ];
 const dummyMeetings = [
