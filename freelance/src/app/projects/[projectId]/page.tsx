@@ -113,43 +113,30 @@ export default async function ProjectDashboardPage({
       </div>
 
       {/* Bento grid layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-min">
-        {/* Meetings: tall, span 2 rows */}
-        <div className="lg:row-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Row 1: Meetings + TimeTrack + Tasks/Chat */}
+        <div className="max-h-[420px] overflow-y-auto scrollbar-thin">
           <MeetingsCard projectId={projectId} meetings={meetings} />
         </div>
 
-        {/* TimeTrack: tall, span 2 rows */}
-        <div className="lg:row-span-2">
+        <div className="max-h-[420px] overflow-y-auto scrollbar-thin">
           <TimeTrackCard projectId={projectId} entries={timeEntries} />
         </div>
 
-        {/* Tasks: medium, single */}
-        <div className="lg:col-span-2">
+        <div className="flex flex-col gap-4">
           <TasksCard projectId={projectId} tasks={tasks} />
+          <LinksCard projectId={projectId} links={links} />
         </div>
 
-        {/* Chat: compact */}
+        {/* Row 2: Chat + Notes + Timeline */}
         <div>
           <ChatCard projectId={projectId} messages={chatMessages} />
         </div>
 
-        {/* Links: compact */}
-        <div>
-          <LinksCard projectId={projectId} links={links} />
-        </div>
-
-        {/* Documents: wide, span 2 cols */}
-        <div className="lg:col-span-2">
-          <DocumentsCard projectId={projectId} documents={documents} />
-        </div>
-
-        {/* Notes: medium */}
         <div>
           <NotesCard projectId={projectId} notes={notes} />
         </div>
 
-        {/* Timeline: medium */}
         <div>
           <TimelineCard
             projectId={projectId}
@@ -159,13 +146,13 @@ export default async function ProjectDashboardPage({
           />
         </div>
 
-        {/* Payments: medium */}
-        <div>
-          <PaymentsCard projectId={projectId} payments={payments} />
+        {/* Row 3: Documents + Payments + Stats */}
+        <div className="lg:col-span-2">
+          <DocumentsCard projectId={projectId} documents={documents} />
         </div>
 
-        {/* Stats: medium */}
-        <div>
+        <div className="flex flex-col gap-4">
+          <PaymentsCard projectId={projectId} payments={payments} />
           <StatsCard
             projectId={projectId}
             timeEntries={timeEntries}
