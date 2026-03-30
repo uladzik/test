@@ -97,7 +97,7 @@
     ::-webkit-scrollbar-thumb { background:rgba(255,255,255,.05); border-radius:2px }
     .light ::-webkit-scrollbar-thumb { background:rgba(0,0,0,.06) }
 
-    .bento { display:grid; grid-template-columns:1fr 1fr; gap:10px }
+    .bento { display:grid; grid-template-columns:1fr 1fr; gap:10px; align-items:start }
     @media(max-width:640px) { .bento { grid-template-columns:1fr } }
     .span2 { grid-column:1/-1 }
 
@@ -1161,17 +1161,17 @@ function App() {
         h('div', { className: "bento" },
 
           // Quick Note
-          h('div', { className: "span2 fu glass p-5", style: { animationDelay: "0.28s" } },
+          h('div', { className: "fu glass p-5", style: { animationDelay: "0.28s" } },
             h('div', { className: "flex items-center gap-2 mb-3" },
               h(IEdit, { className: "text-gray-400" }),
               h('span', { className: "text-[9px] font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-600" }, "Quick Note")),
             h('textarea', { value: note, onChange: function(e) { updateNote(e.target.value); },
               onFocus: function(e) { setTimeout(function() { e.target.scrollIntoView({ behavior: "smooth", block: "center" }); }, 300); },
-              placeholder: "What\u2019s on your mind today\u2026", rows: 2,
+              placeholder: "What\u2019s on your mind today\u2026", rows: 4,
               className: "w-full bg-transparent text-sm text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-700 focus:outline-none resize-none leading-relaxed" })),
 
           // Focus + Pomodoro
-          h('div', { className: "span2 fu glass p-5 transition-all duration-500 " + (focus ? "focus-glow" : ""), style: { animationDelay: "0.32s" } },
+          h('div', { className: "fu glass p-5 transition-all duration-500 " + (focus ? "focus-glow" : ""), style: { animationDelay: "0.32s" } },
             h('div', { className: "flex items-center justify-between mb-3" },
               h('div', { className: "flex items-center gap-2" },
                 h(IZap, { className: focus ? "text-blue-400" : "text-gray-400" }),
@@ -1189,14 +1189,14 @@ function App() {
               h('div', { className: "coll-i" }, h(Pomo)))),
 
           // Habits
-          h('div', { className: "span2 fu glass p-5", style: { animationDelay: "0.4s" } },
+          h('div', { className: "fu glass p-5", style: { animationDelay: "0.4s" } },
             h('div', { className: "flex items-center gap-2 mb-3" },
               h(IFlame, { className: "text-orange-400" }),
               h('span', { className: "text-[9px] font-bold uppercase tracking-[0.25em] text-gray-400 dark:text-gray-600" }, "Habits")),
             h(Habits)),
 
           // Milestones
-          h('div', { className: "span2 fu", style: { animationDelay: "0.48s" } },
+          h('div', { className: "fu", style: { animationDelay: "0.48s" } },
             h('div', { className: "flex items-center justify-between mb-3" },
               h('div', { className: "flex items-center gap-2" },
                 h(ITarget, { className: "text-gray-400" }),
