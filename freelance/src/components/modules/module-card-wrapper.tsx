@@ -37,7 +37,7 @@ export function ModuleCardWrapper({
         <p className="text-xs text-[var(--muted)] mb-4">{subtitle}</p>
       )}
       {!subtitle && <div className="mb-3" />}
-      <div className="flex-1">{children}</div>
+      <div className="overflow-y-auto max-h-[180px] scrollbar-thin">{children}</div>
     </div>
   );
 }

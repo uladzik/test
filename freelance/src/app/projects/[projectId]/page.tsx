@@ -113,22 +113,15 @@ export default async function ProjectDashboardPage({
       </div>
 
       {/* Bento grid layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
-        {/* Row 1: [Meetings + Links] | TimeTrack | Tasks */}
-        <div className="flex flex-col gap-4">
-          <MeetingsCard projectId={projectId} meetings={meetings} />
-          <LinksCard projectId={projectId} links={links} />
-        </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        {/* Row 1 */}
+        <MeetingsCard projectId={projectId} meetings={meetings} />
         <TimeTrackCard projectId={projectId} entries={timeEntries} />
-
         <TasksCard projectId={projectId} tasks={tasks} />
 
-        {/* Row 2: Chat + Notes + Timeline */}
+        {/* Row 2 */}
         <ChatCard projectId={projectId} messages={chatMessages} />
-
         <NotesCard projectId={projectId} notes={notes} />
-
         <TimelineCard
           projectId={projectId}
           milestones={milestones}
@@ -136,20 +129,20 @@ export default async function ProjectDashboardPage({
           endDate={project.endDate}
         />
 
-        {/* Row 3: Documents + Payments + Stats */}
-        <div className="lg:col-span-2">
-          <DocumentsCard projectId={projectId} documents={documents} />
-        </div>
+        {/* Row 3 */}
+        <LinksCard projectId={projectId} links={links} />
+        <PaymentsCard projectId={projectId} payments={payments} />
+        <StatsCard
+          projectId={projectId}
+          timeEntries={timeEntries}
+          payments={payments}
+          tasks={tasks}
+          milestones={milestones}
+        />
 
-        <div className="flex flex-col gap-4">
-          <PaymentsCard projectId={projectId} payments={payments} />
-          <StatsCard
-            projectId={projectId}
-            timeEntries={timeEntries}
-            payments={payments}
-            tasks={tasks}
-            milestones={milestones}
-          />
+        {/* Row 4: Documents full-width */}
+        <div className="lg:col-span-3">
+          <DocumentsCard projectId={projectId} documents={documents} />
         </div>
       </div>
 
