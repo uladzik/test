@@ -38,7 +38,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <Sidebar />
-        <main className="lg:ml-[var(--sidebar-width)] min-h-screen p-6 lg:p-10">
+        <main className="lg:ml-[var(--sidebar-width)] min-h-screen p-3 lg:p-4">
           {children}
         </main>
       </body>

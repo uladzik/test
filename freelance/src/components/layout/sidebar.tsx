@@ -32,6 +32,7 @@ export function Sidebar() {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
+    document.documentElement.classList.toggle("light", !next);
     try {
       localStorage.setItem("theme", next ? "dark" : "light");
     } catch {}

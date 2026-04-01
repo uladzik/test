@@ -56,7 +56,7 @@ export default async function ProjectDashboardPage({
   const tasksDone = tasks.filter((t) => t.status === "done").length;
 
   return (
-    <div className="max-w-[1400px]">
+    <div className="w-full">
       {/* Breadcrumb */}
       <Link
         href="/projects"
