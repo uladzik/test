@@ -86,7 +86,7 @@ export function Sidebar() {
         <div className="flex items-center justify-between p-5 pb-4">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] flex items-center justify-center text-white text-sm font-semibold shadow-sm">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-light)] flex items-center justify-center text-[var(--background)] text-sm font-semibold shadow-sm">
                 U
               </div>
               {/* Online indicator */}

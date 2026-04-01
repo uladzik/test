@@ -125,7 +125,7 @@ export function MeetingsCard({ projectId, meetings }: MeetingsCardProps) {
               }`}
             >
               {isToday ? (
-                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--accent)] text-white font-medium shadow-sm">
+                <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[var(--accent)] text-[var(--background)] font-medium shadow-sm">
                   {cell.day}
                 </span>
               ) : (
