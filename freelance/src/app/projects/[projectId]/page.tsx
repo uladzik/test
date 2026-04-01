@@ -113,38 +113,28 @@ export default async function ProjectDashboardPage({
       </div>
 
       {/* Bento grid layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Row 1: Meetings + TimeTrack + Tasks/Chat */}
-        <div className="max-h-[420px] overflow-y-auto scrollbar-thin">
-          <MeetingsCard projectId={projectId} meetings={meetings} />
-        </div>
-
-        <div className="max-h-[420px] overflow-y-auto scrollbar-thin">
-          <TimeTrackCard projectId={projectId} entries={timeEntries} />
-        </div>
-
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
+        {/* Row 1: [Meetings + Links] | TimeTrack | Tasks */}
         <div className="flex flex-col gap-4">
-          <TasksCard projectId={projectId} tasks={tasks} />
+          <MeetingsCard projectId={projectId} meetings={meetings} />
           <LinksCard projectId={projectId} links={links} />
         </div>
 
+        <TimeTrackCard projectId={projectId} entries={timeEntries} />
+
+        <TasksCard projectId={projectId} tasks={tasks} />
+
         {/* Row 2: Chat + Notes + Timeline */}
-        <div>
-          <ChatCard projectId={projectId} messages={chatMessages} />
-        </div>
+        <ChatCard projectId={projectId} messages={chatMessages} />
 
-        <div>
-          <NotesCard projectId={projectId} notes={notes} />
-        </div>
+        <NotesCard projectId={projectId} notes={notes} />
 
-        <div>
-          <TimelineCard
-            projectId={projectId}
-            milestones={milestones}
-            startDate={project.startDate}
-            endDate={project.endDate}
-          />
-        </div>
+        <TimelineCard
+          projectId={projectId}
+          milestones={milestones}
+          startDate={project.startDate}
+          endDate={project.endDate}
+        />
 
         {/* Row 3: Documents + Payments + Stats */}
         <div className="lg:col-span-2">
