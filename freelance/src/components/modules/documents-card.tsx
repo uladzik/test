@@ -31,7 +31,7 @@ export function DocumentsCard({ projectId, documents }: DocumentsCardProps) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <DocColumn title="Favorites" docs={favorites} />
         <DocColumn title="Recent" docs={recent.slice(0, 3)} />
-        <DocColumn title="Created by client" docs={recent.slice(0, 3)} />
+        <DocColumn title="Oldest" docs={[...documents].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()).slice(0, 3)} />
       </div>
 
       {/* Filter tabs */}

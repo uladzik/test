@@ -32,7 +32,7 @@ export function TimeTrackCard({ projectId, entries }: TimeTrackCardProps) {
   const todayEntries = entries.filter((e) => e.startTime.slice(0, 10) === today);
   const todayMinutes = todayEntries.reduce((sum, e) => sum + (e.durationMinutes || 0), 0);
 
-  const displayMinutes = todayMinutes || entries.reduce((sum, e) => sum + (e.durationMinutes || 0), 0);
+  const displayMinutes = todayEntries.length > 0 ? todayMinutes : entries.reduce((sum, e) => sum + (e.durationMinutes || 0), 0);
   const hours = Math.floor(displayMinutes / 60);
   const mins = displayMinutes % 60;
 

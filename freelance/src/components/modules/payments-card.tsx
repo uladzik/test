@@ -121,8 +121,8 @@ function getMonthlyData(payments: Payment[]): { label: string; amount: number }[
   return Object.entries(months)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, amount]) => {
-      const [, m] = key.split("-");
-      const month = new Date(2026, parseInt(m) - 1);
+      const [y, m] = key.split("-");
+      const month = new Date(parseInt(y), parseInt(m) - 1);
       return {
         label: month.toLocaleDateString("en-US", { month: "short" }),
         amount,

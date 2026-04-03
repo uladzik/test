@@ -61,11 +61,11 @@ export function TasksCard({ projectId, tasks: initialTasks }: TasksCardProps) {
         {HOURS.map((hour) => {
           const hourNum = parseInt(hour);
           const task = scheduledTasks.find((t) => {
-            const start = parseInt(t.scheduledStart || "0");
-            const end = parseInt(t.scheduledEnd || "0");
+            const start = parseInt((t.scheduledStart || "0").split(":")[0]);
+            const end = parseInt((t.scheduledEnd || "0").split(":")[0]);
             return hourNum >= start && hourNum < end;
           });
-          const isTaskStart = task && parseInt(task.scheduledStart || "0") === hourNum;
+          const isTaskStart = task && parseInt((task.scheduledStart || "0").split(":")[0]) === hourNum;
 
           return (
             <div key={hour} className="flex items-stretch min-h-[28px] border-t border-[var(--border-light)]">
@@ -80,12 +80,12 @@ export function TasksCard({ projectId, tasks: initialTasks }: TasksCardProps) {
                     }`}
                     style={{
                       backgroundColor: task.color || "#e5e5e5",
-                      height: `${(parseInt(task.scheduledEnd || "0") - parseInt(task.scheduledStart || "0")) * 28}px`,
+                      height: `${(parseInt((task.scheduledEnd || "0").split(":")[0]) - parseInt((task.scheduledStart || "0").split(":")[0])) * 28}px`,
                       zIndex: 1,
                     }}
                     onClick={() => toggleTask(task.id)}
                   >
-                    <span className="text-gray-800 dark:text-gray-900">{task.title}</span>
+                    <span className="text-gray-800 dark:text-gray-200">{task.title}</span>
                   </div>
                 )}
               </div>
