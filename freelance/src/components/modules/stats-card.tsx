@@ -24,32 +24,28 @@ export function StatsCard({ projectId, timeEntries, payments, tasks, milestones 
       label: "Total hours",
       value: `${totalHours}h`,
       sub: `${totalMinutes} min tracked`,
-      color: "text-blue-600 dark:text-blue-400",
-      bg: "bg-blue-50 dark:bg-blue-950/50",
+      color: "text-[var(--muted)]",
     },
     {
       icon: <DollarSign size={16} />,
       label: "Earned",
       value: `$${totalEarned.toLocaleString()}`,
       sub: `of $${totalInvoiced.toLocaleString()}`,
-      color: "text-emerald-600 dark:text-emerald-400",
-      bg: "bg-emerald-50 dark:bg-emerald-950/50",
+      color: "text-[var(--success)]",
     },
     {
       icon: <CheckCircle2 size={16} />,
       label: "Tasks",
       value: `${tasksDone}/${tasks.length}`,
       sub: tasks.length > 0 ? `${Math.round((tasksDone / tasks.length) * 100)}%` : "None",
-      color: "text-purple-600 dark:text-purple-400",
-      bg: "bg-purple-50 dark:bg-purple-950/50",
+      color: "text-[var(--muted)]",
     },
     {
       icon: <Flag size={16} />,
       label: "Milestones",
       value: `${milestoneDone}/${milestones.length}`,
       sub: milestones.length > 0 ? `${Math.round((milestoneDone / milestones.length) * 100)}%` : "None",
-      color: "text-amber-600 dark:text-amber-400",
-      bg: "bg-amber-50 dark:bg-amber-950/50",
+      color: "text-[var(--warning)]",
     },
   ];
 
@@ -61,13 +57,13 @@ export function StatsCard({ projectId, timeEntries, payments, tasks, milestones 
     >
       <div className="grid grid-cols-2 gap-2.5">
         {stats.map((stat) => (
-          <div key={stat.label} className={`p-3.5 rounded-xl ${stat.bg} border border-black/5 dark:border-white/5`}>
+          <div key={stat.label} className="p-3.5 rounded-xl border border-[var(--border-light)]">
             <div className={`${stat.color} mb-2`}>{stat.icon}</div>
-            <p className="text-xl font-bold tabular-nums">{stat.value}</p>
+            <p className="text-xl font-bold tabular-nums text-[var(--foreground)]">{stat.value}</p>
             <p className="text-[10px] text-[var(--muted)] mt-0.5 font-medium uppercase tracking-wider">
               {stat.label}
             </p>
-            <p className="text-[11px] text-[var(--muted)] mt-0.5">{stat.sub}</p>
+            <p className="text-[11px] text-[var(--muted-light)] mt-0.5">{stat.sub}</p>
           </div>
         ))}
       </div>

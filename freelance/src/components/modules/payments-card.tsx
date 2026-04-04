@@ -8,10 +8,10 @@ interface PaymentsCardProps {
 }
 
 const statusStyles: Record<string, { bg: string; text: string; label: string }> = {
-  paid: { bg: "bg-emerald-100/80 dark:bg-emerald-900/40", text: "text-emerald-700 dark:text-emerald-400", label: "Paid" },
-  sent: { bg: "bg-blue-100/80 dark:bg-blue-900/40", text: "text-blue-700 dark:text-blue-400", label: "Sent" },
-  pending: { bg: "bg-amber-100/80 dark:bg-amber-900/40", text: "text-amber-700 dark:text-amber-400", label: "Pending" },
-  overdue: { bg: "bg-red-100/80 dark:bg-red-900/40", text: "text-red-700 dark:text-red-400", label: "Overdue" },
+  paid: { bg: "bg-[var(--success-bg)]", text: "text-[var(--success)]", label: "Paid" },
+  sent: { bg: "bg-[var(--info-bg)]", text: "text-[var(--info)]", label: "Sent" },
+  pending: { bg: "bg-[var(--warning-bg)]", text: "text-[var(--warning)]", label: "Pending" },
+  overdue: { bg: "bg-[var(--danger-bg)]", text: "text-[var(--danger)]", label: "Overdue" },
 };
 
 export function PaymentsCard({ projectId, payments }: PaymentsCardProps) {
@@ -34,15 +34,15 @@ export function PaymentsCard({ projectId, payments }: PaymentsCardProps) {
     >
       {/* Summary */}
       <div className="flex gap-3 mb-4">
-        <div className="flex-1 p-3 bg-[var(--success-bg)] rounded-xl border border-emerald-100 dark:border-emerald-800">
-          <p className="text-[10px] text-emerald-600 dark:text-emerald-400 uppercase tracking-widest font-semibold mb-1">Received</p>
-          <p className="text-lg font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
+        <div className="flex-1 p-3 rounded-xl border border-[var(--border-light)]">
+          <p className="text-[10px] text-[var(--muted)] uppercase tracking-widest font-semibold mb-1">Received</p>
+          <p className="text-lg font-bold text-[var(--foreground)] tabular-nums">
             ${totalPaid.toLocaleString()}
           </p>
         </div>
-        <div className="flex-1 p-3 bg-[var(--warning-bg)] rounded-xl border border-amber-100 dark:border-amber-800">
-          <p className="text-[10px] text-amber-600 dark:text-amber-400 uppercase tracking-widest font-semibold mb-1">Outstanding</p>
-          <p className="text-lg font-bold text-amber-700 dark:text-amber-400 tabular-nums">
+        <div className="flex-1 p-3 rounded-xl border border-[var(--border-light)]">
+          <p className="text-[10px] text-[var(--muted)] uppercase tracking-widest font-semibold mb-1">Outstanding</p>
+          <p className="text-lg font-bold text-[var(--foreground)] tabular-nums">
             ${totalPending.toLocaleString()}
           </p>
         </div>
